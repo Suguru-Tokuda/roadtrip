@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5CA77C76092D23786B4C8617 /* libPods-roadtrip.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4F42D2D4883557C7237D4938 /* libPods-roadtrip.a */; };
 		BB60C04220360E6800ADF586 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB60C04120360E6800ADF586 /* AppDelegate.swift */; };
 		BB60C04420360E6800ADF586 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB60C04320360E6800ADF586 /* ViewController.swift */; };
 		BB60C04720360E6800ADF586 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BB60C04520360E6800ADF586 /* Main.storyboard */; };
@@ -14,6 +15,7 @@
 		BB60C04C20360E6800ADF586 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BB60C04A20360E6800ADF586 /* LaunchScreen.storyboard */; };
 		BB60C05720360E6800ADF586 /* roadtripTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB60C05620360E6800ADF586 /* roadtripTests.swift */; };
 		BB60C06220360E6800ADF586 /* roadtripUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB60C06120360E6800ADF586 /* roadtripUITests.swift */; };
+		BB628823204CB6A400D0F060 /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = BB628822204CB6A400D0F060 /* Podfile */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,6 +36,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4F42D2D4883557C7237D4938 /* libPods-roadtrip.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-roadtrip.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		68B46FE21B9B8F67943E6DFA /* Pods-roadtrip.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-roadtrip.release.xcconfig"; path = "Pods/Target Support Files/Pods-roadtrip/Pods-roadtrip.release.xcconfig"; sourceTree = "<group>"; };
+		A33153FF928D660E0DCAA99D /* Pods-roadtrip.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-roadtrip.debug.xcconfig"; path = "Pods/Target Support Files/Pods-roadtrip/Pods-roadtrip.debug.xcconfig"; sourceTree = "<group>"; };
 		BB60C03E20360E6800ADF586 /* roadtrip.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = roadtrip.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BB60C04120360E6800ADF586 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BB60C04320360E6800ADF586 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -47,6 +52,7 @@
 		BB60C05D20360E6800ADF586 /* roadtripUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = roadtripUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BB60C06120360E6800ADF586 /* roadtripUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = roadtripUITests.swift; sourceTree = "<group>"; };
 		BB60C06320360E6800ADF586 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BB628822204CB6A400D0F060 /* Podfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,6 +60,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5CA77C76092D23786B4C8617 /* libPods-roadtrip.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -74,13 +81,25 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		14962A373E1801F4ED5AF5EF /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				A33153FF928D660E0DCAA99D /* Pods-roadtrip.debug.xcconfig */,
+				68B46FE21B9B8F67943E6DFA /* Pods-roadtrip.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		BB60C03520360E6700ADF586 = {
 			isa = PBXGroup;
 			children = (
+				BB628822204CB6A400D0F060 /* Podfile */,
 				BB60C04020360E6800ADF586 /* roadtrip */,
 				BB60C05520360E6800ADF586 /* roadtripTests */,
 				BB60C06020360E6800ADF586 /* roadtripUITests */,
 				BB60C03F20360E6800ADF586 /* Products */,
+				14962A373E1801F4ED5AF5EF /* Pods */,
+				DEDCF88387B8EEFADADDD7BD /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -125,6 +144,14 @@
 			path = roadtripUITests;
 			sourceTree = "<group>";
 		};
+		DEDCF88387B8EEFADADDD7BD /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				4F42D2D4883557C7237D4938 /* libPods-roadtrip.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -132,9 +159,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = BB60C06620360E6800ADF586 /* Build configuration list for PBXNativeTarget "roadtrip" */;
 			buildPhases = (
+				AD840B6B205D94BFF87FB1F5 /* [CP] Check Pods Manifest.lock */,
 				BB60C03A20360E6800ADF586 /* Sources */,
 				BB60C03B20360E6800ADF586 /* Frameworks */,
 				BB60C03C20360E6800ADF586 /* Resources */,
+				8F77FC4C0FBFDC8E22173417 /* [CP] Embed Pods Frameworks */,
+				6B21B51B2DC99CF6166896E2 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -234,6 +264,7 @@
 			files = (
 				BB60C04C20360E6800ADF586 /* LaunchScreen.storyboard in Resources */,
 				BB60C04920360E6800ADF586 /* Assets.xcassets in Resources */,
+				BB628823204CB6A400D0F060 /* Podfile in Resources */,
 				BB60C04720360E6800ADF586 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -253,6 +284,62 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		6B21B51B2DC99CF6166896E2 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-roadtrip/Pods-roadtrip-resources.sh",
+				"${PODS_ROOT}/GoogleMaps/Maps/Frameworks/GoogleMaps.framework/Resources/GoogleMaps.bundle",
+				"${PODS_ROOT}/GooglePlaces/Frameworks/GooglePlaces.framework/Resources/GooglePlaces.bundle",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleMaps.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GooglePlaces.bundle",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-roadtrip/Pods-roadtrip-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		8F77FC4C0FBFDC8E22173417 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-roadtrip/Pods-roadtrip-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		AD840B6B205D94BFF87FB1F5 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-roadtrip-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		BB60C03A20360E6800ADF586 /* Sources */ = {
@@ -424,6 +511,7 @@
 		};
 		BB60C06720360E6800ADF586 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = A33153FF928D660E0DCAA99D /* Pods-roadtrip.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
@@ -439,6 +527,7 @@
 		};
 		BB60C06820360E6800ADF586 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 68B46FE21B9B8F67943E6DFA /* Pods-roadtrip.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
