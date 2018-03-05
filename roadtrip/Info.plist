@@ -43,5 +43,11 @@
 	</array>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>to update the map</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>to update the map</string>
+	<key>NSLocationUsageDescription</key>
+	<string>to update the map</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>to update the map</string>
 </dict>
 </plist>
