@@ -29,7 +29,14 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
             print(location.coordinate)
             let camera = GMSCameraPosition.camera(withLatitude: lat!, longitude: long!, zoom: 6.0)
             let mapView = GMSMapView.map(withFrame: .zero, camera: camera)
+            mapView.isMyLocationEnabled = true
             self.view = mapView
+            
+//            let marker = GMSMarker()
+//            marker.position = CLLocationCoordinate2D(latitude: lat!, longitude: long!)
+//            marker.title = "ISU"
+//            marker.snippet = "ISU Snippet"
+//            marker.map = mapView
         }
     }
 
