@@ -14,10 +14,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     let googleMapsAPIKey = "AIzaSyDEdKM_L4ArIhHSyZdOImGpmAWArGT8W38"
     let googoeDirectionsAPIKey = "AIzaSyB5MtWNCa49FD9dSqC0iXd5JA4Vl-_Rf-c"
+    var apiDataStore = APIDataStore()
+    var years: [Int]!
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         GMSServices.provideAPIKey(googleMapsAPIKey)
+        
+        apiDataStore.getYears(completion: { (yearsResult) in
+            switch yearsResult {
+            case let .success(years):
+                print(years)
+            case let .failure(error):
+                print(error)
+            }
+            })
         return true
     }
 

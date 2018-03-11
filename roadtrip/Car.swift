@@ -1,36 +1,89 @@
-//
-//  Car.swift
-//  roadtrip
-//
-//  Created by Suguru on 3/4/18.
-//  Copyright © 2018 edu.ilstu.stokudasabhat. All rights reserved.
-//
-
 import Foundation
+import CoreData
 
 public class Car {
     
-    var make: String
-    var model: String
-    var year: String
-    var millage: Double
-    var gasType: String
-    var mpg: Double
-    
+    private var _make: String?
+    private var _model: String?
+    private var _trim: String?
+    private var _year: String?
+    private var _millage: Double?
+    private var _gasType: String?
+    private var _mpg: Double?
     
     // MARK: Initializer
-    public init(make: String, model: String, year: String, millage: Double, gasType: String, mpg: Double) {
-        self.make = make
-        self.model = model
-        self.year = year
-        self.millage = millage
-        self.gasType = gasType
-        self.mpg = mpg
+    public init(make: String, model: String, trim: String, year: String, millage: Double, gasType: String, mpg: Double) {
+        self._make = make
+        self._model = model
+        self._trim = trim
+        self._year = year
+        self._millage = millage
+        self._gasType = gasType
+        self._mpg = mpg
     }
     
     // MARK: Getters & Setters
+    public var make: String {
+        get {
+            return self._make!
+        }
+        set(make) {
+            self._make = make
+        }
+    }
     
+    public var model: String {
+        get {
+            return self._model!
+        }
+        set(model) {
+            self._model = model
+        }
+    }
     
+    public var trim: String {
+        get {
+            return self._trim!
+        }
+        set(trim) {
+            self._trim = trim
+        }
+    }
     
+    public var year: String {
+        get {
+            return self._year!
+        }
+        set(year) {
+            self._year = year
+        }
+    }
+    
+    public var millage: Double {
+        get {
+            return self._millage!
+        }
+        set(millage) {
+            self._millage = millage
+        }
+    }
+    
+    public var gasType: String {
+        get {
+            return self._gasType!
+        }
+        set(gasType) {
+            self._gasType = gasType
+        }
+    }
+    
+    public var mpg: Double {
+        get {
+            return self._mpg!
+        }
+        set(mpg) {
+            self._mpg = mpg
+        }
+    }
     
 }

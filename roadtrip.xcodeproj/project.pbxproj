@@ -17,6 +17,7 @@
 		BB60C06220360E6800ADF586 /* roadtripUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB60C06120360E6800ADF586 /* roadtripUITests.swift */; };
 		BB628823204CB6A400D0F060 /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = BB628822204CB6A400D0F060 /* Podfile */; };
 		BB787694204CBA460013A2F4 /* Car.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB787693204CBA460013A2F4 /* Car.swift */; };
+		BBDF006F2054D5BB002EF5F1 /* RoadtripAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBDF006E2054D5BB002EF5F1 /* RoadtripAPI.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,6 +56,7 @@
 		BB60C06320360E6800ADF586 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BB628822204CB6A400D0F060 /* Podfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; };
 		BB787693204CBA460013A2F4 /* Car.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Car.swift; sourceTree = "<group>"; };
+		BBDF006E2054D5BB002EF5F1 /* RoadtripAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoadtripAPI.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -125,6 +127,7 @@
 				BB60C04820360E6800ADF586 /* Assets.xcassets */,
 				BB60C04A20360E6800ADF586 /* LaunchScreen.storyboard */,
 				BB60C04D20360E6800ADF586 /* Info.plist */,
+				BBDF006E2054D5BB002EF5F1 /* RoadtripAPI.swift */,
 			);
 			path = roadtrip;
 			sourceTree = "<group>";
@@ -351,6 +354,7 @@
 			files = (
 				BB60C04420360E6800ADF586 /* ViewController.swift in Sources */,
 				BB60C04220360E6800ADF586 /* AppDelegate.swift in Sources */,
+				BBDF006F2054D5BB002EF5F1 /* RoadtripAPI.swift in Sources */,
 				BB787694204CBA460013A2F4 /* Car.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
