@@ -1,49 +1,60 @@
 import UIKit
 import GoogleMaps
-
-class ViewController: UIViewController, CLLocationManagerDelegate {
+class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDelegate {
     
-    let appDelegate = UIApplication.shared.delegate as! AppDelegate
-    var googleMapsAPIKey: String!
-    let locationManager = CLLocationManager()
-    var currentLocation: CLLocation?
-    var lat: Double?
-    var long: Double?
-
+    var locationManager = CLLocationManager()
+    @IBOutlet weak var mapView: GMSMapView!
+    @IBOutlet weak var addresslbl: UILabel!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        locationManager.requestAlwaysAuthorization()
-        if CLLocationManager.locationServicesEnabled() {
-            locationManager.delegate = self
-            locationManager.desiredAccuracy = kCLLocationAccuracyBest
-            locationManager.startUpdatingLocation()
+        locationManager.delegate = self
+        mapView.delegate = self
+        
+        locationManager.requestWhenInUseAuthorization()
+    }
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        guard status == .authorizedWhenInUse else {
+            return
         }
-        googleMapsAPIKey = appDelegate.googleMapsAPIKey
-        GMSServices.provideAPIKey(googleMapsAPIKey)
+        
+        locationManager.startUpdatingLocation()
+        mapView.isMyLocationEnabled = true
+        mapView.settings.myLocationButton = true
+        mapView.settings.compassButton = true
+        
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        if let location = locations.first {
-            self.lat = location.coordinate.latitude
-            self.long = location.coordinate.longitude
-            print(location.coordinate)
-            let camera = GMSCameraPosition.camera(withLatitude: lat!, longitude: long!, zoom: 6.0)
-            let mapView = GMSMapView.map(withFrame: .zero, camera: camera)
-            mapView.isMyLocationEnabled = true
-            self.view = mapView
+        guard let location = locations.first else {
+            return
+        }
+        
+        mapView.camera = GMSCameraPosition(target: location.coordinate, zoom: 15, bearing: 0, viewingAngle: 0)
+        locationManager.stopUpdatingLocation()
+    }
+    private func reverseGeocodeCoordinate(_ coordinate: CLLocationCoordinate2D) {
+        let geocoder = GMSGeocoder()
+        
+        geocoder.reverseGeocodeCoordinate(coordinate) { response, error in
+            guard let address = response?.firstResult(), let lines = address.lines else {
+                return
+            }
             
-//            let marker = GMSMarker()
-//            marker.position = CLLocationCoordinate2D(latitude: lat!, longitude: long!)
-//            marker.title = "ISU"
-//            marker.snippet = "ISU Snippet"
-//            marker.map = mapView
+            self.addresslbl.text = lines.joined(separator: "\n")
+            
+            let labelHeight = self.addresslbl.intrinsicContentSize.height
+            self.mapView.padding = UIEdgeInsets(top: self.view.safeAreaInsets.top, left: 0, bottom: labelHeight, right: 0)
+            
+            UIView.animate(withDuration: 0.25) {
+                self.view.layoutIfNeeded()
+            }
         }
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
+    
+    func mapView(_ mapView: GMSMapView, idleAt position: GMSCameraPosition) {
+        reverseGeocodeCoordinate(position.target)
     }
-
-
+    
 }
 
