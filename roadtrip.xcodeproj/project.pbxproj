@@ -18,6 +18,8 @@
 		BB628823204CB6A400D0F060 /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = BB628822204CB6A400D0F060 /* Podfile */; };
 		BB787694204CBA460013A2F4 /* Car.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB787693204CBA460013A2F4 /* Car.swift */; };
 		BBDF006F2054D5BB002EF5F1 /* RoadtripAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBDF006E2054D5BB002EF5F1 /* RoadtripAPI.swift */; };
+		BBF39D032055D2A1002F53A5 /* CarQueryDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBF39D022055D2A1002F53A5 /* CarQueryDataStore.swift */; };
+		BBF39D052055EF07002F53A5 /* Years.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBF39D042055EF07002F53A5 /* Years.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,6 +59,8 @@
 		BB628822204CB6A400D0F060 /* Podfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; };
 		BB787693204CBA460013A2F4 /* Car.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Car.swift; sourceTree = "<group>"; };
 		BBDF006E2054D5BB002EF5F1 /* RoadtripAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoadtripAPI.swift; sourceTree = "<group>"; };
+		BBF39D022055D2A1002F53A5 /* CarQueryDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarQueryDataStore.swift; sourceTree = "<group>"; };
+		BBF39D042055EF07002F53A5 /* Years.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Years.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -128,6 +132,8 @@
 				BB60C04A20360E6800ADF586 /* LaunchScreen.storyboard */,
 				BB60C04D20360E6800ADF586 /* Info.plist */,
 				BBDF006E2054D5BB002EF5F1 /* RoadtripAPI.swift */,
+				BBF39D022055D2A1002F53A5 /* CarQueryDataStore.swift */,
+				BBF39D042055EF07002F53A5 /* Years.swift */,
 			);
 			path = roadtrip;
 			sourceTree = "<group>";
@@ -352,7 +358,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BBF39D032055D2A1002F53A5 /* CarQueryDataStore.swift in Sources */,
 				BB60C04420360E6800ADF586 /* ViewController.swift in Sources */,
+				BBF39D052055EF07002F53A5 /* Years.swift in Sources */,
 				BB60C04220360E6800ADF586 /* AppDelegate.swift in Sources */,
 				BBDF006F2054D5BB002EF5F1 /* RoadtripAPI.swift in Sources */,
 				BB787694204CBA460013A2F4 /* Car.swift in Sources */,
