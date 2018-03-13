@@ -15,19 +15,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     let googleMapsAPIKey = "AIzaSyDEdKM_L4ArIhHSyZdOImGpmAWArGT8W38"
     let googoeDirectionsAPIKey = "AIzaSyB5MtWNCa49FD9dSqC0iXd5JA4Vl-_Rf-c"
     var carQueryDataStore = CarQueryDataStore()
-    var years: [Int]!
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         GMSServices.provideAPIKey(googleMapsAPIKey)
-        carQueryDataStore.getYears { (yearsResult) in
-            switch yearsResult {
-            case let .success(years):
-                self.years = years
-            case let .failure(error):
-                print(error)
-            }
-        }
         return true
     }
 

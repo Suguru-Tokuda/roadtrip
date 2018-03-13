@@ -17,9 +17,11 @@
 		BB60C06220360E6800ADF586 /* roadtripUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB60C06120360E6800ADF586 /* roadtripUITests.swift */; };
 		BB628823204CB6A400D0F060 /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = BB628822204CB6A400D0F060 /* Podfile */; };
 		BB787694204CBA460013A2F4 /* Car.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB787693204CBA460013A2F4 /* Car.swift */; };
+		BBBC79732057695C0085044F /* Make.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBBC79722057695C0085044F /* Make.swift */; };
+		BBBC7975205770AC0085044F /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBBC7974205770AC0085044F /* Model.swift */; };
+		BBBC7977205775430085044F /* Trim.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBBC7976205775430085044F /* Trim.swift */; };
 		BBDF006F2054D5BB002EF5F1 /* RoadtripAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBDF006E2054D5BB002EF5F1 /* RoadtripAPI.swift */; };
 		BBF39D032055D2A1002F53A5 /* CarQueryDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBF39D022055D2A1002F53A5 /* CarQueryDataStore.swift */; };
-		BBF39D052055EF07002F53A5 /* Years.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBF39D042055EF07002F53A5 /* Years.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -58,9 +60,11 @@
 		BB60C06320360E6800ADF586 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BB628822204CB6A400D0F060 /* Podfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; };
 		BB787693204CBA460013A2F4 /* Car.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Car.swift; sourceTree = "<group>"; };
+		BBBC79722057695C0085044F /* Make.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Make.swift; sourceTree = "<group>"; };
+		BBBC7974205770AC0085044F /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
+		BBBC7976205775430085044F /* Trim.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Trim.swift; sourceTree = "<group>"; };
 		BBDF006E2054D5BB002EF5F1 /* RoadtripAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoadtripAPI.swift; sourceTree = "<group>"; };
 		BBF39D022055D2A1002F53A5 /* CarQueryDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarQueryDataStore.swift; sourceTree = "<group>"; };
-		BBF39D042055EF07002F53A5 /* Years.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Years.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -133,7 +137,9 @@
 				BB60C04D20360E6800ADF586 /* Info.plist */,
 				BBDF006E2054D5BB002EF5F1 /* RoadtripAPI.swift */,
 				BBF39D022055D2A1002F53A5 /* CarQueryDataStore.swift */,
-				BBF39D042055EF07002F53A5 /* Years.swift */,
+				BBBC79722057695C0085044F /* Make.swift */,
+				BBBC7974205770AC0085044F /* Model.swift */,
+				BBBC7976205775430085044F /* Trim.swift */,
 			);
 			path = roadtrip;
 			sourceTree = "<group>";
@@ -358,10 +364,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BBBC7975205770AC0085044F /* Model.swift in Sources */,
+				BBBC7977205775430085044F /* Trim.swift in Sources */,
 				BBF39D032055D2A1002F53A5 /* CarQueryDataStore.swift in Sources */,
 				BB60C04420360E6800ADF586 /* ViewController.swift in Sources */,
-				BBF39D052055EF07002F53A5 /* Years.swift in Sources */,
 				BB60C04220360E6800ADF586 /* AppDelegate.swift in Sources */,
+				BBBC79732057695C0085044F /* Make.swift in Sources */,
 				BBDF006F2054D5BB002EF5F1 /* RoadtripAPI.swift in Sources */,
 				BB787694204CBA460013A2F4 /* Car.swift in Sources */,
 			);
