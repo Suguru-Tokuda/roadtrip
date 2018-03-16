@@ -10,11 +10,17 @@ import UIKit
 
 class CarInfoSettingViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate {
     
-    @IBOutlet weak var yearPicker: UIPickerView!
-    @IBOutlet weak var makePicker: UIPickerView!
-    @IBOutlet weak var modelPicker: UIPickerView!
-    @IBOutlet weak var trimPicker: UIPickerView!
-    @IBOutlet weak var gasTypePicker: UIPickerView!
+    var yearPicker: UIPickerView! = UIPickerView()
+    var makePicker: UIPickerView! = UIPickerView()
+    var modelPicker: UIPickerView! = UIPickerView()
+    var trimPicker: UIPickerView! = UIPickerView()
+    var gasTypePicker: UIPickerView! = UIPickerView()
+    
+    @IBOutlet weak var yearTextField: UITextField!
+    @IBOutlet weak var makeTextField: UITextField!
+    @IBOutlet weak var modelTextField: UITextField!
+    @IBOutlet weak var trimTextField: UITextField!
+    @IBOutlet weak var gasTypeTextField: UITextField!
     @IBOutlet weak var millageTextField: UITextField!
     
     let appDelegate = UIApplication.shared.delegate as? AppDelegate
@@ -33,35 +39,62 @@ class CarInfoSettingViewController: UIViewController, UIPickerViewDataSource, UI
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        yearPicker.dataSource = self
+        yearPicker.delegate = self
+        makePicker.dataSource = self
+        makePicker.delegate = self
+        modelPicker.dataSource = self
+        modelPicker.delegate = self
+        trimPicker.dataSource = self
+        trimPicker.delegate = self
+        gasTypePicker.dataSource = self
+        gasTypePicker.delegate = self
+        
+        yearTextField.inputView = yearPicker
+        makeTextField.inputView = makePicker
+        modelTextField.inputView = makePicker
+        trimTextField.inputView = trimPicker
+        gasTypeTextField.inputView = gasTypePicker
+        
         self.navigationItem.setHidesBackButton(true, animated: true)
         self.navigationItem.title = "Your Car Info"
         self.years = self.appDelegate!.years
         self.selectedGasType = gasTypes[0]
+        gasTypeTextField.text = self.selectedGasType
         self.carQueryDataStore.getYears { (yearsResult) in
             switch yearsResult {
             case let .success(years):
                 self.years =  years
                 self.years?.sort(by: >)
                 self.selectedYear = self.years![0]
+                self.yearTextField.text = self.selectedYear!.description
                 self.carQueryDataStore.getMakes(year: self.selectedYear!, completion: { (makesResult) in
                     switch makesResult {
                     case let .success(makes):
                         if makes.count > 0 {
                             self.makes = makes
                             self.selectedMake = self.makes![0]
+                            self.makeTextField.text = self.selectedMake!.makeDisplay
                             self.carQueryDataStore.getModels(make: self.makes![0].makeDisplay.lowercased(), year: self.selectedYear!, completion: { (modelsResult) in
                                 switch modelsResult {
                                 case let .success(models):
                                     self.models = models
                                     self.selectedModel = self.models![0]
+                                    self.modelTextField.text = self.selectedModel!.modelName
                                     if models.count > 0 {
                                         let modelName = self.models![0].modelName.lowercased()
                                         self.carQueryDataStore.getTrims(model: modelName, year: self.selectedYear!, completion: { (trimsResult) in
                                             switch trimsResult {
                                             case let .success(trims):
                                                 self.trims = trims
-                                                self.selectedTrim = self.trims![0]
-                                                self.trimPicker.reloadAllComponents()
+                                                if trims.count > 0 {
+                                                    self.selectedTrim = self.trims![0]
+                                                    self.trimTextField.text = self.selectedTrim!.modelTrim
+                                                    self.trimPicker.reloadAllComponents()
+                                                } else {
+                                                    self.selectedTrim = nil
+                                                    self.trimTextField.text = ""
+                                                }
                                             case let .failure(error):
                                                 print(error)
                                             }
@@ -69,6 +102,7 @@ class CarInfoSettingViewController: UIViewController, UIPickerViewDataSource, UI
                                         self.modelPicker.reloadAllComponents()
                                     } else {
                                         self.selectedModel = nil
+                                        self.modelTextField.text = ""
                                     }
                                 case let .failure(error):
                                     print(error)
@@ -76,6 +110,7 @@ class CarInfoSettingViewController: UIViewController, UIPickerViewDataSource, UI
                             })
                         } else {
                             self.selectedMake = nil
+                            self.makeTextField.text = ""
                         }
                         self.makePicker.reloadAllComponents()
                     case let .failure(error):
@@ -165,24 +200,34 @@ class CarInfoSettingViewController: UIViewController, UIPickerViewDataSource, UI
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         if pickerView == yearPicker {
             selectedYear = years![row]
+            yearTextField.text = selectedYear!.description
             self.carQueryDataStore.getMakes(year: selectedYear!, completion: { (makesResult) in
                 switch makesResult {
                 case let .success(makes):
                     if makes.count > 0 {
                         self.makes = makes
                         self.selectedMake = self.makes![0]
+                        self.makeTextField.text = self.selectedMake!.makeDisplay
                         self.carQueryDataStore.getModels(make: self.makes![0].makeDisplay.lowercased(), year: self.selectedYear!, completion: { (modelsResult) in
                             switch modelsResult {
                             case let .success(models):
                                 self.models = models
                                 self.selectedModel = self.models![0]
+                                self.modelTextField.text = self.selectedModel!.modelName
                                 if models.count > 0 {
                                     let modelName = self.models![0].modelName.lowercased()
                                     self.carQueryDataStore.getTrims(model: modelName, year: self.selectedYear!, completion: { (trimsResult) in
                                         switch trimsResult {
                                         case let .success(trims):
                                             self.trims = trims
-                                            self.trimPicker.reloadAllComponents()
+                                            if trims.count > 0 {
+                                                self.selectedTrim = self.trims![0]
+                                                self.trimTextField.text = self.selectedTrim!.modelTrim
+                                                self.trimPicker.reloadAllComponents()
+                                            } else {
+                                                self.selectedTrim = nil
+                                                self.trimTextField.text = ""
+                                            }
                                         case let .failure(error):
                                             print(error)
                                         }
@@ -190,6 +235,7 @@ class CarInfoSettingViewController: UIViewController, UIPickerViewDataSource, UI
                                     self.modelPicker.reloadAllComponents()
                                 } else {
                                     self.selectedModel = nil
+                                    self.modelTextField.text = ""
                                 }
                             case let .failure(error):
                                 print(error)
@@ -197,6 +243,7 @@ class CarInfoSettingViewController: UIViewController, UIPickerViewDataSource, UI
                         })
                     } else {
                         self.selectedMake = nil
+                        self.makeTextField.text = ""
                     }
                     self.makePicker.reloadAllComponents()
                 case let .failure(error):
@@ -209,14 +256,22 @@ class CarInfoSettingViewController: UIViewController, UIPickerViewDataSource, UI
                 switch modelsResult {
                 case let .success(models):
                     self.models = models
-                    self.selectedModel = self.models![0]
                     if models.count > 0 {
+                        self.selectedModel = self.models![0]
+                        self.modelTextField.text = self.selectedModel!.modelName
                         let modelName = self.models![0].modelName.lowercased()
                         self.carQueryDataStore.getTrims(model: modelName, year: self.selectedYear!, completion: { (trimsResult) in
                             switch trimsResult {
                             case let .success(trims):
                                 self.trims = trims
-                                self.trimPicker.reloadAllComponents()
+                                if trims.count > 0 {
+                                    self.selectedTrim = self.trims![0]
+                                    self.trimTextField.text = self.selectedTrim!.modelTrim
+                                    self.trimPicker.reloadAllComponents()
+                                } else {
+                                    self.selectedTrim = nil
+                                    self.trimTextField.text = ""
+                                }
                             case let .failure(error):
                                 print(error)
                             }
@@ -224,6 +279,7 @@ class CarInfoSettingViewController: UIViewController, UIPickerViewDataSource, UI
                         self.modelPicker.reloadAllComponents()
                     } else {
                         self.selectedModel = nil
+                        self.modelTextField.text = ""
                     }
                 case let .failure(error):
                     print(error)
@@ -235,6 +291,8 @@ class CarInfoSettingViewController: UIViewController, UIPickerViewDataSource, UI
                 switch trimsResult {
                 case let .success(trims):
                     self.trims = trims
+                    self.selectedTrim = self.trims![0]
+                    self.trimTextField.text = self.selectedTrim!.modelTrim
                     self.trimPicker.reloadAllComponents()
                 case let .failure(error):
                     print(error)
@@ -242,8 +300,10 @@ class CarInfoSettingViewController: UIViewController, UIPickerViewDataSource, UI
             })
         } else if pickerView == trimPicker {
             selectedTrim = trims![row]
+            trimTextField.text = selectedTrim!.modelTrim
         } else if pickerView == gasTypePicker {
             selectedGasType = gasTypes[row]
+            gasTypeTextField.text = selectedGasType!
         }
     }
     
