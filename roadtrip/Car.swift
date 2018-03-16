@@ -1,36 +1,100 @@
-//
-//  Car.swift
-//  roadtrip
-//
-//  Created by Suguru on 3/4/18.
-//  Copyright © 2018 edu.ilstu.stokudasabhat. All rights reserved.
-//
-
 import Foundation
+import CoreData
 
 public class Car {
     
-    var make: String
-    var model: String
-    var year: String
-    var millage: Double
-    var gasType: String
-    var mpg: Double
-    
+    private var _make: String?
+    private var _model: String?
+    private var _trim: String?
+    private var _year: String?
+    private var _millage: Double?
+    private var _gasType: String?
+    private var _mpgHwy: Double?
+    private var _mpgCity: Double?
     
     // MARK: Initializer
-    public init(make: String, model: String, year: String, millage: Double, gasType: String, mpg: Double) {
-        self.make = make
-        self.model = model
-        self.year = year
-        self.millage = millage
-        self.gasType = gasType
-        self.mpg = mpg
+    public init(make: String, model: String, trim: String, year: String, millage: Double, gasType: String, mpgHwy: Double, mpgCity: Double) {
+        self._make = make
+        self._model = model
+        self._trim = trim
+        self._year = year
+        self._millage = millage
+        self._gasType = gasType
+        self._mpgHwy = mpgHwy
+        self._mpgCity = mpgCity
     }
     
     // MARK: Getters & Setters
+    public var make: String {
+        get {
+            return self._make!
+        }
+        set(make) {
+            self._make = make
+        }
+    }
     
+    public var model: String {
+        get {
+            return self._model!
+        }
+        set(model) {
+            self._model = model
+        }
+    }
     
+    public var trim: String {
+        get {
+            return self._trim!
+        }
+        set(trim) {
+            self._trim = trim
+        }
+    }
     
+    public var year: String {
+        get {
+            return self._year!
+        }
+        set(year) {
+            self._year = year
+        }
+    }
+    
+    public var millage: Double {
+        get {
+            return self._millage!
+        }
+        set(millage) {
+            self._millage = millage
+        }
+    }
+    
+    public var gasType: String {
+        get {
+            return self._gasType!
+        }
+        set(gasType) {
+            self._gasType = gasType
+        }
+    }
+    
+    public var mpgHwy: Double {
+        get {
+            return round(1000 * self._mpgHwy!) / 1000
+        }
+        set(mpgHwy) {
+            self._mpgHwy = mpgHwy
+        }
+    }
+    
+    public var mpgCity: Double {
+        get {
+            return round(1000 * self._mpgCity!) / 1000
+        }
+        set(mpgCity) {
+            self._mpgCity = mpgCity
+        }
+    }
     
 }

@@ -1,5 +1,6 @@
 import UIKit
 import GoogleMaps
+
 class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDelegate {
     //https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.870943,151.190311&radius=1000&rankby=prominence&sensor=true&key=AIzaSyD14jarz6jPaHCozkfKHcNLVthhuJhtwqg
     var locationManager = CLLocationManager()
