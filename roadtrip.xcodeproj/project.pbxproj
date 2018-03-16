@@ -7,9 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		796419536C23E8890FFFC2DD /* libPods-roadtrip.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1679335569041B1095E67317 /* libPods-roadtrip.a */; };
 		5F18447D2054D6F6004A30A1 /* PlaceMarker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F18447C2054D6F6004A30A1 /* PlaceMarker.swift */; };
-		5F1844852055AB3E004A30A1 /* GoogleClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F1844842055AB3D004A30A1 /* GoogleClient.swift */; };
 		5F1844872055ABC4004A30A1 /* ResponseModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F1844862055ABC4004A30A1 /* ResponseModels.swift */; };
 		BB017C6F205B343000FD9DC6 /* CarInfoConfirmationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB017C6E205B343000FD9DC6 /* CarInfoConfirmationViewController.swift */; };
 		BB60C04220360E6800ADF586 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB60C04120360E6800ADF586 /* AppDelegate.swift */; };
@@ -20,7 +18,9 @@
 		BB60C05720360E6800ADF586 /* roadtripTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB60C05620360E6800ADF586 /* roadtripTests.swift */; };
 		BB60C06220360E6800ADF586 /* roadtripUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB60C06120360E6800ADF586 /* roadtripUITests.swift */; };
 		BB628823204CB6A400D0F060 /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = BB628822204CB6A400D0F060 /* Podfile */; };
+		BB6F94FB205BA8AB00465C9A /* GoogleClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB6F94FA205BA8AB00465C9A /* GoogleClient.swift */; };
 		BB787694204CBA460013A2F4 /* Car.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB787693204CBA460013A2F4 /* Car.swift */; };
+		BB8CF909205B55D500D54397 /* libPods-roadtrip.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BB8CF90A205B55D500D54397 /* libPods-roadtrip.a */; };
 		BBBC79732057695C0085044F /* Make.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBBC79722057695C0085044F /* Make.swift */; };
 		BBBC7975205770AC0085044F /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBBC7974205770AC0085044F /* Model.swift */; };
 		BBBC7977205775430085044F /* Trim.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBBC7976205775430085044F /* Trim.swift */; };
@@ -47,12 +47,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-
-		4F42D2D4883557C7237D4938 /* libPods-roadtrip.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-roadtrip.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5F18447C2054D6F6004A30A1 /* PlaceMarker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceMarker.swift; sourceTree = "<group>"; };
-		5F1844842055AB3D004A30A1 /* GoogleClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleClient.swift; sourceTree = "<group>"; };
 		5F1844862055ABC4004A30A1 /* ResponseModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseModels.swift; sourceTree = "<group>"; };
-
 		68B46FE21B9B8F67943E6DFA /* Pods-roadtrip.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-roadtrip.release.xcconfig"; path = "Pods/Target Support Files/Pods-roadtrip/Pods-roadtrip.release.xcconfig"; sourceTree = "<group>"; };
 		A33153FF928D660E0DCAA99D /* Pods-roadtrip.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-roadtrip.debug.xcconfig"; path = "Pods/Target Support Files/Pods-roadtrip/Pods-roadtrip.debug.xcconfig"; sourceTree = "<group>"; };
 		BB017C6E205B343000FD9DC6 /* CarInfoConfirmationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarInfoConfirmationViewController.swift; sourceTree = "<group>"; };
@@ -69,16 +65,18 @@
 		BB60C05D20360E6800ADF586 /* roadtripUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = roadtripUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BB60C06120360E6800ADF586 /* roadtripUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = roadtripUITests.swift; sourceTree = "<group>"; };
 		BB60C06320360E6800ADF586 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		BB628822204CB6A400D0F060 /* Podfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; };
+		BB628822204CB6A400D0F060 /* Podfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		BB6AD780205A21E500C713B6 /* PromiseKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = PromiseKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BB6F94FA205BA8AB00465C9A /* GoogleClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleClient.swift; sourceTree = "<group>"; };
 		BB787693204CBA460013A2F4 /* Car.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Car.swift; sourceTree = "<group>"; };
+		BB8CF90A205B55D500D54397 /* libPods-roadtrip.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libPods-roadtrip.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BBBC79722057695C0085044F /* Make.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Make.swift; sourceTree = "<group>"; };
 		BBBC7974205770AC0085044F /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 		BBBC7976205775430085044F /* Trim.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Trim.swift; sourceTree = "<group>"; };
 		BBDF006E2054D5BB002EF5F1 /* RoadtripAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoadtripAPI.swift; sourceTree = "<group>"; };
 		BBF2A6BE20587CFC00FD2871 /* CarInfoSettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarInfoSettingViewController.swift; sourceTree = "<group>"; };
 		BBF39D022055D2A1002F53A5 /* CarQueryDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarQueryDataStore.swift; sourceTree = "<group>"; };
-		FE766CAA51715CA7818CAD6C /* Pods_roadtrip.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_roadtrip.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D5291226AD2FABCEBC328D2D /* libPods-roadtrip.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-roadtrip.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -86,7 +84,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				796419536C23E8890FFFC2DD /* libPods-roadtrip.a in Frameworks */,
+				BB8CF909205B55D500D54397 /* libPods-roadtrip.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -149,9 +147,7 @@
 				BB60C04820360E6800ADF586 /* Assets.xcassets */,
 				BB60C04A20360E6800ADF586 /* LaunchScreen.storyboard */,
 				BB60C04D20360E6800ADF586 /* Info.plist */,
-
 				5F18447C2054D6F6004A30A1 /* PlaceMarker.swift */,
-				5F1844842055AB3D004A30A1 /* GoogleClient.swift */,
 				5F1844862055ABC4004A30A1 /* ResponseModels.swift */,
 				BBDF006E2054D5BB002EF5F1 /* RoadtripAPI.swift */,
 				BBF39D022055D2A1002F53A5 /* CarQueryDataStore.swift */,
@@ -160,6 +156,7 @@
 				BBBC7976205775430085044F /* Trim.swift */,
 				BBF2A6BE20587CFC00FD2871 /* CarInfoSettingViewController.swift */,
 				BB017C6E205B343000FD9DC6 /* CarInfoConfirmationViewController.swift */,
+				BB6F94FA205BA8AB00465C9A /* GoogleClient.swift */,
 			);
 			path = roadtrip;
 			sourceTree = "<group>";
@@ -185,9 +182,9 @@
 		DEDCF88387B8EEFADADDD7BD /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				BB8CF90A205B55D500D54397 /* libPods-roadtrip.a */,
 				BB6AD780205A21E500C713B6 /* PromiseKit.framework */,
-				FE766CAA51715CA7818CAD6C /* Pods_roadtrip.framework */,
-				1679335569041B1095E67317 /* libPods-roadtrip.a */,
+				D5291226AD2FABCEBC328D2D /* libPods-roadtrip.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -393,6 +390,7 @@
 				BBBC7975205770AC0085044F /* Model.swift in Sources */,
 				BBBC7977205775430085044F /* Trim.swift in Sources */,
 				BBF39D032055D2A1002F53A5 /* CarQueryDataStore.swift in Sources */,
+				BB6F94FB205BA8AB00465C9A /* GoogleClient.swift in Sources */,
 				BB60C04420360E6800ADF586 /* ViewController.swift in Sources */,
 				BBF2A6BF20587CFC00FD2871 /* CarInfoSettingViewController.swift in Sources */,
 				BB60C04220360E6800ADF586 /* AppDelegate.swift in Sources */,
