@@ -39,6 +39,7 @@ class CarInfoSettingViewController: UIViewController, UIPickerViewDataSource, UI
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setUpDoneBtn()
         yearPicker.dataSource = self
         yearPicker.delegate = self
         makePicker.dataSource = self
@@ -52,7 +53,7 @@ class CarInfoSettingViewController: UIViewController, UIPickerViewDataSource, UI
         
         yearTextField.inputView = yearPicker
         makeTextField.inputView = makePicker
-        modelTextField.inputView = makePicker
+        modelTextField.inputView = modelPicker
         trimTextField.inputView = trimPicker
         gasTypeTextField.inputView = gasTypePicker
         
@@ -252,6 +253,7 @@ class CarInfoSettingViewController: UIViewController, UIPickerViewDataSource, UI
             })
         } else if pickerView == makePicker {
             selectedMake = makes![row]
+            makeTextField.text = selectedMake!.makeDisplay
             self.carQueryDataStore.getModels(make: selectedMake!.makeDisplay.lowercased(), year: selectedYear!, completion: { (modelsResult) in
                 switch modelsResult {
                 case let .success(models):
@@ -287,13 +289,19 @@ class CarInfoSettingViewController: UIViewController, UIPickerViewDataSource, UI
             })
         } else if pickerView == modelPicker {
             selectedModel = models![row]
+            modelTextField.text = selectedModel!.modelName
             self.carQueryDataStore.getTrims(model: selectedModel!.modelName.lowercased(), year: selectedYear!, completion: { (trimsResult) in
                 switch trimsResult {
                 case let .success(trims):
-                    self.trims = trims
-                    self.selectedTrim = self.trims![0]
-                    self.trimTextField.text = self.selectedTrim!.modelTrim
-                    self.trimPicker.reloadAllComponents()
+                    if trims.count > 0 {
+                        self.trims = trims
+                        self.selectedTrim = self.trims![0]
+                        self.trimTextField.text = self.selectedTrim!.modelTrim
+                        self.trimPicker.reloadAllComponents()
+                    } else {
+                        self.selectedTrim = nil
+                        self.trimTextField.text = ""
+                    }
                 case let .failure(error):
                     print(error)
                 }
@@ -305,6 +313,18 @@ class CarInfoSettingViewController: UIViewController, UIPickerViewDataSource, UI
             selectedGasType = gasTypes[row]
             gasTypeTextField.text = selectedGasType!
         }
+    }
+    
+    private func setUpDoneBtn() {
+        let toolBar = UIToolbar()
+        let doneBtn = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneClicked))
+        let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil)
+        toolBar.items = [flexibleSpace, doneBtn]
+        toolBar.sizeToFit()
+    }
+    
+    @objc func doneClicked() {
+        view.endEditing(false)
     }
     
     @IBAction func displayTapped(_ sender: Any) {
