@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		796419536C23E8890FFFC2DD /* libPods-roadtrip.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1679335569041B1095E67317 /* libPods-roadtrip.a */; };
+		5F18447D2054D6F6004A30A1 /* PlaceMarker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F18447C2054D6F6004A30A1 /* PlaceMarker.swift */; };
+		5F1844852055AB3E004A30A1 /* GoogleClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F1844842055AB3D004A30A1 /* GoogleClient.swift */; };
+		5F1844872055ABC4004A30A1 /* ResponseModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F1844862055ABC4004A30A1 /* ResponseModels.swift */; };
 		BB017C6F205B343000FD9DC6 /* CarInfoConfirmationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB017C6E205B343000FD9DC6 /* CarInfoConfirmationViewController.swift */; };
 		BB60C04220360E6800ADF586 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB60C04120360E6800ADF586 /* AppDelegate.swift */; };
 		BB60C04420360E6800ADF586 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB60C04320360E6800ADF586 /* ViewController.swift */; };
@@ -44,7 +47,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		1679335569041B1095E67317 /* libPods-roadtrip.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-roadtrip.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+
+		4F42D2D4883557C7237D4938 /* libPods-roadtrip.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-roadtrip.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		5F18447C2054D6F6004A30A1 /* PlaceMarker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceMarker.swift; sourceTree = "<group>"; };
+		5F1844842055AB3D004A30A1 /* GoogleClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleClient.swift; sourceTree = "<group>"; };
+		5F1844862055ABC4004A30A1 /* ResponseModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseModels.swift; sourceTree = "<group>"; };
+
 		68B46FE21B9B8F67943E6DFA /* Pods-roadtrip.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-roadtrip.release.xcconfig"; path = "Pods/Target Support Files/Pods-roadtrip/Pods-roadtrip.release.xcconfig"; sourceTree = "<group>"; };
 		A33153FF928D660E0DCAA99D /* Pods-roadtrip.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-roadtrip.debug.xcconfig"; path = "Pods/Target Support Files/Pods-roadtrip/Pods-roadtrip.debug.xcconfig"; sourceTree = "<group>"; };
 		BB017C6E205B343000FD9DC6 /* CarInfoConfirmationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarInfoConfirmationViewController.swift; sourceTree = "<group>"; };
@@ -141,6 +149,10 @@
 				BB60C04820360E6800ADF586 /* Assets.xcassets */,
 				BB60C04A20360E6800ADF586 /* LaunchScreen.storyboard */,
 				BB60C04D20360E6800ADF586 /* Info.plist */,
+
+				5F18447C2054D6F6004A30A1 /* PlaceMarker.swift */,
+				5F1844842055AB3D004A30A1 /* GoogleClient.swift */,
+				5F1844862055ABC4004A30A1 /* ResponseModels.swift */,
 				BBDF006E2054D5BB002EF5F1 /* RoadtripAPI.swift */,
 				BBF39D022055D2A1002F53A5 /* CarQueryDataStore.swift */,
 				BBBC79722057695C0085044F /* Make.swift */,
@@ -387,6 +399,8 @@
 				BBBC79732057695C0085044F /* Make.swift in Sources */,
 				BBDF006F2054D5BB002EF5F1 /* RoadtripAPI.swift in Sources */,
 				BB787694204CBA460013A2F4 /* Car.swift in Sources */,
+				5F18447D2054D6F6004A30A1 /* PlaceMarker.swift in Sources */,
+				5F1844872055ABC4004A30A1 /* ResponseModels.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
