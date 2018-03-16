@@ -9,17 +9,19 @@ public class Car {
     private var _year: String?
     private var _millage: Double?
     private var _gasType: String?
-    private var _mpg: Double?
+    private var _mpgHwy: Double?
+    private var _mpgCity: Double?
     
     // MARK: Initializer
-    public init(make: String, model: String, trim: String, year: String, millage: Double, gasType: String, mpg: Double) {
+    public init(make: String, model: String, trim: String, year: String, millage: Double, gasType: String, mpgHwy: Double, mpgCity: Double) {
         self._make = make
         self._model = model
         self._trim = trim
         self._year = year
         self._millage = millage
         self._gasType = gasType
-        self._mpg = mpg
+        self._mpgHwy = mpgHwy
+        self._mpgCity = mpgCity
     }
     
     // MARK: Getters & Setters
@@ -77,12 +79,21 @@ public class Car {
         }
     }
     
-    public var mpg: Double {
+    public var mpgHwy: Double {
         get {
-            return self._mpg!
+            return round(1000 * self._mpgHwy!) / 1000
         }
-        set(mpg) {
-            self._mpg = mpg
+        set(mpgHwy) {
+            self._mpgHwy = mpgHwy
+        }
+    }
+    
+    public var mpgCity: Double {
+        get {
+            return round(1000 * self._mpgCity!) / 1000
+        }
+        set(mpgCity) {
+            self._mpgCity = mpgCity
         }
     }
     

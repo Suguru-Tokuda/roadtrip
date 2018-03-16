@@ -13,16 +13,18 @@ public class Trim {
     private var _modelId: String?
     private var _modelMakeId: String?
     private var _modelName: String?
+    private var _modelTrim: String?
     private var _modelEngineFuel: String?
     private var _modelFuelCapG: Double?
-    private var _mpgHwy: Int?
-    private var _mpgCity: Int?
-    private var _mpgMixed: Int?
+    private var _mpgHwy: Double?
+    private var _mpgCity: Double?
+    private var _mpgMixed: Double?
     
-    init(modelId: String, modelMakeId: String, modelName: String, modelEngingFule: String, modelFuelCapG: Double, mpgHwy: Int, mpgCity: Int, mpgMixed: Int) {
+    init(modelId: String, modelMakeId: String, modelName: String, modelTrim: String, modelEngingFule: String, modelFuelCapG: Double, mpgHwy: Double, mpgCity: Double, mpgMixed: Double) {
         _modelId = modelId
         _modelMakeId = modelMakeId
         _modelName = modelName
+        _modelTrim = modelTrim
         _modelEngineFuel = modelEngingFule
         _modelFuelCapG = modelFuelCapG
         _mpgHwy = mpgHwy
@@ -57,6 +59,15 @@ public class Trim {
         }
     }
     
+    public var modelTrim: String {
+        get {
+            return _modelTrim!
+        }
+        set(modelTrim) {
+            _modelTrim = modelTrim
+        }
+    }
+    
     public var modelEngineFuel: String {
         get {
             return _modelEngineFuel!
@@ -75,7 +86,7 @@ public class Trim {
         }
     }
     
-    public var mpgHwy: Int {
+    public var mpgHwy: Double {
         get {
             return _mpgHwy!
         }
@@ -84,7 +95,7 @@ public class Trim {
         }
     }
     
-    public var mpgCity: Int {
+    public var mpgCity: Double {
         get {
             return _mpgCity!
         }
@@ -93,7 +104,7 @@ public class Trim {
         }
     }
     
-    public var mpgMixed: Int {
+    public var mpgMixed: Double {
         get {
             return _mpgMixed!
         }
