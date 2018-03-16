@@ -20,6 +20,16 @@
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5GR-J7-hee" customClass="GMSMapView">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <subviews>
+                                    <searchBar contentMode="redraw" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="tgJ-kx-2G5">
+                                        <rect key="frame" x="0.0" y="0.0" width="302" height="56"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                        <connections>
+                                            <outlet property="delegate" destination="BYZ-38-t0r" id="hZY-Yx-IHq"/>
+                                        </connections>
+                                    </searchBar>
+                                </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
                             <label opaque="NO" userInteractionEnabled="NO" alpha="0.84999999999999998" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RLY-pW-uEe">
@@ -46,9 +56,19 @@
                     <connections>
                         <outlet property="addresslbl" destination="RLY-pW-uEe" id="73p-XF-eeB"/>
                         <outlet property="mapView" destination="5GR-J7-hee" id="wYP-V5-W0G"/>
+                        <outlet property="searchDisplayController" destination="rdt-nH-SXQ" id="E9r-Vh-Ndu"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+                <searchDisplayController id="rdt-nH-SXQ">
+                    <connections>
+                        <outlet property="delegate" destination="BYZ-38-t0r" id="CVq-Ge-oSx"/>
+                        <outlet property="searchBar" destination="tgJ-kx-2G5" id="AeT-YD-HQA"/>
+                        <outlet property="searchContentsController" destination="BYZ-38-t0r" id="LkY-zn-JKO"/>
+                        <outlet property="searchResultsDataSource" destination="BYZ-38-t0r" id="gQs-Hs-aeB"/>
+                        <outlet property="searchResultsDelegate" destination="BYZ-38-t0r" id="a8c-TW-QtL"/>
+                    </connections>
+                </searchDisplayController>
             </objects>
             <point key="canvasLocation" x="32.799999999999997" y="33.733133433283363"/>
         </scene>
