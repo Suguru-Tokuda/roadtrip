@@ -1,5 +1,6 @@
 import UIKit
 import GoogleMaps
+import GooglePlaces
 
 class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDelegate {
     //https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.870943,151.190311&radius=1000&rankby=prominence&sensor=true&key=AIzaSyD14jarz6jPaHCozkfKHcNLVthhuJhtwqg
@@ -7,7 +8,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
     @IBOutlet weak var mapView: GMSMapView!
     @IBOutlet weak var addresslbl: UILabel!
     
-    lazy var googleClient: GoogleClientRequest = GoogleClient()
+    lazy var googleClient = GoogleClient()
     var currentLocation: CLLocation = CLLocation(latitude: 42.361145, longitude: -71.057083)
     var locationPetrol : String = "petrol"
     var locationGasStation : String = "gas_station"

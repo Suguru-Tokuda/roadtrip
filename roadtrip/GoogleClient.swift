@@ -7,21 +7,24 @@
 //
 
 import Foundation
+import UIKit
 import CoreLocation
 
-protocol GoogleClientRequest {
-    var googlePlacesKey : String { get set }
-    func getGooglePlacesData(forKeyword keyword: String, location: CLLocation,withinMeters radius: Int, using completionHandler: @escaping (GooglePlacesResponse) -> ())
-}
 var pagetoken = ""
-class GoogleClient: GoogleClientRequest {
+//protocol GoogleClientRequest {
+//    var googlePlacesKey : String { get set }
+//    func getGooglePlacesData(forKeyword keyword: String, location: CLLocation,withinMeters radius: Int, using completionHandler: @escaping (GooglePlacesResponse) -> ())
+//}
+
+class GoogleClient {
     
     let session = URLSession(configuration: .default)
-    var googlePlacesKey: String = googlePlacesAPIKey
+    let appDelegate = UIApplication.shared.delegate as? AppDelegate
+    var googlePlacesKey: String?
     
     func getGooglePlacesData(forKeyword keyword: String, location: CLLocation, withinMeters radius: Int, using completionHandler: @escaping (GooglePlacesResponse) -> ())  {
-        
-        let url = googlePlacesDataURL(forKey: googlePlacesKey, location: location, keyword: keyword,token: pagetoken)
+        googlePlacesKey = appDelegate?.googlePlacesAPIKey
+        let url = googlePlacesDataURL(forKey: googlePlacesKey!, location: location, keyword: keyword,token: pagetoken)
         
         
         let task = self.session.dataTask(with: url) { (responseData, _, error) in
@@ -44,7 +47,7 @@ class GoogleClient: GoogleClientRequest {
                 print("Err", err)
             }
         }
-            task.resume()
+        task.resume()
         
     }
     
@@ -61,4 +64,5 @@ class GoogleClient: GoogleClientRequest {
     }
     
 }
+
 
