@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import CoreLocation
 
 enum CarQueryMethod: String {
     case years = "getYears"
@@ -20,7 +21,7 @@ enum GoogleAPIMethod: String {
 struct RoadtripAPI {
     
     private static let carQueryBaseURL = "https://www.carqueryapi.com/api/0.3/?callback=?&cmd="
-    private static let googleAPIURL = ""
+    private static let googleAPIBaseUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?"
     
     public static func carQueryURL(method: CarQueryMethod, parameter: String) -> URL {
         let urlString = carQueryBaseURL + method.rawValue + parameter
@@ -42,10 +43,14 @@ struct RoadtripAPI {
         return url!
     }
     
-    public static func googleAPIURL(method: GoogleAPIMethod, parameter: String) -> URL {
-        let urlString = googleAPIURL + method.rawValue + parameter
-        let url = URL(string: urlString)
-        return url!
+    public static func googlePlacesDataURL(forKey apiKey: String, location: CLLocation, keyword: String, token: String) -> URL {
+        let locationString = "location=" +     String(location.coordinate.latitude) + "," + String(location.coordinate.longitude)
+        let rankby = "rankby=distance"
+        let keywrd = "keyword=" + keyword
+        let key = "key=" + apiKey
+        let pagetoken = "pagetoken="+token
+        
+        return URL(string: googleAPIBaseUrl + locationString + "&" + rankby + "&" + keywrd + "&" + key + "&" + pagetoken)!
     }
     
     public static func getYearsResult(fromJSON data: Data) -> YearsResult {
