@@ -80,7 +80,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
         self.fetchGoogleData(forLocation: location, locationName: self.locationPetrol, searchRadius: self.searchRadius )
         self.fetchGoogleData(forLocation: location, locationName: self.locationFood, searchRadius: self.searchRadius )
     }
-    
     private func reverseGeocodeCoordinate(_ coordinate: CLLocationCoordinate2D) {
         let geocoder = GMSGeocoder()
         
@@ -104,18 +103,11 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
         reverseGeocodeCoordinate(position.target)
     }
     
-    //MARK: Google Directions functions
-    func drawPathByCoordinates(startLocation: CLLocation, destLocation: CLLocation) {
-        
-        
-        
-        
-        
-    }
-    
 }
 
-extension ViewController {
+
+
+extension MapViewController {
     func fetchGoogleData(forLocation: CLLocation, locationName: String, searchRadius: Int) {
         //        let possibleTypes = ["bar", "gas_station", "restaurant"]
         let group1 = DispatchGroup()
@@ -124,6 +116,7 @@ extension ViewController {
             DispatchQueue.main.sync{
                 let places = response.results
                 for place in places {
+                    
                     let marker = PlaceMarker(place: place)
                     marker.title = place.name
                     marker.snippet = "The place is \(place.openingHours?.isOpen == true ? "open" : "closed")"
@@ -141,42 +134,16 @@ extension ViewController {
                 }
                 group1.leave()
             }
+            
         }
         let group2 = DispatchGroup()
         group1.notify(queue: .main, execute: {
             group2.enter()
             self.googleClient.getGooglePlacesData(forKeyword: locationName, location: forLocation, withinMeters: searchRadius) { (response) in
-                        DispatchQueue.main.sync{
-                            let places = response.results
-                            for place in places {
-                                let marker = PlaceMarker(place: place)
-                                marker.title = place.name
-                                marker.snippet = "The place is \(place.openingHours?.isOpen == true ? "open" : "closed")"
-                                switch true{
-                                case place.types.contains("gas_station"):
-                                    marker.icon = UIImage(named: "Gas_station")
-                                    marker.map = self.mapView
-                                case place.types.contains("food"),place.types.contains("restaurant"),place.types.contains("bar"):
-                                    marker.icon = UIImage(named: "Food")
-                                    marker.map = self.mapView
-                                default:
-                                    break
-                                }
-                            }
-                            group2.leave()
-                        }
-                    }
-                    group2.leave()
-                }
-                
-            }
-        })
-        
-        group2.notify(queue: .main, execute: {
-            self.googleClient.getGooglePlacesData(forKeyword: locationName, location: forLocation, withinMeters: searchRadius) { (response) in
                 DispatchQueue.main.sync{
                     let places = response.results
                     for place in places {
+                        
                         let marker = PlaceMarker(place: place)
                         marker.title = place.name
                         marker.snippet = "The place is \(place.openingHours?.isOpen == true ? "open" : "closed")"
@@ -190,10 +157,74 @@ extension ViewController {
                         default:
                             break
                         }
+                        
                     }
+                    group2.leave()
                 }
+                
             }
         })
+        
+        group2.notify(queue: .main, execute: {
+            self.googleClient.getGooglePlacesData(forKeyword: locationName, location: forLocation, withinMeters: searchRadius) { (response) in
+                DispatchQueue.main.sync{
+                    let places = response.results
+                    for place in places {
+                        
+                        let marker = PlaceMarker(place: place)
+                        marker.title = place.name
+                        marker.snippet = "The place is \(place.openingHours?.isOpen == true ? "open" : "closed")"
+                        switch true{
+                        case place.types.contains("gas_station"):
+                            marker.icon = UIImage(named: "Gas_station")
+                            marker.map = self.mapView
+                        case place.types.contains("food"),place.types.contains("restaurant"),place.types.contains("bar"):
+                            marker.icon = UIImage(named: "Food")
+                            marker.map = self.mapView
+                        default:
+                            break
+                        }
+                        
+                    }
+                }
+                
+            }
+        })
+        
+    }
+    
+}
+
+
+
+extension MapViewController{
+    //    part of expandable search bar
+    @objc func toggle() {
+        
+        let isOpen = leftConstraint.isActive == true
+        
+        // Inactivating the left constraint closes the expandable header.
+        leftConstraint.isActive = isOpen ? false : true
+        
+        // Animate change to visible.
+        UIView.animate(withDuration: 1, animations: {
+            self.navigationItem.titleView?.alpha = isOpen ? 0 : 1
+            self.navigationItem.titleView?.layoutIfNeeded()
+        })
+    }
+}
+
+
+
+
+
+//part of expandable search bar
+class ExpandableView: UIView {
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        translatesAutoresizingMaskIntoConstraints = false
+        
     }
     
     required init?(coder aDecoder: NSCoder) {
