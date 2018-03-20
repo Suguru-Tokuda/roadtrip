@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreLocation
+import GoogleMaps
 
 enum CarQueryMethod: String {
     case years = "getYears"
@@ -21,7 +22,12 @@ enum GoogleAPIMethod: String {
 struct RoadtripAPI {
     
     private static let carQueryBaseURL = "https://www.carqueryapi.com/api/0.3/?callback=?&cmd="
-    private static let googleAPIBaseUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?"
+    private static let googleAPIBaseURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?"
+    private static let googleDirectionsAPIBaseURL = "https://maps.googleapis.com/maps/api/directions/json?"
+    
+    public static let googleMapsAPIKey = "AIzaSyDEdKM_L4ArIhHSyZdOImGpmAWArGT8W38"
+    public static let googleDirectionsAPIKey = "AIzaSyB5MtWNCa49FD9dSqC0iXd5JA4Vl-_Rf-c"
+    public static let googlePlacesAPIKey = "AIzaSyD96g2BYcVjnEstQLSXrOQ9kGQ1IqWq9wI"
     
     public static func carQueryURL(method: CarQueryMethod, parameter: String) -> URL {
         let urlString = carQueryBaseURL + method.rawValue + parameter
@@ -43,14 +49,25 @@ struct RoadtripAPI {
         return url!
     }
     
-    public static func googlePlacesDataURL(forKey apiKey: String, location: CLLocation, keyword: String, token: String) -> URL {
-        let locationString = "location=" +     String(location.coordinate.latitude) + "," + String(location.coordinate.longitude)
+    public static func googlePlacesDataURL(location: CLLocation, keyword: String, token: String) -> URL {
+        let locationString = "location=" + String(location.coordinate.latitude) + "," + String(location.coordinate.longitude)
         let rankby = "rankby=distance"
         let keywrd = "keyword=" + keyword
-        let key = "key=" + apiKey
+        let key = "key=" + googleMapsAPIKey
         let pagetoken = "pagetoken="+token
-        
-        return URL(string: googleAPIBaseUrl + locationString + "&" + rankby + "&" + keywrd + "&" + key + "&" + pagetoken)!
+        return URL(string: googleAPIBaseURL + locationString + "&" + rankby + "&" + keywrd + "&" + key + "&" + pagetoken)!
+    }
+    
+    public static func googleDirectionURLWithCoordinates(originLat: Double, originLong: Double, destLat: Double, destLong: Double) -> URL {
+        let urlString = "\(googleDirectionsAPIBaseURL)origin=\(originLat),\(originLong)&destination=\(destLat),\(destLong)&key=\(googleDirectionsAPIKey)"
+        let url = URL(string: urlString)
+        return url!
+    }
+    
+    public static func googleDirectionURLWithPlaceIDs(originId: String, destinationId: String) -> URL {
+        let urlString = "\(googleDirectionsAPIBaseURL)origin=place_id:\(originId)&destination=place_id:\(destinationId)&key=\(googleDirectionsAPIKey)"
+        let url = URL(string: urlString)
+        return url!
     }
     
     public static func getYearsResult(fromJSON data: Data) -> YearsResult {
@@ -159,14 +176,22 @@ struct RoadtripAPI {
                                 trimsArray.append(tempTrim)
                             }
                         }
-                        
                     }
                 }
             }
-            
             return .success(trimsArray)
         } catch let jsonError {
             return .failure(jsonError)
+        }
+    }
+    
+    public static func getDirectionsResult(fromJSON data: Data) -> DirectionsResult {
+        do {
+            let decoder = JSONDecoder()
+            let response = try decoder.decode(Direction.self, from: data)
+            return .success(response)
+        } catch let jsonDecoderError {
+            return .failure(jsonDecoderError)
         }
     }
     

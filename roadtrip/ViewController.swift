@@ -50,6 +50,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
         self.fetchGoogleData(forLocation: location, locationName: self.locationPetrol, searchRadius: self.searchRadius )
         self.fetchGoogleData(forLocation: location, locationName: self.locationFood, searchRadius: self.searchRadius )
     }
+    
     private func reverseGeocodeCoordinate(_ coordinate: CLLocationCoordinate2D) {
         let geocoder = GMSGeocoder()
         
@@ -73,9 +74,16 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
         reverseGeocodeCoordinate(position.target)
     }
     
+    //MARK: Google Directions functions
+    func drawPathByCoordinates(startLocation: CLLocation, destLocation: CLLocation) {
+        
+        
+        
+        
+        
+    }
+    
 }
-
-
 
 extension ViewController {
     func fetchGoogleData(forLocation: CLLocation, locationName: String, searchRadius: Int) {
@@ -87,7 +95,6 @@ extension ViewController {
                DispatchQueue.main.sync{
                 let places = response.results
                 for place in places {
-                    
                     let marker = PlaceMarker(place: place)
                     marker.title = place.name
                     marker.snippet = "The place is \(place.openingHours?.isOpen == true ? "open" : "closed")"
@@ -105,7 +112,6 @@ extension ViewController {
                 }
                 group1.leave()
             }
-                
         }
         let group2 = DispatchGroup()
         group1.notify(queue: .main, execute: {
@@ -114,7 +120,6 @@ extension ViewController {
                         DispatchQueue.main.sync{
                             let places = response.results
                             for place in places {
-
                                 let marker = PlaceMarker(place: place)
                                 marker.title = place.name
                                 marker.snippet = "The place is \(place.openingHours?.isOpen == true ? "open" : "closed")"
@@ -128,11 +133,9 @@ extension ViewController {
                                 default:
                                     break
                                 }
-
                             }
                             group2.leave()
                         }
-
                     }
         })
         
@@ -141,7 +144,6 @@ extension ViewController {
                 DispatchQueue.main.sync{
                     let places = response.results
                     for place in places {
-                        
                         let marker = PlaceMarker(place: place)
                         marker.title = place.name
                         marker.snippet = "The place is \(place.openingHours?.isOpen == true ? "open" : "closed")"
@@ -155,13 +157,10 @@ extension ViewController {
                         default:
                             break
                         }
-                        
                     }
                 }
-                
             }
         })
-
     }
     
 }

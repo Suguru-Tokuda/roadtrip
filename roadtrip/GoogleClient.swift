@@ -12,6 +12,11 @@ import CoreLocation
 
 var pagetoken = ""
 
+enum DirectionsResult {
+    case success(Direction)
+    case failure(Error)
+}
+
 class GoogleClient {
     
     let session = URLSession(configuration: .default)
@@ -19,8 +24,7 @@ class GoogleClient {
     var googlePlacesKey: String?
     
     func getGooglePlacesData(forKeyword keyword: String, location: CLLocation, withinMeters radius: Int, using completionHandler: @escaping (GooglePlacesResponse) -> ())  {
-        googlePlacesKey = appDelegate?.googlePlacesAPIKey
-        let url = RoadtripAPI.googlePlacesDataURL(forKey: googlePlacesKey!, location: location, keyword: keyword,token: pagetoken)
+        let url = RoadtripAPI.googlePlacesDataURL(location: location, keyword: keyword,token: pagetoken)
         
         let task = self.session.dataTask(with: url) { (responseData, _, error) in
             
@@ -42,6 +46,27 @@ class GoogleClient {
             }
         }
         task.resume()
+    }
+    
+    func getDestinationPathByCoordinates(origin: CLLocation, destination: CLLocation, completion: @escaping (DirectionsResult) -> Void) {
+        let originLat = origin.coordinate.latitude
+        let originLong = origin.coordinate.longitude
+        let destLat = destination.coordinate.latitude
+        let destLong = destination.coordinate.longitude
+        URLSession.shared.dataTask(with: RoadtripAPI.googleDirectionURLWithCoordinates(originLat: originLat, originLong: originLong, destLat: destLat, destLong: destLong)) {
+            (data, response, error) -> Void in
+            let result = self.processDirectionsRequest(data: data, error: error)
+            OperationQueue.main.addOperation {
+                completion(result)
+            }
+        }.resume()
+    }
+    
+    private func processDirectionsRequest(data: Data?, error: Error?) -> DirectionsResult {
+        guard let jsonData = data else {
+            return .failure(error!)
+        }
+        return RoadtripAPI.getDirectionsResult(fromJSON: jsonData)
     }
     
 }
