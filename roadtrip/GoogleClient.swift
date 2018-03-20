@@ -24,7 +24,7 @@ class GoogleClient {
     
     func getGooglePlacesData(forKeyword keyword: String, location: CLLocation, withinMeters radius: Int, using completionHandler: @escaping (GooglePlacesResponse) -> ())  {
         googlePlacesKey = appDelegate?.googlePlacesAPIKey
-        let url = googlePlacesDataURL(forKey: googlePlacesKey!, location: location, keyword: keyword,token: pagetoken)
+        let url = googlePlacesDataURL(forKey: googlePlacesKey!, location: location, radius: radius, keyword: keyword,token: pagetoken)
         
         
         let task = self.session.dataTask(with: url) { (responseData, _, error) in
@@ -51,16 +51,18 @@ class GoogleClient {
         
     }
     
-    func googlePlacesDataURL(forKey apiKey: String, location: CLLocation, keyword: String, token: String) -> URL {
+    func googlePlacesDataURL(forKey apiKey: String, location: CLLocation, radius: Int, keyword: String, token: String) -> URL {
         
         let baseURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?"
         let locationString = "location=" +     String(location.coordinate.latitude) + "," + String(location.coordinate.longitude)
-        let rankby = "rankby=distance"
+        let radiusString = "radius=\(radius)"
+//        let rankby = "rankby=distance"
+        let rankby = "rankby=prominence"
         let keywrd = "keyword=" + keyword
         let key = "key=" + apiKey
         let pagetoken = "pagetoken="+token
-        
-        return URL(string: baseURL + locationString + "&" + rankby + "&" + keywrd + "&" + key + "&" + pagetoken)!
+//        return URL(string: baseURL + locationString + "&" + rankby + "&" + keywrd + "&" + key + "&" + pagetoken)!
+        return URL(string: baseURL + locationString + "&" + radiusString + "&" + rankby + "&" + keywrd + "&" + key + "&" + pagetoken)!
     }
     
 }

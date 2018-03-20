@@ -11,7 +11,7 @@
 		5F1844872055ABC4004A30A1 /* ResponseModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F1844862055ABC4004A30A1 /* ResponseModels.swift */; };
 		BB017C6F205B343000FD9DC6 /* CarInfoConfirmationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB017C6E205B343000FD9DC6 /* CarInfoConfirmationViewController.swift */; };
 		BB60C04220360E6800ADF586 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB60C04120360E6800ADF586 /* AppDelegate.swift */; };
-		BB60C04420360E6800ADF586 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB60C04320360E6800ADF586 /* ViewController.swift */; };
+		BB60C04420360E6800ADF586 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB60C04320360E6800ADF586 /* MapViewController.swift */; };
 		BB60C04720360E6800ADF586 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BB60C04520360E6800ADF586 /* Main.storyboard */; };
 		BB60C04920360E6800ADF586 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BB60C04820360E6800ADF586 /* Assets.xcassets */; };
 		BB60C04C20360E6800ADF586 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BB60C04A20360E6800ADF586 /* LaunchScreen.storyboard */; };
@@ -54,7 +54,7 @@
 		BB017C6E205B343000FD9DC6 /* CarInfoConfirmationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarInfoConfirmationViewController.swift; sourceTree = "<group>"; };
 		BB60C03E20360E6800ADF586 /* roadtrip.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = roadtrip.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BB60C04120360E6800ADF586 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		BB60C04320360E6800ADF586 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		BB60C04320360E6800ADF586 /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		BB60C04620360E6800ADF586 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		BB60C04820360E6800ADF586 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BB60C04B20360E6800ADF586 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -142,7 +142,7 @@
 			children = (
 				BB60C04120360E6800ADF586 /* AppDelegate.swift */,
 				BB787693204CBA460013A2F4 /* Car.swift */,
-				BB60C04320360E6800ADF586 /* ViewController.swift */,
+				BB60C04320360E6800ADF586 /* MapViewController.swift */,
 				BB60C04520360E6800ADF586 /* Main.storyboard */,
 				BB60C04820360E6800ADF586 /* Assets.xcassets */,
 				BB60C04A20360E6800ADF586 /* LaunchScreen.storyboard */,
@@ -391,7 +391,7 @@
 				BBBC7977205775430085044F /* Trim.swift in Sources */,
 				BBF39D032055D2A1002F53A5 /* CarQueryDataStore.swift in Sources */,
 				BB6F94FB205BA8AB00465C9A /* GoogleClient.swift in Sources */,
-				BB60C04420360E6800ADF586 /* ViewController.swift in Sources */,
+				BB60C04420360E6800ADF586 /* MapViewController.swift in Sources */,
 				BBF2A6BF20587CFC00FD2871 /* CarInfoSettingViewController.swift in Sources */,
 				BB60C04220360E6800ADF586 /* AppDelegate.swift in Sources */,
 				BBBC79732057695C0085044F /* Make.swift in Sources */,
