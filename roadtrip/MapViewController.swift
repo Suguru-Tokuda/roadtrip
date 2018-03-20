@@ -2,7 +2,7 @@ import UIKit
 import GoogleMaps
 import GooglePlaces
 
-class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDelegate {
+class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDelegate {
     //https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.870943,151.190311&radius=1000&rankby=prominence&sensor=true&key=AIzaSyD14jarz6jPaHCozkfKHcNLVthhuJhtwqg
     var locationManager = CLLocationManager()
     @IBOutlet weak var mapView: GMSMapView!
@@ -15,17 +15,46 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
     var locationFood : String = "food"
     var searchRadius : Int = 1000
     
+    //part of exapandable search
+    var leftConstraint: NSLayoutConstraint!
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         locationManager.delegate = self
         mapView.delegate = self
-        
+        //self.navigationController?.isNavigationBarHidden = true
         locationManager.requestWhenInUseAuthorization()
         //        let jsonURLString = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.870943,151.190311&radius=1000&rankby=prominence&sensor=true&key=AIzaSyD14jarz6jPaHCozkfKHcNLVthhuJhtwqg"
         //        fetchGoogleData(forLocation: currentLocation, locationName: locationName, searchRadius: searchRadius )
         
+        //        expandable search bar
+        //        https://stackoverflow.com/questions/38580175/swift-expandable-search-bar-in-header
+        //        expandableview to end of code
+        addingExpandableSearch()
     }
+    
+    
+    
+    func addingExpandableSearch(){
+        // Expandable area.
+        let expandableView = ExpandableView()
+        navigationItem.titleView = expandableView
+        
+        // Search button.
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(toggle))
+        
+        // Search bar.
+        let searchBar = UISearchBar()
+        searchBar.translatesAutoresizingMaskIntoConstraints = false
+        expandableView.addSubview(searchBar)
+        leftConstraint = searchBar.leftAnchor.constraint(equalTo: expandableView.leftAnchor)
+        leftConstraint.isActive = false
+        searchBar.rightAnchor.constraint(equalTo: expandableView.rightAnchor).isActive = true
+        searchBar.topAnchor.constraint(equalTo: expandableView.topAnchor).isActive = true
+        searchBar.bottomAnchor.constraint(equalTo: expandableView.bottomAnchor).isActive = true
+    }
+    
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         guard status == .authorizedWhenInUse else {
             return
@@ -46,6 +75,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
         mapView.camera = GMSCameraPosition(target: location.coordinate, zoom: 15, bearing: 0, viewingAngle: 0)
         //DispatchQueue.main.async {
         //locationManager.stopUpdatingLocation()
+        mapView.clear()
         self.fetchGoogleData(forLocation: location, locationName: self.locationGasStation, searchRadius: self.searchRadius )
         self.fetchGoogleData(forLocation: location, locationName: self.locationPetrol, searchRadius: self.searchRadius )
         self.fetchGoogleData(forLocation: location, locationName: self.locationFood, searchRadius: self.searchRadius )
@@ -87,12 +117,11 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
 
 extension ViewController {
     func fetchGoogleData(forLocation: CLLocation, locationName: String, searchRadius: Int) {
-        mapView.clear()
         //        let possibleTypes = ["bar", "gas_station", "restaurant"]
         let group1 = DispatchGroup()
         group1.enter()
-            googleClient.getGooglePlacesData(forKeyword: locationName, location: forLocation, withinMeters: searchRadius) { (response) in
-               DispatchQueue.main.sync{
+        googleClient.getGooglePlacesData(forKeyword: locationName, location: forLocation, withinMeters: searchRadius) { (response) in
+            DispatchQueue.main.sync{
                 let places = response.results
                 for place in places {
                     let marker = PlaceMarker(place: place)
@@ -106,7 +135,7 @@ extension ViewController {
                         marker.icon = UIImage(named: "Food")
                         marker.map = self.mapView
                     default:
-                       break
+                        break
                     }
                     
                 }
@@ -137,6 +166,10 @@ extension ViewController {
                             group2.leave()
                         }
                     }
+                    group2.leave()
+                }
+                
+            }
         })
         
         group2.notify(queue: .main, execute: {
@@ -163,5 +196,17 @@ extension ViewController {
         })
     }
     
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+    
+    override var intrinsicContentSize: CGSize {
+        return UILayoutFittingExpandedSize
+    }
 }
+
+
+
+
+
 
