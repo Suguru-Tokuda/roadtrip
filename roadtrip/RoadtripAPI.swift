@@ -68,13 +68,7 @@ struct RoadtripAPI {
         let urlString = "\(googleDirectionsAPIBaseURL)origin=place_id:\(originId)&destination=place_id:\(destinationId)&key=\(googleDirectionsAPIKey)"
         let url = URL(string: urlString)
         return url!
-    }
-    
-    public static func testURL() -> URL {
-        let urlString = "https://maps.googleapis.com/maps/api/directions/json?origin=Disneyland&destination=Universal+Studios+Hollywood4&key=" + googleDirectionsAPIKey
-        let url = URL(string: urlString)
-        return url!
-    }
+    }    
     
     public static func getYearsResult(fromJSON data: Data) -> YearsResult {
         var maxYear: Int?

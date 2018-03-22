@@ -141,7 +141,7 @@
                                 </subviews>
                             </stackView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="mgQ-eV-eBe">
-                                <rect key="frame" x="16" y="113.5" width="172" height="223"/>
+                                <rect key="frame" x="16" y="113.5" width="172" height="223.5"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Year" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tAl-v6-UoP">
                                         <rect key="frame" x="0.0" y="0.0" width="172" height="20.5"/>
@@ -193,8 +193,8 @@
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Millage" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Xwq-eY-hpg">
-                                        <rect key="frame" x="0.0" y="202.5" width="172" height="20.5"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Mileage" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Xwq-eY-hpg">
+                                        <rect key="frame" x="0.0" y="202.5" width="172" height="21"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="172" id="NCA-yG-3eK"/>
                                             <constraint firstAttribute="height" constant="20.5" id="cI0-4F-s1m"/>
@@ -230,7 +230,7 @@
                     <connections>
                         <outlet property="gasTypeTextField" destination="KG9-D5-QKZ" id="4ax-we-Ilp"/>
                         <outlet property="makeTextField" destination="OlI-2Y-cf5" id="Ulb-Do-dUw"/>
-                        <outlet property="millageTextField" destination="Lxr-H9-F6R" id="P7R-I4-VWl"/>
+                        <outlet property="mileageTextField" destination="Lxr-H9-F6R" id="P7R-I4-VWl"/>
                         <outlet property="modelTextField" destination="KGs-aU-ynA" id="44s-pM-ekI"/>
                         <outlet property="trimTextField" destination="7Jf-CI-bcp" id="2bT-QR-47W"/>
                         <outlet property="yearTextField" destination="9j8-Q7-1lG" id="58E-qW-cW0"/>
@@ -296,8 +296,8 @@
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Millage" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JmA-uy-lRH">
-                                                <rect key="frame" x="0.0" y="249" width="54.5" height="20.5"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Milaege" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JmA-uy-lRH">
+                                                <rect key="frame" x="0.0" y="249" width="60" height="20.5"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
@@ -451,7 +451,7 @@
                     <connections>
                         <outlet property="gasTypeTextField" destination="u3A-zj-8t0" id="C1d-aX-uE1"/>
                         <outlet property="makeTextField" destination="GJx-l6-tiO" id="6KH-dm-ZWy"/>
-                        <outlet property="millageTextField" destination="jwp-Ts-TSL" id="Kok-QT-JPI"/>
+                        <outlet property="mileageTextField" destination="jwp-Ts-TSL" id="Kok-QT-JPI"/>
                         <outlet property="modelTextField" destination="SGc-bP-4Vf" id="DsD-LP-FgW"/>
                         <outlet property="mpgCityTextField" destination="g2k-CH-4ap" id="67A-nb-tv3"/>
                         <outlet property="mpgHwyTextField" destination="8rQ-99-zOh" id="TsG-Bd-nR3"/>

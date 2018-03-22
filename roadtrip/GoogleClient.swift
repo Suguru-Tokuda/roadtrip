@@ -60,17 +60,7 @@ class GoogleClient {
                 completion(result)
             }
         }.resume()
-    }
-    
-    func testCall(completion: @escaping (DirectionsResult) -> Void) {
-        URLSession.shared.dataTask(with: RoadtripAPI.testURL()) {
-            (data, response, error) -> Void in
-            let result = self.processDirectionsRequest(data: data, error: error)
-            OperationQueue.main.addOperation {
-                completion(result)
-            }
-        }.resume()
-    }
+    }    
     
     private func processDirectionsRequest(data: Data?, error: Error?) -> DirectionsResult {
         guard let jsonData = data else {
