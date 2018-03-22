@@ -53,8 +53,9 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
         navigationItem.titleView = expandableView
         
         // Search button.
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(toggle))
-        
+//        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(toggle))
+        let img = UIImage(named: "search")!.withRenderingMode(UIImageRenderingMode.alwaysOriginal)
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: img, style: .plain, target: self, action: #selector(toggle))
         // Search bar.
         let searchBar = UISearchBar()
         searchBar.translatesAutoresizingMaskIntoConstraints = false
@@ -87,6 +88,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
         //DispatchQueue.main.async {
         //locationManager.stopUpdatingLocation()
         mapView.clear()
+        
         self.fetchGoogleData(forLocation: location, locationName: self.locationGasStation, searchRadius: self.searchRadius )
         self.fetchGoogleData(forLocation: location, locationName: self.locationPetrol, searchRadius: self.searchRadius )
         self.fetchGoogleData(forLocation: location, locationName: self.locationFood, searchRadius: self.searchRadius )
