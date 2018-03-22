@@ -14,7 +14,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
     var locationGasStation : String = "gas_station"
     var locationFood : String = "food"
     var searchRadius : Int = 1000
-    
+    let searchBar = UISearchBar()
     //part of exapandable search
     var leftConstraint: NSLayoutConstraint!
     
@@ -32,7 +32,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
         //        https://stackoverflow.com/questions/38580175/swift-expandable-search-bar-in-header
         //        expandableview to end of code
         addingExpandableSearch()
-//        setting spanner for getting to settings
+        //        setting spanner for getting to settings
         var backBtn = UIImage(named: "spanner")
         backBtn = backBtn?.withRenderingMode(UIImageRenderingMode.alwaysOriginal)
         
@@ -40,11 +40,14 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
         self.navigationController!.navigationBar.backIndicatorTransitionMaskImage = backBtn;
         self.navigationController!.navigationBar.tintColor = UIColor.blue
         
-//        setting the navigation bar to transparent
+        //        setting the navigation bar to transparent
         self.navigationController?.presentTransparentNavigationBar()
         
     }
-    
+    func mapView(_ mapView: GMSMapView, didTapAt coordinate: CLLocationCoordinate2D) {
+        //hiding keyboard on taping map
+        searchBar.resignFirstResponder()
+    }
     
     
     func addingExpandableSearch(){
@@ -53,11 +56,11 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
         navigationItem.titleView = expandableView
         
         // Search button.
-//        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(toggle))
+        //        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(toggle))
         let img = UIImage(named: "search")!.withRenderingMode(UIImageRenderingMode.alwaysOriginal)
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: img, style: .plain, target: self, action: #selector(toggle))
         // Search bar.
-        let searchBar = UISearchBar()
+        
         searchBar.translatesAutoresizingMaskIntoConstraints = false
         expandableView.addSubview(searchBar)
         leftConstraint = searchBar.leftAnchor.constraint(equalTo: expandableView.leftAnchor)
@@ -65,6 +68,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
         searchBar.rightAnchor.constraint(equalTo: expandableView.rightAnchor).isActive = true
         searchBar.topAnchor.constraint(equalTo: expandableView.topAnchor).isActive = true
         searchBar.bottomAnchor.constraint(equalTo: expandableView.bottomAnchor).isActive = true
+        
     }
     
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
@@ -100,7 +104,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
             guard let address = response?.firstResult(), let lines = address.lines else {
                 return
             }
-
+            
             self.addresslbl.text = lines.joined(separator: "\n")
             
             let labelHeight = self.addresslbl.intrinsicContentSize.height
