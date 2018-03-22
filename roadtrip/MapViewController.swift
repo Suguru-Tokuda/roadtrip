@@ -32,6 +32,17 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
         //        https://stackoverflow.com/questions/38580175/swift-expandable-search-bar-in-header
         //        expandableview to end of code
         addingExpandableSearch()
+//        setting spanner for getting to settings
+        var backBtn = UIImage(named: "spanner")
+        backBtn = backBtn?.withRenderingMode(UIImageRenderingMode.alwaysOriginal)
+        
+        self.navigationController!.navigationBar.backIndicatorImage = backBtn;
+        self.navigationController!.navigationBar.backIndicatorTransitionMaskImage = backBtn;
+        self.navigationController!.navigationBar.tintColor = UIColor.blue
+        
+//        setting the navigation bar to transparent
+        self.navigationController?.presentTransparentNavigationBar()
+        
     }
     
     
@@ -238,6 +249,20 @@ class ExpandableView: UIView {
 
 
 
-
-
+extension UINavigationController {
+    
+    public func presentTransparentNavigationBar() {
+        navigationBar.setBackgroundImage(UIImage(), for:.default)
+        navigationBar.isTranslucent = true
+        navigationBar.shadowImage = UIImage()
+        setNavigationBarHidden(false, animated:true)
+    }
+    
+    public func hideTransparentNavigationBar() {
+        setNavigationBarHidden(true, animated:false)
+        navigationBar.setBackgroundImage(UINavigationBar.appearance().backgroundImage(for: UIBarMetrics.default), for:.default)
+        navigationBar.isTranslucent = UINavigationBar.appearance().isTranslucent
+        navigationBar.shadowImage = UINavigationBar.appearance().shadowImage
+    }
+}
 
