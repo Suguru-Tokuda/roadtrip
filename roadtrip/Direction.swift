@@ -17,7 +17,6 @@ public struct Direction: Codable {
         var legs: [Leg]?
         var bounds: Bounds?
         
-        
         public struct Leg: Codable {
             
             var distance: Distance?
@@ -43,13 +42,13 @@ public struct Direction: Codable {
             }
             
             struct Distance: Codable {
-                var text: String
-                var value: Int
+                var text: String?
+                var value: Int?
             }
             
             struct Duration: Codable {
-                var text: String
-                var value: Int
+                var text: String?
+                var value: Int?
             }
             
             struct StartLocation: Codable {
@@ -85,13 +84,13 @@ public struct Direction: Codable {
                 var travelMode: String?
                 
                 struct Distance: Codable {
-                    var text: String
-                    var value: Int
+                    var text: String?
+                    var value: Int?
                 }
                 
                 struct Duration: Codable {
-                    var text: String
-                    var value: Int
+                    var text: String?
+                    var value: Int?
                 }
                 
                 struct EndLocation: Codable {
@@ -100,7 +99,7 @@ public struct Direction: Codable {
                 }
                 
                 struct Polyline: Codable {
-                    var points: String
+                    var points: String?
                 }
                 
                 struct StartLocation: Codable {
@@ -128,10 +127,8 @@ public struct Direction: Codable {
                 var lat: Double?
                 var lng: Double?
             }
-            
         }
-    }
-    
+    }    
     
 }
 

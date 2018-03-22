@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="7wE-s0-8Mw">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="dsz-55-JKe">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -68,7 +68,7 @@
                     </connections>
                 </searchDisplayController>
             </objects>
-            <point key="canvasLocation" x="805.60000000000002" y="32.833583208395808"/>
+            <point key="canvasLocation" x="3062" y="1133"/>
         </scene>
         <!--Car Info Setting View Controller-->
         <scene sceneID="JsG-xo-Wl9">
@@ -420,6 +420,7 @@
                                         <state key="normal" title="Confirm"/>
                                         <connections>
                                             <action selector="confirmBtnClicked:" destination="Ltj-9N-24P" eventType="touchUpInside" id="Hip-bP-jJe"/>
+                                            <segue destination="BYZ-38-t0r" kind="show" id="0XV-Ku-H3J"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -495,10 +496,11 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="TeX-Jm-iHU" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="32" y="33.283358320839582"/>
+            <point key="canvasLocation" x="3063" y="417"/>
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
         <segue reference="lEw-GB-XCj"/>
+        <segue reference="0XV-Ku-H3J"/>
     </inferredMetricsTieBreakers>
 </document>
