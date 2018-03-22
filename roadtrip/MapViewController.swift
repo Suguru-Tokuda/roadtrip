@@ -227,6 +227,9 @@ extension MapViewController {
         }
     }
     
+    // MARK: gesture funcs
+    
+    
 }
 
 
