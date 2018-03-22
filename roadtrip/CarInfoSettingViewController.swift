@@ -21,7 +21,7 @@ class CarInfoSettingViewController: UIViewController, UIPickerViewDataSource, UI
     @IBOutlet weak var modelTextField: UITextField!
     @IBOutlet weak var trimTextField: UITextField!
     @IBOutlet weak var gasTypeTextField: UITextField!
-    @IBOutlet weak var millageTextField: UITextField!
+    @IBOutlet weak var mileageTextField: UITextField!
     
     let appDelegate = UIApplication.shared.delegate as? AppDelegate
     let carQueryDataStore = CarQueryDataStore()
@@ -332,15 +332,15 @@ class CarInfoSettingViewController: UIViewController, UIPickerViewDataSource, UI
     }
     
     @IBAction func setCarInfoBtnClicked(_ sender: Any) {
-        guard selectedMake != nil && selectedModel != nil && selectedTrim != nil else {
+        guard selectedMake != nil && selectedModel != nil && selectedTrim != nil && mileageTextField.text != "" else {
             let carInfoConfAlert = UIAlertController(title: "Complete the Form", message: "Required to start your trip", preferredStyle: .alert)
             carInfoConfAlert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
             self.present(carInfoConfAlert, animated: true, completion: nil)
             return
         }
         let year = selectedYear?.description
-        let millage = Double(millageTextField.text!)
-        tempCar = Car(make: selectedMake!.makeDisplay, model: selectedModel!.modelName, trim: selectedTrim!.modelTrim, year: year!, millage: millage!, gasType: selectedGasType!, mpgHwy: selectedTrim!.mpgHwy, mpgCity: selectedTrim!.mpgCity)
+        let mileage = Double(mileageTextField.text!)
+        tempCar = Car(make: selectedMake!.makeDisplay, model: selectedModel!.modelName, trim: selectedTrim!.modelTrim, year: year!, mileage: mileage!, gasType: selectedGasType!, mpgHwy: selectedTrim!.mpgHwy, mpgCity: selectedTrim!.mpgCity)
         performSegue(withIdentifier: "showCarSummary", sender: self)
     }
     

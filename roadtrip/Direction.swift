@@ -10,12 +10,21 @@ import Foundation
 
 public struct Direction: Codable {
     
-    var routes: [Route]
+    var routes: [Route]?
     
     public struct Route: Codable {
         
         var legs: [Leg]?
         var bounds: Bounds?
+        var overviewPolyline: OverviewPolyline?
+        var summary: String?
+        
+        enum CodingKeys: String, CodingKey {
+            case legs
+            case bounds
+            case overviewPolyline = "overview_polyline"
+            case summary
+        }
         
         public struct Leg: Codable {
             
@@ -26,8 +35,6 @@ public struct Direction: Codable {
             var endAddress: String?
             var endLocation: EndLocation?
             var steps: [Step]?
-            var overviewPolyine: OverviewPolyline?
-            var summary: String?
             
             enum CodingKeys: String, CodingKey {
                 case distance
@@ -37,8 +44,6 @@ public struct Direction: Codable {
                 case endAddress = "end_address"
                 case endLocation = "end_location"
                 case steps
-                case overviewPolyine = "overview_polyline"
-                case summary
             }
             
             struct Distance: Codable {
@@ -66,12 +71,12 @@ public struct Direction: Codable {
                 enum CodingKeys: String, CodingKey {
                     case distance
                     case duration
-                    case endLocation
-                    case startLocation
-                    case htmlInstructions
+                    case endLocation = "end_location"
+                    case startLocation = "start_location"
+                    case htmlInstructions = "html_instructions"
                     case maneuver
-                    case polyLine
-                    case travelMode
+                    case polyline
+                    case travelMode = "travel_mode"
                 }
                 
                 var distance: Distance?
@@ -80,7 +85,7 @@ public struct Direction: Codable {
                 var startLocation: StartLocation?
                 var htmlInstructions: String?
                 var maneuver: String?
-                var polyLine: Polyline?
+                var polyline: Polyline?
                 var travelMode: String?
                 
                 struct Distance: Codable {

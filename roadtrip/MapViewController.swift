@@ -193,6 +193,23 @@ extension MapViewController {
         
     }
     
+    func drawPath(origin: CLLocation, destination: CLLocation) {
+        googleClient.getDestinationPathByCoordinates(origin: origin, destination: destination) { (directionsResult) in
+            switch directionsResult {
+            case let .success(direction):
+                let overviewPolyline = direction.routes![0].overviewPolyline
+                let points = overviewPolyline!.points
+                let path = GMSPath.init(fromEncodedPath: points!)
+                let polyline = GMSPolyline.init(path: path)
+                polyline.strokeWidth = 4
+                polyline.strokeColor = .red
+                polyline.map = self.mapView
+            case let .failure(error):
+                print(error)
+            }
+        }
+    }
+    
 }
 
 

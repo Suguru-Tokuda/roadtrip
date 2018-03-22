@@ -27,16 +27,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         GMSServices.provideAPIKey(RoadtripAPI.googleMapsAPIKey)
-        
-        let googleClient = GoogleClient()
-        googleClient.testCall { (directionsResult) in
-            switch directionsResult {
-            case let .success(direction):
-                print(direction)
-            case let .failure(error):
-                print(error)
-            }
-        }
         return true
     }
     
