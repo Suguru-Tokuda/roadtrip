@@ -43,6 +43,11 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
         //        setting the navigation bar to transparent
         self.navigationController?.presentTransparentNavigationBar()
         
+        // drawing lines
+        let origin:CLLocation = CLLocation(latitude: 40.6936, longitude: -89.5890)
+        let dest:CLLocation = CLLocation(latitude: 39.781721 , longitude: -89.650148)
+        drawPath(origin: origin, destination: dest)
+        
     }
     func mapView(_ mapView: GMSMapView, didTapAt coordinate: CLLocationCoordinate2D) {
         //hiding keyboard on taping map
