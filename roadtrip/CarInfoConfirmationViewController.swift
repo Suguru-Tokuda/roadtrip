@@ -16,6 +16,7 @@ class CarInfoConfirmationViewController: UIViewController {
     @IBOutlet weak var trimTextField: UITextField!
     @IBOutlet weak var mpgHwyTextField: UITextField!
     @IBOutlet weak var mpgCityTextField: UITextField!
+    @IBOutlet weak var fuelCapacityTextField: UITextField!
     @IBOutlet weak var mileageTextField: UITextField!
     @IBOutlet weak var gasTypeTextField: UITextField!
     
@@ -29,6 +30,7 @@ class CarInfoConfirmationViewController: UIViewController {
         trimTextField.isEnabled = false
         mpgHwyTextField.isEnabled = false
         mpgCityTextField.isEnabled = false
+        fuelCapacityTextField.isEnabled = false
         mileageTextField.isEnabled = false
         gasTypeTextField.isEnabled = false
         
@@ -38,6 +40,7 @@ class CarInfoConfirmationViewController: UIViewController {
         trimTextField.text = tempCar!.trim
         mpgHwyTextField.text = tempCar!.mpgHwy.description
         mpgCityTextField.text = tempCar!.mpgCity.description
+        fuelCapacityTextField.text = String(tempCar!.fuelCapacity)
         mileageTextField.text = tempCar!.mileage.description
         gasTypeTextField.text = tempCar!.gasType
         

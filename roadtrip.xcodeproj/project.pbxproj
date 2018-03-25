@@ -27,6 +27,7 @@
 		BBBC7975205770AC0085044F /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBBC7974205770AC0085044F /* Model.swift */; };
 		BBBC7977205775430085044F /* Trim.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBBC7976205775430085044F /* Trim.swift */; };
 		BBDF006F2054D5BB002EF5F1 /* RoadtripAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBDF006E2054D5BB002EF5F1 /* RoadtripAPI.swift */; };
+		BBE8EA3F2065A33200280FB3 /* FuelRemainingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBE8EA3E2065A33200280FB3 /* FuelRemainingViewController.swift */; };
 		BBF2A6BF20587CFC00FD2871 /* CarInfoSettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBF2A6BE20587CFC00FD2871 /* CarInfoSettingViewController.swift */; };
 		BBF39D032055D2A1002F53A5 /* CarQueryDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBF39D022055D2A1002F53A5 /* CarQueryDataStore.swift */; };
 /* End PBXBuildFile section */
@@ -78,6 +79,7 @@
 		BBBC7974205770AC0085044F /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 		BBBC7976205775430085044F /* Trim.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Trim.swift; sourceTree = "<group>"; };
 		BBDF006E2054D5BB002EF5F1 /* RoadtripAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoadtripAPI.swift; sourceTree = "<group>"; };
+		BBE8EA3E2065A33200280FB3 /* FuelRemainingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FuelRemainingViewController.swift; sourceTree = "<group>"; };
 		BBF2A6BE20587CFC00FD2871 /* CarInfoSettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarInfoSettingViewController.swift; sourceTree = "<group>"; };
 		BBF39D022055D2A1002F53A5 /* CarQueryDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarQueryDataStore.swift; sourceTree = "<group>"; };
 		D5291226AD2FABCEBC328D2D /* libPods-roadtrip.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-roadtrip.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -400,6 +402,7 @@
 				BB60C04420360E6800ADF586 /* MapViewController.swift in Sources */,
 				BBF2A6BF20587CFC00FD2871 /* CarInfoSettingViewController.swift in Sources */,
 				BB2C7498205F378A0012B1B0 /* Direction.swift in Sources */,
+				BBE8EA3F2065A33200280FB3 /* FuelRemainingViewController.swift in Sources */,
 				BB60C04220360E6800ADF586 /* AppDelegate.swift in Sources */,
 				5F96B4602065B4F200707E3E /* FilterViewController.swift in Sources */,
 				BBBC79732057695C0085044F /* Make.swift in Sources */,

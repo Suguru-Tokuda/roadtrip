@@ -39,6 +39,9 @@ class CarInfoSettingViewController: UIViewController, UIPickerViewDataSource, UI
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationItem.setHidesBackButton(true, animated: true)
+        self.navigationItem.title = "Your Car Info"
+        
         setUpDoneBtn()
         yearPicker.dataSource = self
         yearPicker.delegate = self
@@ -57,15 +60,20 @@ class CarInfoSettingViewController: UIViewController, UIPickerViewDataSource, UI
         trimTextField.inputView = trimPicker
         gasTypeTextField.inputView = gasTypePicker
         
-        self.navigationItem.setHidesBackButton(true, animated: true)
-        self.navigationItem.title = "Your Car Info"
-        self.years = self.appDelegate!.years
+        if let myCar = appDelegate!.myCar {
+            loadDataAfterFirst(myCar: myCar)
+        } else {
+            loadDataFirstTime()
+        }
+    }
+    
+    private func loadDataFirstTime() {
         self.selectedGasType = gasTypes[0]
         gasTypeTextField.text = self.selectedGasType
         self.carQueryDataStore.getYears { (yearsResult) in
             switch yearsResult {
             case let .success(years):
-                self.years =  years
+                self.years = years
                 self.years?.sort(by: >)
                 self.selectedYear = self.years![0]
                 self.yearTextField.text = self.selectedYear!.description
@@ -123,6 +131,95 @@ class CarInfoSettingViewController: UIViewController, UIPickerViewDataSource, UI
                 print(error)
             }
         }
+    }
+    
+    public func loadDataAfterFirst(myCar: Car) {
+        yearTextField.text = myCar.year
+        mileageTextField.text = myCar.mileage.description
+        for i in 0..<gasTypes.count {
+            if gasTypes[i] == myCar.gasType {
+                selectedGasType = gasTypes[i]
+                gasTypeTextField.text = gasTypes[i]
+                gasTypePicker.selectRow(i, inComponent: 0, animated: true)                
+            }
+        }
+        self.selectedYear = Int(myCar.year)
+        self.carQueryDataStore.getYears(completion: { (yearsResult) in
+            switch yearsResult {
+            case let .success(years):
+                for i in 0..<years.count {
+                    self.years = years
+                    if years[i] == Int(myCar.year)! {
+                        self.selectedYear = years[i]
+                        self.yearTextField.text = years[i].description
+                        self.yearPicker.selectRow(i, inComponent: 0, animated: true)
+                        self.carQueryDataStore.getMakes(year: self.selectedYear!, completion: { (makesResult) in
+                            switch makesResult {
+                            case let .success(makes):
+                                if makes.count > 0 {
+                                    self.makes = makes
+                                    for i in 0..<makes.count {
+                                        if makes[i].makeDisplay == myCar.make {
+                                            self.selectedMake = makes[i]
+                                            self.makeTextField.text = makes[i].makeDisplay
+                                            self.makePicker.selectRow(i, inComponent: 0, animated: true)
+                                            self.carQueryDataStore.getModels(make: myCar.make, year: Int(myCar.year)!, completion: { (modelsResult) in
+                                                switch modelsResult {
+                                                case let .success(models):
+                                                    if models.count > 0 {
+                                                        self.models = models
+                                                        for i in 0..<models.count {
+                                                            if models[i].modelName == myCar.model {
+                                                                self.selectedModel = models[i]
+                                                                self.modelTextField.text = self.selectedModel!.modelName
+                                                                self.modelPicker.selectRow(i, inComponent: 0, animated: true)
+                                                                self.carQueryDataStore.getTrims(model: myCar.model, year: Int(myCar.year)!, completion: { (trimsResult) in
+                                                                    switch trimsResult {
+                                                                    case let .success(trims):
+                                                                        if trims.count > 0 {
+                                                                            self.trims = trims
+                                                                            for i in 0..<trims.count {
+                                                                                if trims[i].modelTrim == myCar.trim {
+                                                                                    self.selectedTrim = trims[i]
+                                                                                    self.trimTextField.text = self.selectedTrim!.modelTrim
+                                                                                    self.trimPicker.reloadAllComponents()
+                                                                                    self.trimPicker.selectRow(i, inComponent: 0, animated: true)
+                                                                                }
+                                                                            }
+                                                                        } else {
+                                                                            self.selectedTrim = nil
+                                                                            self.trimTextField.text = ""
+                                                                        }
+                                                                    case let .failure(error):
+                                                                        print(error)
+                                                                    }
+                                                                })
+                                                            }
+                                                        }
+                                                    } else {
+                                                        self.selectedModel = nil
+                                                        self.modelTextField.text = ""
+                                                    }
+                                                case let .failure(error):
+                                                    print(error)
+                                                }
+                                            })
+                                        }
+                                    }
+                                } else {
+                                    self.selectedMake = nil
+                                    self.makeTextField.text = ""
+                                }
+                            case let .failure(error):
+                                print(error)
+                            }
+                        })
+                    }
+                }
+            case let .failure(error):
+                print(error)
+            }
+        })
     }
     
     
@@ -340,7 +437,8 @@ class CarInfoSettingViewController: UIViewController, UIPickerViewDataSource, UI
         }
         let year = selectedYear?.description
         let mileage = Double(mileageTextField.text!)
-        tempCar = Car(make: selectedMake!.makeDisplay, model: selectedModel!.modelName, trim: selectedTrim!.modelTrim, year: year!, mileage: mileage!, gasType: selectedGasType!, mpgHwy: selectedTrim!.mpgHwy, mpgCity: selectedTrim!.mpgCity)
+        tempCar = Car(make: selectedMake!.makeDisplay, model: selectedModel!.modelName, trim: selectedTrim!.modelTrim, year: year!, mileage: mileage!, fuelCapacity: selectedTrim!.modelFuelCapG, gasType: selectedGasType!, mpgHwy: selectedTrim!.mpgHwy, mpgCity: selectedTrim!.mpgCity)
+        appDelegate!.myCar = tempCar
         performSegue(withIdentifier: "showCarSummary", sender: self)
     }
     
