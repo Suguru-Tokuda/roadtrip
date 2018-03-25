@@ -10,6 +10,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
     
     lazy var googleClient = GoogleClient()
     var currentLocation: CLLocation = CLLocation(latitude: 42.361145, longitude: -71.057083)
+    var searchKeywords:[String] = []
     var locationPetrol : String = "petrol"
     var locationGasStation : String = "gas_station"
     var locationFood : String = "food"
@@ -21,6 +22,12 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        //adding all to search
+        searchKeywords.append(locationGasStation)
+        searchKeywords.append(locationPetrol)
+        searchKeywords.append(locationFood)
+
+        
         locationManager.delegate = self
         mapView.delegate = self
         //self.navigationController?.isNavigationBarHidden = true
@@ -44,6 +51,8 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
         self.navigationController?.presentTransparentNavigationBar()
         
     }
+    
+    
     func mapView(_ mapView: GMSMapView, didTapAt coordinate: CLLocationCoordinate2D) {
         //hiding keyboard on taping map
         searchBar.resignFirstResponder()
@@ -57,8 +66,11 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
         
         // Search button.
         //        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(toggle))
-        let img = UIImage(named: "search")!.withRenderingMode(UIImageRenderingMode.alwaysOriginal)
-        navigationItem.rightBarButtonItem = UIBarButtonItem(image: img, style: .plain, target: self, action: #selector(toggle))
+        let imgforsearch = UIImage(named: "search")!.withRenderingMode(UIImageRenderingMode.alwaysOriginal)
+        let imgforfilter = UIImage(named: "filter")!.withRenderingMode(UIImageRenderingMode.alwaysOriginal)
+        let searchButton = UIBarButtonItem(image: imgforsearch, style: .plain, target: self, action: #selector(toggle))
+        let forfilter = UIBarButtonItem(image: imgforfilter, style: .plain, target: self, action: #selector(filterClicked))
+        navigationItem.setRightBarButtonItems([searchButton,forfilter], animated: true)
         // Search bar.
         
         searchBar.translatesAutoresizingMaskIntoConstraints = false
@@ -93,7 +105,9 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
         //locationManager.stopUpdatingLocation()
         mapView.clear()
         
-        self.fetchGoogleData(forLocation: location, locationName: self.locationGasStation, searchRadius: self.searchRadius )
+        if searchKeywords.contains(locationGasStation) {
+            self.fetchGoogleData(forLocation: location, locationName: self.locationGasStation, searchRadius: self.searchRadius )
+        }
         self.fetchGoogleData(forLocation: location, locationName: self.locationPetrol, searchRadius: self.searchRadius )
         self.fetchGoogleData(forLocation: location, locationName: self.locationFood, searchRadius: self.searchRadius )
     }
@@ -121,8 +135,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
     }
     
 }
-
-
 
 extension MapViewController {
     func fetchGoogleData(forLocation: CLLocation, locationName: String, searchRadius: Int) {
@@ -227,17 +239,11 @@ extension MapViewController {
         }
     }
     
-    // MARK: gesture funcs
-    
-    
 }
-
-
 
 extension MapViewController{
     //    part of expandable search bar
     @objc func toggle() {
-        
         let isOpen = leftConstraint.isActive == true
         
         // Inactivating the left constraint closes the expandable header.
@@ -249,11 +255,32 @@ extension MapViewController{
             self.navigationItem.titleView?.layoutIfNeeded()
         })
     }
+    
 }
 
-
-
-
+extension MapViewController: FilterTableViewControllerDelegate {
+    //    extension forgetting passing the selected filter form FilterViewController
+    func typesController(_ controller: FilterTableViewController, didSelectTypes types: [String]) {
+        searchKeywords = controller.selectedTypes.sorted()
+        dismiss(animated: true)
+    }
+    
+    @objc func filterClicked() {
+        self.performSegue(withIdentifier: "GoToFilterController", sender:self)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        guard let navigationController = segue.destination as? UINavigationController,
+            let controller = navigationController.topViewController as? FilterTableViewController else {
+                return
+        }
+        controller.selectedTypes = searchKeywords
+        controller.delegate = self
+    }
+    
+    
+    
+}
 
 //part of expandable search bar
 class ExpandableView: UIView {
@@ -272,8 +299,6 @@ class ExpandableView: UIView {
         return UILayoutFittingExpandedSize
     }
 }
-
-
 
 extension UINavigationController {
     
