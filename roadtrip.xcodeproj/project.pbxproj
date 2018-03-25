@@ -12,6 +12,7 @@
 		5F96B4602065B4F200707E3E /* FilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F96B45F2065B4F200707E3E /* FilterViewController.swift */; };
 		BB017C6F205B343000FD9DC6 /* CarInfoConfirmationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB017C6E205B343000FD9DC6 /* CarInfoConfirmationViewController.swift */; };
 		BB2C7498205F378A0012B1B0 /* Direction.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB2C7497205F378A0012B1B0 /* Direction.swift */; };
+		BB41127C20675C7E007098E0 /* FuelRemainingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB41127B20675C7E007098E0 /* FuelRemainingViewController.swift */; };
 		BB60C04220360E6800ADF586 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB60C04120360E6800ADF586 /* AppDelegate.swift */; };
 		BB60C04420360E6800ADF586 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB60C04320360E6800ADF586 /* MapViewController.swift */; };
 		BB60C04720360E6800ADF586 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BB60C04520360E6800ADF586 /* Main.storyboard */; };
@@ -27,7 +28,6 @@
 		BBBC7975205770AC0085044F /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBBC7974205770AC0085044F /* Model.swift */; };
 		BBBC7977205775430085044F /* Trim.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBBC7976205775430085044F /* Trim.swift */; };
 		BBDF006F2054D5BB002EF5F1 /* RoadtripAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBDF006E2054D5BB002EF5F1 /* RoadtripAPI.swift */; };
-		BBE8EA3F2065A33200280FB3 /* FuelRemainingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBE8EA3E2065A33200280FB3 /* FuelRemainingViewController.swift */; };
 		BBF2A6BF20587CFC00FD2871 /* CarInfoSettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBF2A6BE20587CFC00FD2871 /* CarInfoSettingViewController.swift */; };
 		BBF39D032055D2A1002F53A5 /* CarQueryDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBF39D022055D2A1002F53A5 /* CarQueryDataStore.swift */; };
 /* End PBXBuildFile section */
@@ -57,6 +57,7 @@
 		A33153FF928D660E0DCAA99D /* Pods-roadtrip.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-roadtrip.debug.xcconfig"; path = "Pods/Target Support Files/Pods-roadtrip/Pods-roadtrip.debug.xcconfig"; sourceTree = "<group>"; };
 		BB017C6E205B343000FD9DC6 /* CarInfoConfirmationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarInfoConfirmationViewController.swift; sourceTree = "<group>"; };
 		BB2C7497205F378A0012B1B0 /* Direction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Direction.swift; sourceTree = "<group>"; };
+		BB41127B20675C7E007098E0 /* FuelRemainingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FuelRemainingViewController.swift; sourceTree = "<group>"; };
 		BB60C03E20360E6800ADF586 /* roadtrip.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = roadtrip.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BB60C04120360E6800ADF586 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BB60C04320360E6800ADF586 /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
@@ -79,7 +80,6 @@
 		BBBC7974205770AC0085044F /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 		BBBC7976205775430085044F /* Trim.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Trim.swift; sourceTree = "<group>"; };
 		BBDF006E2054D5BB002EF5F1 /* RoadtripAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoadtripAPI.swift; sourceTree = "<group>"; };
-		BBE8EA3E2065A33200280FB3 /* FuelRemainingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FuelRemainingViewController.swift; sourceTree = "<group>"; };
 		BBF2A6BE20587CFC00FD2871 /* CarInfoSettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarInfoSettingViewController.swift; sourceTree = "<group>"; };
 		BBF39D022055D2A1002F53A5 /* CarQueryDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarQueryDataStore.swift; sourceTree = "<group>"; };
 		D5291226AD2FABCEBC328D2D /* libPods-roadtrip.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-roadtrip.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -120,6 +120,13 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		BB41127A20675C54007098E0 /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = "Recovered References";
+			sourceTree = "<group>";
+		};
 		BB60C03520360E6700ADF586 = {
 			isa = PBXGroup;
 			children = (
@@ -130,6 +137,7 @@
 				BB60C03F20360E6800ADF586 /* Products */,
 				14962A373E1801F4ED5AF5EF /* Pods */,
 				DEDCF88387B8EEFADADDD7BD /* Frameworks */,
+				BB41127A20675C54007098E0 /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -165,6 +173,7 @@
 				BB6F94FA205BA8AB00465C9A /* GoogleClient.swift */,
 				BB2C7497205F378A0012B1B0 /* Direction.swift */,
 				5F96B45F2065B4F200707E3E /* FilterViewController.swift */,
+				BB41127B20675C7E007098E0 /* FuelRemainingViewController.swift */,
 			);
 			path = roadtrip;
 			sourceTree = "<group>";
@@ -397,12 +406,12 @@
 				BB017C6F205B343000FD9DC6 /* CarInfoConfirmationViewController.swift in Sources */,
 				BBBC7975205770AC0085044F /* Model.swift in Sources */,
 				BBBC7977205775430085044F /* Trim.swift in Sources */,
+				BB41127C20675C7E007098E0 /* FuelRemainingViewController.swift in Sources */,
 				BBF39D032055D2A1002F53A5 /* CarQueryDataStore.swift in Sources */,
 				BB6F94FB205BA8AB00465C9A /* GoogleClient.swift in Sources */,
 				BB60C04420360E6800ADF586 /* MapViewController.swift in Sources */,
 				BBF2A6BF20587CFC00FD2871 /* CarInfoSettingViewController.swift in Sources */,
 				BB2C7498205F378A0012B1B0 /* Direction.swift in Sources */,
-				BBE8EA3F2065A33200280FB3 /* FuelRemainingViewController.swift in Sources */,
 				BB60C04220360E6800ADF586 /* AppDelegate.swift in Sources */,
 				5F96B4602065B4F200707E3E /* FilterViewController.swift in Sources */,
 				BBBC79732057695C0085044F /* Make.swift in Sources */,
