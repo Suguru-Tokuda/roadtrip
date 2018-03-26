@@ -137,6 +137,7 @@
                         <outlet property="mapView" destination="5GR-J7-hee" id="wYP-V5-W0G"/>
                         <outlet property="searchDisplayController" destination="t01-ES-h8c" id="hDE-Wl-GuR"/>
                         <segue destination="TuD-oY-Sxl" kind="presentation" identifier="GoToFilterController" id="vE1-TG-5OH"/>
+                        <segue destination="Ltj-9N-24P" kind="show" identifier="showCarSummary" id="o5y-jJ-u3C"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -587,7 +588,6 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="Q70-UG-C7N" firstAttribute="trailing" secondItem="LnX-h7-LZr" secondAttribute="trailing" constant="68" id="62v-HT-SXa"/>
                             <constraint firstItem="Q70-UG-C7N" firstAttribute="trailing" secondItem="r3S-VZ-D1w" secondAttribute="trailing" constant="105" id="6zN-k8-KQ3"/>
                             <constraint firstItem="LnX-h7-LZr" firstAttribute="leading" secondItem="Q70-UG-C7N" secondAttribute="leading" constant="98" id="BXv-F6-NC6"/>
                             <constraint firstItem="r3S-VZ-D1w" firstAttribute="leading" secondItem="Q70-UG-C7N" secondAttribute="leading" constant="104" id="Hho-68-5aP"/>
@@ -652,6 +652,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
+        <segue reference="o5y-jJ-u3C"/>
         <segue reference="lEw-GB-XCj"/>
     </inferredMetricsTieBreakers>
 </document>

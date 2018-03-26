@@ -38,6 +38,7 @@ class CarInfoSettingViewController: UIViewController, UIPickerViewDataSource, UI
     var tempCar: Car!
     
     override func viewDidLoad() {
+        self.navigationController?.isNavigationBarHidden = true
         super.viewDidLoad()
         self.navigationItem.setHidesBackButton(true, animated: true)
         self.navigationItem.title = "Your Car Info"

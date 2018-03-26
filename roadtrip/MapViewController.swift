@@ -40,13 +40,9 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
         //        expandableview to end of code
         addingExpandableSearch()
         //        setting spanner for getting to settings
-        var backBtn = UIImage(named: "spanner")
-        backBtn = backBtn?.withRenderingMode(UIImageRenderingMode.alwaysOriginal)
-        
-        self.navigationController!.navigationBar.backIndicatorImage = backBtn;
-        self.navigationController!.navigationBar.backIndicatorTransitionMaskImage = backBtn;
-        self.navigationController!.navigationBar.tintColor = UIColor.blue
-        
+        let settingsBtn: UIBarButtonItem = UIBarButtonItem(image: UIImage(named: "spanner")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(settingsTapped(_:)))
+        self.navigationItem.leftBarButtonItem = settingsBtn
+
         //        setting the navigation bar to transparent
         self.navigationController?.presentTransparentNavigationBar()
         
@@ -55,6 +51,10 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
         let dest:CLLocation = CLLocation(latitude: 39.781721 , longitude: -89.650148)
         drawPath(origin: origin, destination: dest)
         
+    }
+    
+    @objc func settingsTapped(_ sender: UIBarButtonItem) {
+        performSegue(withIdentifier: "showCarSummary", sender: self)
     }
     
     
@@ -108,7 +108,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
         mapView.camera = GMSCameraPosition(target: location.coordinate, zoom: 15, bearing: 0, viewingAngle: 0)
         //DispatchQueue.main.async {
         //locationManager.stopUpdatingLocation()
-        mapView.clear()
         
         if searchKeywords.contains(locationGasStation) {
             self.fetchGoogleData(forLocation: location, locationName: self.locationGasStation, searchRadius: self.searchRadius )
@@ -231,19 +230,19 @@ extension MapViewController {
         googleClient.getDestinationPathByCoordinates(origin: origin, destination: destination) { (directionsResult) in
             switch directionsResult {
             case let .success(direction):
-                let overviewPolyline = direction.routes![0].overviewPolyline
-                let points = overviewPolyline!.points
-                let path = GMSPath.init(fromEncodedPath: points!)
-                let polyline = GMSPolyline.init(path: path)
+                let overViewPolyine = direction.routes![0].overviewPolyline
+                let route = overViewPolyine!.points
+                let path: GMSPath = GMSPath(fromEncodedPath: route!)!
+                let polyline = GMSPolyline(path: path)
                 polyline.strokeWidth = 4
                 polyline.strokeColor = .red
+                polyline.geodesic = true
                 polyline.map = self.mapView
             case let .failure(error):
                 print(error)
             }
         }
     }
-    
 }
 
 extension MapViewController{

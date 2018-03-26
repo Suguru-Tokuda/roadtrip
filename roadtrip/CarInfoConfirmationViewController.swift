@@ -20,10 +20,12 @@ class CarInfoConfirmationViewController: UIViewController {
     @IBOutlet weak var mileageTextField: UITextField!
     @IBOutlet weak var gasTypeTextField: UITextField!
     
+    let appDelegate: AppDelegate? = UIApplication.shared.delegate as? AppDelegate
     var tempCar: Car?
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        tempCar = appDelegate?.myCar
         yearTextField.isEnabled = false
         makeTextField.isEnabled = false
         modelTextField.isEnabled = false
