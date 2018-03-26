@@ -18,7 +18,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
     let searchBar = UISearchBar()
     //part of exapandable search
     var leftConstraint: NSLayoutConstraint!
-    
+    var navigationDirection: Direction?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,24 +26,24 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
         searchKeywords.append(locationGasStation)
         searchKeywords.append(locationPetrol)
         searchKeywords.append(locationFood)
-
+        
         
         locationManager.delegate = self
         mapView.delegate = self
         //self.navigationController?.isNavigationBarHidden = true
         locationManager.requestWhenInUseAuthorization()
-        //        let jsonURLString = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.870943,151.190311&radius=1000&rankby=prominence&sensor=true&key=AIzaSyD14jarz6jPaHCozkfKHcNLVthhuJhtwqg"
-        //        fetchGoogleData(forLocation: currentLocation, locationName: locationName, searchRadius: searchRadius )
+        // let jsonURLString = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.870943,151.190311&radius=1000&rankby=prominence&sensor=true&key=AIzaSyD14jarz6jPaHCozkfKHcNLVthhuJhtwqg"
+        // fetchGoogleData(forLocation: currentLocation, locationName: locationName, searchRadius: searchRadius )
         
-        //        expandable search bar
-        //        https://stackoverflow.com/questions/38580175/swift-expandable-search-bar-in-header
-        //        expandableview to end of code
+        // expandable search bar
+        // https://stackoverflow.com/questions/38580175/swift-expandable-search-bar-in-header
+        // expandableview to end of code
         addingExpandableSearch()
-        //        setting spanner for getting to settings
+        // setting spanner for getting to settings
         let settingsBtn: UIBarButtonItem = UIBarButtonItem(image: UIImage(named: "spanner")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(settingsTapped(_:)))
         self.navigationItem.leftBarButtonItem = settingsBtn
-
-        //        setting the navigation bar to transparent
+        
+        // setting the navigation bar to transparent
         self.navigationController?.presentTransparentNavigationBar()
         
         // drawing lines
@@ -70,7 +70,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
         navigationItem.titleView = expandableView
         
         // Search button.
-        //        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(toggle))
+        // navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(toggle))
         let imgforsearch = UIImage(named: "search")!.withRenderingMode(UIImageRenderingMode.alwaysOriginal)
         let imgforfilter = UIImage(named: "filter")!.withRenderingMode(UIImageRenderingMode.alwaysOriginal)
         let searchButton = UIBarButtonItem(image: imgforsearch, style: .plain, target: self, action: #selector(toggle))
@@ -230,6 +230,7 @@ extension MapViewController {
         googleClient.getDestinationPathByCoordinates(origin: origin, destination: destination) { (directionsResult) in
             switch directionsResult {
             case let .success(direction):
+                self.navigationDirection = direction
                 let overViewPolyine = direction.routes![0].overviewPolyline
                 let route = overViewPolyine!.points
                 let path: GMSPath = GMSPath(fromEncodedPath: route!)!
@@ -238,6 +239,7 @@ extension MapViewController {
                 polyline.strokeColor = .red
                 polyline.geodesic = true
                 polyline.map = self.mapView
+                // show gas stations & restaurants on the steps
             case let .failure(error):
                 print(error)
             }
