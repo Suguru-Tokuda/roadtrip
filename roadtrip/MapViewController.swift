@@ -14,8 +14,43 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
     var locationPetrol : String = "petrol"
     var locationGasStation : String = "gas_station"
     var locationFood : String = "food"
-    var searchRadius : Int = 1000
+    var searchRadius : Int = 500
     let searchBar = UISearchBar()
+    var markers=[String:[PlaceMarker]]()
+    
+    
+    func fetchAllFor(getMarkerType markerType:String)->[PlaceMarker]{
+        for (key, values) in markers{
+            if key == markerType{
+                return values
+            }
+        }
+        return []
+    }
+    
+    func clearAllMarkers(){
+        for ( _, values) in markers {
+            for value in values{
+                value.map = nil
+            }
+        }
+        markers.removeAll()
+    }
+    
+    func clearMarkers(forType typeToClear:String){
+        for marker in markers[typeToClear]!{
+            marker.map = nil
+        }
+        markers.removeValue(forKey: typeToClear)
+    }
+    
+    func addMarker(markerType:String,marker:PlaceMarker){
+        if markers[markerType] == nil {
+            markers[markerType]=[]
+        }
+        markers[markerType]?.append(marker)
+    }
+    
     //part of exapandable search
     var leftConstraint: NSLayoutConstraint!
     var navigationDirection: Direction?
@@ -108,12 +143,11 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
         mapView.camera = GMSCameraPosition(target: location.coordinate, zoom: 15, bearing: 0, viewingAngle: 0)
         //DispatchQueue.main.async {
         //locationManager.stopUpdatingLocation()
-        
-        if searchKeywords.contains(locationGasStation) {
-            self.fetchGoogleData(forLocation: location, locationName: self.locationGasStation, searchRadius: self.searchRadius )
+        clearAllMarkers()
+        for keyword in searchKeywords{
+            self.fetchGoogleData(forLocation: location, locationName: keyword, searchRadius: self.searchRadius )
         }
-        self.fetchGoogleData(forLocation: location, locationName: self.locationPetrol, searchRadius: self.searchRadius )
-        self.fetchGoogleData(forLocation: location, locationName: self.locationFood, searchRadius: self.searchRadius )
+        currentLocation = location
     }
     private func reverseGeocodeCoordinate(_ coordinate: CLLocationCoordinate2D) {
         let geocoder = GMSGeocoder()
@@ -163,7 +197,7 @@ extension MapViewController {
                     default:
                         break
                     }
-                    
+                    self.addMarker(markerType: locationName, marker: marker)
                 }
                 group1.leave()
             }
@@ -190,7 +224,7 @@ extension MapViewController {
                         default:
                             break
                         }
-                        
+                        self.addMarker(markerType: locationName, marker: marker)
                     }
                     group2.leave()
                 }
@@ -217,7 +251,7 @@ extension MapViewController {
                         default:
                             break
                         }
-                        
+                        self.addMarker(markerType: locationName, marker: marker)
                     }
                 }
                 
@@ -239,7 +273,7 @@ extension MapViewController {
                 polyline.strokeColor = .red
                 polyline.geodesic = true
                 polyline.map = self.mapView
-                // show gas stations & restaurants on the steps
+            // show gas stations & restaurants on the steps
             case let .failure(error):
                 print(error)
             }
@@ -268,6 +302,16 @@ extension MapViewController: FilterTableViewControllerDelegate {
     //    extension forgetting passing the selected filter form FilterViewController
     func typesController(_ controller: FilterTableViewController, didSelectTypes types: [String]) {
         searchKeywords = controller.selectedTypes.sorted()
+        for (key, _) in markers{
+            if !searchKeywords.contains(key){
+               clearMarkers(forType: key)
+            }
+        }
+        for key in searchKeywords{
+            if !markers.keys.contains(key){
+                self.fetchGoogleData(forLocation: currentLocation, locationName: key, searchRadius: self.searchRadius )
+            }
+        }
         dismiss(animated: true)
     }
     
