@@ -115,14 +115,6 @@
                                     <outletCollection property="gestureRecognizers" destination="OrE-kr-qr7" appends="YES" id="glS-SG-5rc"/>
                                 </connections>
                             </view>
-                            <label opaque="NO" userInteractionEnabled="NO" alpha="0.84999999999999998" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RLY-pW-uEe">
-                                <rect key="frame" x="0.0" y="646" width="375" height="21"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" heightSizable="YES"/>
-                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.84655928938356162" colorSpace="custom" customColorSpace="sRGB"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <gestureRecognizers/>
@@ -133,7 +125,6 @@
                     </view>
                     <navigationItem key="navigationItem" id="ZvD-U4-U2G"/>
                     <connections>
-                        <outlet property="addresslbl" destination="RLY-pW-uEe" id="73p-XF-eeB"/>
                         <outlet property="mapView" destination="5GR-J7-hee" id="wYP-V5-W0G"/>
                         <outlet property="searchDisplayController" destination="t01-ES-h8c" id="hDE-Wl-GuR"/>
                         <segue destination="TuD-oY-Sxl" kind="presentation" identifier="GoToFilterController" id="vE1-TG-5OH"/>
@@ -618,7 +609,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="5o5-Ga-Xu1"/>
+        <segue reference="o5y-jJ-u3C"/>
         <segue reference="lEw-GB-XCj"/>
     </inferredMetricsTieBreakers>
 </document>

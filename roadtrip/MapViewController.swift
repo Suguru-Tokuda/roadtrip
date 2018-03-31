@@ -8,7 +8,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
     var destination: GMSPlace?
     
     @IBOutlet weak var mapView: GMSMapView!
-    @IBOutlet weak var addresslbl: UILabel!
     
     lazy var googleClient = GoogleClient()
     var currentLocation: CLLocation = CLLocation(latitude: 42.361145, longitude: -71.057083)
@@ -84,6 +83,15 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
         markers[markerType]?.append(marker)
     }
     
+    //MARK: GMS delegate functions
+    func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
+        return true
+    }
+    
+    func mapView(_ mapView: GMSMapView, didTapInfoWindowOf marker: GMSMarker) {
+        print("infowindow tapped")
+    }
+    
     //part of exapandable search
     var leftConstraint: NSLayoutConstraint!
     var navigationDirection: Direction?
@@ -154,11 +162,8 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
             guard let address = response?.firstResult(), let lines = address.lines else {
                 return
             }
-            
-            self.addresslbl.text = lines.joined(separator: "\n")
-            
-            let labelHeight = self.addresslbl.intrinsicContentSize.height
-            self.mapView.padding = UIEdgeInsets(top: self.view.safeAreaInsets.top, left: 0, bottom: labelHeight, right: 0)
+
+//            self.mapView.padding = UIEdgeInsets(top: self.view.safeAreaInsets.top, left: 0, bottom: labelHeight, right: 0)
             
             UIView.animate(withDuration: 0.25) {
                 self.view.layoutIfNeeded()
@@ -340,14 +345,14 @@ extension MapViewController: GMSAutocompleteViewControllerDelegate {
         let long = self.destination!.coordinate.longitude
         
         let camera = GMSCameraPosition.camera(withLatitude: lat, longitude: long, zoom: 6.0)
-        let mapView = GMSMapView.map(withFrame: CGRect.zero, camera: camera)
-        view = mapView
+        self.mapView.camera = camera
+        view = self.mapView
         
         let marker = GMSMarker()
         marker.position = CLLocationCoordinate2D(latitude: lat, longitude: long)
         marker.title = place.name
         marker.snippet = place.formattedAddress
-        marker.map = mapView
+        marker.map = self.mapView
         
         mapView.isMyLocationEnabled = true
         mapView.settings.myLocationButton = true
