@@ -17,7 +17,6 @@ class CarInfoConfirmationViewController: UIViewController {
     @IBOutlet weak var mpgHwyTextField: UITextField!
     @IBOutlet weak var mpgCityTextField: UITextField!
     @IBOutlet weak var fuelCapacityTextField: UITextField!
-    @IBOutlet weak var mileageTextField: UITextField!
     @IBOutlet weak var gasTypeTextField: UITextField!
     
     let appDelegate: AppDelegate? = UIApplication.shared.delegate as? AppDelegate
@@ -33,7 +32,6 @@ class CarInfoConfirmationViewController: UIViewController {
         mpgHwyTextField.isEnabled = false
         mpgCityTextField.isEnabled = false
         fuelCapacityTextField.isEnabled = false
-        mileageTextField.isEnabled = false
         gasTypeTextField.isEnabled = false
         
         yearTextField.text = tempCar!.year
@@ -43,7 +41,6 @@ class CarInfoConfirmationViewController: UIViewController {
         mpgHwyTextField.text = tempCar!.mpgHwy.description
         mpgCityTextField.text = tempCar!.mpgCity.description
         fuelCapacityTextField.text = String(tempCar!.fuelCapacity)
-        mileageTextField.text = tempCar!.mileage.description
         gasTypeTextField.text = tempCar!.gasType
         
         self.navigationItem.setHidesBackButton(true, animated: true)

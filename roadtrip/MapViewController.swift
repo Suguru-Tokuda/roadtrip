@@ -5,6 +5,8 @@ import GooglePlaces
 class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDelegate {
     //https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.870943,151.190311&radius=1000&rankby=prominence&sensor=true&key=AIzaSyD14jarz6jPaHCozkfKHcNLVthhuJhtwqg
     var locationManager = CLLocationManager()
+    var destination: GMSPlace?
+    
     @IBOutlet weak var mapView: GMSMapView!
     @IBOutlet weak var addresslbl: UILabel!
     
@@ -18,6 +20,37 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
     let searchBar = UISearchBar()
     var markers=[String:[PlaceMarker]]()
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        //adding all to search
+        searchKeywords.append(locationGasStation)
+        searchKeywords.append(locationPetrol)
+        searchKeywords.append(locationFood)
+        
+        locationManager.delegate = self
+        mapView.delegate = self
+        //self.navigationController?.isNavigationBarHidden = true
+        locationManager.requestWhenInUseAuthorization()
+        // let jsonURLString = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.870943,151.190311&radius=1000&rankby=prominence&sensor=true&key=AIzaSyD14jarz6jPaHCozkfKHcNLVthhuJhtwqg"
+        // fetchGoogleData(forLocation: currentLocation, locationName: locationName, searchRadius: searchRadius )
+        
+        // expandable search bar
+        // https://stackoverflow.com/questions/38580175/swift-expandable-search-bar-in-header
+        // expandableview to end of code
+        addingExpandableSearch()
+        // setting spanner for getting to settings
+        let settingsBtn: UIBarButtonItem = UIBarButtonItem(image: UIImage(named: "spanner")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(settingsTapped(_:)))
+        self.navigationItem.leftBarButtonItem = settingsBtn
+        
+        // setting the navigation bar to transparent
+        self.navigationController?.presentTransparentNavigationBar()
+        
+        // drawing lines
+        let origin:CLLocation = CLLocation(latitude: 40.6936, longitude: -89.5890)
+        let dest:CLLocation = CLLocation(latitude: 39.781721 , longitude: -89.650148)
+        drawPath(origin: origin, destination: dest)
+    }
     
     func fetchAllFor(getMarkerType markerType:String)->[PlaceMarker]{
         for (key, values) in markers{
@@ -55,49 +88,14 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
     var leftConstraint: NSLayoutConstraint!
     var navigationDirection: Direction?
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        //adding all to search
-        searchKeywords.append(locationGasStation)
-        searchKeywords.append(locationPetrol)
-        searchKeywords.append(locationFood)
-        
-        
-        locationManager.delegate = self
-        mapView.delegate = self
-        //self.navigationController?.isNavigationBarHidden = true
-        locationManager.requestWhenInUseAuthorization()
-        // let jsonURLString = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.870943,151.190311&radius=1000&rankby=prominence&sensor=true&key=AIzaSyD14jarz6jPaHCozkfKHcNLVthhuJhtwqg"
-        // fetchGoogleData(forLocation: currentLocation, locationName: locationName, searchRadius: searchRadius )
-        
-        // expandable search bar
-        // https://stackoverflow.com/questions/38580175/swift-expandable-search-bar-in-header
-        // expandableview to end of code
-        addingExpandableSearch()
-        // setting spanner for getting to settings
-        let settingsBtn: UIBarButtonItem = UIBarButtonItem(image: UIImage(named: "spanner")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(settingsTapped(_:)))
-        self.navigationItem.leftBarButtonItem = settingsBtn
-        
-        // setting the navigation bar to transparent
-        self.navigationController?.presentTransparentNavigationBar()
-        
-        // drawing lines
-        let origin:CLLocation = CLLocation(latitude: 40.6936, longitude: -89.5890)
-        let dest:CLLocation = CLLocation(latitude: 39.781721 , longitude: -89.650148)
-        drawPath(origin: origin, destination: dest)
-        
-    }
-    
     @objc func settingsTapped(_ sender: UIBarButtonItem) {
         performSegue(withIdentifier: "showCarSummary", sender: self)
     }
-    
     
     func mapView(_ mapView: GMSMapView, didTapAt coordinate: CLLocationCoordinate2D) {
         //hiding keyboard on taping map
         searchBar.resignFirstResponder()
     }
-    
     
     func addingExpandableSearch(){
         // Expandable area.
@@ -284,6 +282,10 @@ extension MapViewController {
 extension MapViewController{
     //    part of expandable search bar
     @objc func toggle() {
+        
+        let autocompleteController = GMSAutocompleteViewController()
+        autocompleteController.delegate = self
+        present(autocompleteController, animated: true, completion: nil)
         let isOpen = leftConstraint.isActive == true
         
         // Inactivating the left constraint closes the expandable header.
@@ -328,7 +330,50 @@ extension MapViewController: FilterTableViewControllerDelegate {
         controller.delegate = self
     }
     
+}
+
+extension MapViewController: GMSAutocompleteViewControllerDelegate {
     
+    func viewController(_ viewController: GMSAutocompleteViewController, didAutocompleteWith place: GMSPlace) {
+        self.destination = place
+        let lat = self.destination!.coordinate.latitude
+        let long = self.destination!.coordinate.longitude
+        
+        let camera = GMSCameraPosition.camera(withLatitude: lat, longitude: long, zoom: 6.0)
+        let mapView = GMSMapView.map(withFrame: CGRect.zero, camera: camera)
+        view = mapView
+        
+        let marker = GMSMarker()
+        marker.position = CLLocationCoordinate2D(latitude: lat, longitude: long)
+        marker.title = place.name
+        marker.snippet = place.formattedAddress
+        marker.map = mapView
+        
+        mapView.isMyLocationEnabled = true
+        mapView.settings.myLocationButton = true
+        mapView.settings.compassButton = true
+
+        print("Place name: \(place.name)")
+        print("Place address: \(String(describing: place.formattedAddress))")
+        print("Place attributions: \(String(describing: place.attributions))")
+        dismiss(animated: true, completion: nil)
+    }
+    
+    func viewController(_ viewController: GMSAutocompleteViewController, didFailAutocompleteWithError error: Error) {
+        print("Error: ", error.localizedDescription)
+    }
+    
+    func wasCancelled(_ viewController: GMSAutocompleteViewController) {
+        dismiss(animated: true, completion: nil)
+    }
+    
+    func didRequestAutocompletePredictions(_ viewController: GMSAutocompleteViewController) {
+        UIApplication.shared.isNetworkActivityIndicatorVisible = true
+    }
+    
+    func didUpdateAutocompletePredictions(_ viewController: GMSAutocompleteViewController) {
+        UIApplication.shared.isNetworkActivityIndicatorVisible = false
+    }
     
 }
 

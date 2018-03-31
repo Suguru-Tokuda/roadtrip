@@ -217,7 +217,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jJm-G3-1cC">
-                                <rect key="frame" x="111" y="422.5" width="153" height="30"/>
+                                <rect key="frame" x="111" y="382.5" width="153" height="30"/>
                                 <constraints>
                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="153" id="xPL-fa-VS6"/>
                                     <constraint firstAttribute="height" constant="30" id="yKh-K9-35d"/>
@@ -235,7 +235,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="au4-nF-MOR">
-                                <rect key="frame" x="121" y="113.5" width="250" height="230"/>
+                                <rect key="frame" x="121" y="113.5" width="250" height="190"/>
                                 <subviews>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="9j8-Q7-1lG">
                                         <rect key="frame" x="0.0" y="0.0" width="250" height="30"/>
@@ -270,16 +270,10 @@
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
                                     </textField>
-                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Lxr-H9-F6R">
-                                        <rect key="frame" x="0.0" y="200" width="250" height="30"/>
-                                        <nil key="textColor"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                        <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
-                                    </textField>
                                 </subviews>
                             </stackView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="mgQ-eV-eBe">
-                                <rect key="frame" x="16" y="113.5" width="172" height="223.5"/>
+                                <rect key="frame" x="16" y="113.5" width="172" height="182.5"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Year" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tAl-v6-UoP">
                                         <rect key="frame" x="0.0" y="0.0" width="172" height="20.5"/>
@@ -331,16 +325,6 @@
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Mileage" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Xwq-eY-hpg">
-                                        <rect key="frame" x="0.0" y="202.5" width="172" height="21"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="172" id="NCA-yG-3eK"/>
-                                            <constraint firstAttribute="height" constant="20.5" id="cI0-4F-s1m"/>
-                                        </constraints>
-                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                        <nil key="textColor"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
                                 </subviews>
                             </stackView>
                         </subviews>
@@ -368,7 +352,6 @@
                     <connections>
                         <outlet property="gasTypeTextField" destination="KG9-D5-QKZ" id="4ax-we-Ilp"/>
                         <outlet property="makeTextField" destination="OlI-2Y-cf5" id="Ulb-Do-dUw"/>
-                        <outlet property="mileageTextField" destination="Lxr-H9-F6R" id="P7R-I4-VWl"/>
                         <outlet property="modelTextField" destination="KGs-aU-ynA" id="44s-pM-ekI"/>
                         <outlet property="trimTextField" destination="7Jf-CI-bcp" id="2bT-QR-47W"/>
                         <outlet property="yearTextField" destination="9j8-Q7-1lG" id="58E-qW-cW0"/>
@@ -393,61 +376,55 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" spacing="40" translatesAutoresizingMaskIntoConstraints="NO" id="41g-ar-q0r">
-                                <rect key="frame" x="24" y="138" width="327" height="350"/>
+                                <rect key="frame" x="24" y="178" width="327" height="310"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="YV4-82-QDy">
-                                        <rect key="frame" x="0.0" y="0.0" width="127" height="350"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="127" height="310"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Year" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="95h-1Y-bLk">
-                                                <rect key="frame" x="0.0" y="0.0" width="34" height="26"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="34" height="26.5"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Make" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1Bz-4L-Z2D">
-                                                <rect key="frame" x="0.0" y="46" width="41.5" height="20.5"/>
+                                                <rect key="frame" x="0.0" y="46.5" width="41.5" height="20.5"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Model" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ry3-xA-fAO">
-                                                <rect key="frame" x="0.0" y="86.5" width="47.5" height="20.5"/>
+                                                <rect key="frame" x="0.0" y="87" width="47.5" height="20.5"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Trim" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Tss-gx-gqc">
-                                                <rect key="frame" x="0.0" y="127" width="33.5" height="20.5"/>
+                                                <rect key="frame" x="0.0" y="127.5" width="33.5" height="20.5"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="MPG (High Way)" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qWZ-ET-pGk">
-                                                <rect key="frame" x="0.0" y="167.5" width="127" height="20.5"/>
+                                                <rect key="frame" x="0.0" y="168" width="127" height="20.5"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="MPG (City)" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="H6E-r6-nXt">
-                                                <rect key="frame" x="0.0" y="208" width="84" height="20.5"/>
+                                                <rect key="frame" x="0.0" y="208.5" width="84" height="20.5"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Fuel Capacity" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JmA-uy-lRH">
-                                                <rect key="frame" x="0.0" y="248.5" width="104" height="20.5"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                <nil key="textColor"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Mileage" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fDz-pj-V1s">
-                                                <rect key="frame" x="0.0" y="289" width="60" height="20.5"/>
+                                                <rect key="frame" x="0.0" y="249" width="104" height="20.5"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Gas Type" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VzT-mr-21E">
-                                                <rect key="frame" x="0.0" y="329.5" width="72" height="20.5"/>
+                                                <rect key="frame" x="0.0" y="289.5" width="72" height="20.5"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
@@ -455,7 +432,7 @@
                                         </subviews>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="PA5-Pa-D0f">
-                                        <rect key="frame" x="167" y="0.0" width="160" height="350"/>
+                                        <rect key="frame" x="167" y="0.0" width="160" height="310"/>
                                         <subviews>
                                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="2kG-9z-Slj">
                                                 <rect key="frame" x="0.0" y="0.0" width="160" height="30"/>
@@ -527,18 +504,8 @@
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                 <textInputTraits key="textInputTraits"/>
                                             </textField>
-                                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="jwp-Ts-TSL">
-                                                <rect key="frame" x="0.0" y="280" width="160" height="30"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="width" constant="160" id="cYE-bO-Zgo"/>
-                                                    <constraint firstAttribute="height" constant="30" id="ppO-5k-dcm"/>
-                                                </constraints>
-                                                <nil key="textColor"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                <textInputTraits key="textInputTraits"/>
-                                            </textField>
                                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="u3A-zj-8t0">
-                                                <rect key="frame" x="0.0" y="320" width="160" height="30"/>
+                                                <rect key="frame" x="0.0" y="280" width="160" height="30"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="30" id="By0-Vh-GYY"/>
                                                     <constraint firstAttribute="width" constant="160" id="ck6-xD-7SA"/>
@@ -603,7 +570,6 @@
                         <outlet property="fuelCapacityTextField" destination="9dB-Ih-ch0" id="xby-2W-k9r"/>
                         <outlet property="gasTypeTextField" destination="u3A-zj-8t0" id="C1d-aX-uE1"/>
                         <outlet property="makeTextField" destination="GJx-l6-tiO" id="6KH-dm-ZWy"/>
-                        <outlet property="mileageTextField" destination="jwp-Ts-TSL" id="Kok-QT-JPI"/>
                         <outlet property="modelTextField" destination="SGc-bP-4Vf" id="DsD-LP-FgW"/>
                         <outlet property="mpgCityTextField" destination="g2k-CH-4ap" id="67A-nb-tv3"/>
                         <outlet property="mpgHwyTextField" destination="8rQ-99-zOh" id="TsG-Bd-nR3"/>
@@ -652,7 +618,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="o5y-jJ-u3C"/>
+        <segue reference="5o5-Ga-Xu1"/>
         <segue reference="lEw-GB-XCj"/>
     </inferredMetricsTieBreakers>
 </document>

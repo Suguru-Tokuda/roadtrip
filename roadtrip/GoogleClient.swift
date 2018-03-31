@@ -60,7 +60,7 @@ class GoogleClient {
                 completion(result)
             }
         }.resume()
-    }    
+    }
     
     private func processDirectionsRequest(data: Data?, error: Error?) -> DirectionsResult {
         guard let jsonData = data else {

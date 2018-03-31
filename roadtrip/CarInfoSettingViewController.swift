@@ -21,7 +21,6 @@ class CarInfoSettingViewController: UIViewController, UIPickerViewDataSource, UI
     @IBOutlet weak var modelTextField: UITextField!
     @IBOutlet weak var trimTextField: UITextField!
     @IBOutlet weak var gasTypeTextField: UITextField!
-    @IBOutlet weak var mileageTextField: UITextField!
     
     let appDelegate = UIApplication.shared.delegate as? AppDelegate
     let carQueryDataStore = CarQueryDataStore()
@@ -136,7 +135,6 @@ class CarInfoSettingViewController: UIViewController, UIPickerViewDataSource, UI
     
     public func loadDataAfterFirst(myCar: Car) {
         yearTextField.text = myCar.year
-        mileageTextField.text = myCar.mileage.description
         for i in 0..<gasTypes.count {
             if gasTypes[i] == myCar.gasType {
                 selectedGasType = gasTypes[i]
@@ -430,15 +428,14 @@ class CarInfoSettingViewController: UIViewController, UIPickerViewDataSource, UI
     }
     
     @IBAction func setCarInfoBtnClicked(_ sender: Any) {
-        guard selectedMake != nil && selectedModel != nil && selectedTrim != nil && mileageTextField.text != "" else {
+        guard selectedMake != nil && selectedModel != nil && selectedTrim != nil else {
             let carInfoConfAlert = UIAlertController(title: "Complete the Form", message: "Required to start your trip", preferredStyle: .alert)
             carInfoConfAlert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
             self.present(carInfoConfAlert, animated: true, completion: nil)
             return
         }
         let year = selectedYear?.description
-        let mileage = Double(mileageTextField.text!)
-        tempCar = Car(make: selectedMake!.makeDisplay, model: selectedModel!.modelName, trim: selectedTrim!.modelTrim, year: year!, mileage: mileage!, fuelCapacity: selectedTrim!.modelFuelCapG, gasType: selectedGasType!, mpgHwy: selectedTrim!.mpgHwy, mpgCity: selectedTrim!.mpgCity)
+        tempCar = Car(make: selectedMake!.makeDisplay, model: selectedModel!.modelName, trim: selectedTrim!.modelTrim, year: year!, fuelCapacity: selectedTrim!.modelFuelCapG, gasType: selectedGasType!, mpgHwy: selectedTrim!.mpgHwy, mpgCity: selectedTrim!.mpgCity)
         appDelegate!.myCar = tempCar
         performSegue(withIdentifier: "showCarSummary", sender: self)
     }

@@ -7,7 +7,6 @@ public class Car {
     private var _model: String?
     private var _trim: String?
     private var _year: String?
-    private var _mileage: Double?
     private var _fuelCapacity: Double?
     private var _gasType: String?
     private var _mpgHwy: Double?
@@ -15,12 +14,11 @@ public class Car {
     private var _fuelRemainingInPercent: Double?
     
     // MARK: Initializer
-    public init(make: String, model: String, trim: String, year: String, mileage: Double, fuelCapacity: Double, gasType: String, mpgHwy: Double, mpgCity: Double) {
+    public init(make: String, model: String, trim: String, year: String, fuelCapacity: Double, gasType: String, mpgHwy: Double, mpgCity: Double) {
         self._make = make
         self._model = model
         self._trim = trim
         self._year = year
-        self._mileage = mileage
         self._fuelCapacity = fuelCapacity
         self._gasType = gasType
         self._mpgHwy = mpgHwy
@@ -62,15 +60,6 @@ public class Car {
         }
         set(year) {
             self._year = year
-        }
-    }
-    
-    public var mileage: Double {
-        get {
-            return self._mileage!
-        }
-        set(mileage) {
-            self._mileage = mileage
         }
     }
     

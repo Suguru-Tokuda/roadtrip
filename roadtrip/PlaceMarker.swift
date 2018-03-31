@@ -8,6 +8,7 @@
 
 import UIKit
 import GoogleMaps
+import GooglePlaces
 
 class PlaceMarker: GMSMarker {
     let place: Place
@@ -30,10 +31,10 @@ class PlaceMarker: GMSMarker {
             }
         }
         
-        
         icon = UIImage(named: foundType+"_pin")
         groundAnchor = CGPoint(x: 0.5, y: 1)
         appearAnimation = .pop
     }
+
 }
 

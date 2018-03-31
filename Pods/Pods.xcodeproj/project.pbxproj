@@ -7,35 +7,39 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		AC6F4243FC4991DFEA7C203000506C13 /* Pods-roadtrip-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 96E688BE716FF53D8B08F79DDC6BE34F /* Pods-roadtrip-dummy.m */; };
-		D60090AB15685EECA249A60836D4BFE0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6604A7D69453B4569E4E4827FB9155A9 /* Foundation.framework */; };
+		02BA66ADD3F4B7EBDCFBB03AE232385A /* Pods-roadtrip-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = E2C9394497C6EC2A93D95589FC7EE3A2 /* Pods-roadtrip-dummy.m */; };
+		7B4B036199B5523827D5DD12F3B6C5F0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6604A7D69453B4569E4E4827FB9155A9 /* Foundation.framework */; };
+		E34FA5C0E1FA73B4BCF88F948BF007D5 /* Pods-roadtrip-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 90DE4823ABDD393A47B3CD44B2F74C6E /* Pods-roadtrip-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		08F1229163C7F5E61C7C4B361510F11C /* GoogleMaps.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GoogleMaps.framework; path = Maps/Frameworks/GoogleMaps.framework; sourceTree = "<group>"; };
-		1804947FC2BC20BE72BD31BE94A448BE /* Pods-roadtrip-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-roadtrip-resources.sh"; sourceTree = "<group>"; };
+		1308D8C895C61D964BEE55440EC2D824 /* Pods-roadtrip-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-roadtrip-acknowledgements.markdown"; sourceTree = "<group>"; };
 		1C6200385182862E9168588E60B1CD37 /* GoogleMaps.bundle */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = "wrapper.plug-in"; name = GoogleMaps.bundle; path = Maps/Frameworks/GoogleMaps.framework/Resources/GoogleMaps.bundle; sourceTree = "<group>"; };
-		3A046A50E36A80FC41C5AE83DF0EFCCD /* Pods-roadtrip-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-roadtrip-acknowledgements.markdown"; sourceTree = "<group>"; };
-		40EFAB19CFD05E43F9EBEA4243B5C4FB /* libPods-roadtrip.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = "libPods-roadtrip.a"; path = "libPods-roadtrip.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		5180434B8A94CB5C98A4BA86BB2A8D9B /* Pods-roadtrip.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-roadtrip.debug.xcconfig"; sourceTree = "<group>"; };
-		624A0974968F5232EEA32AB500EB229C /* Pods-roadtrip-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-roadtrip-frameworks.sh"; sourceTree = "<group>"; };
+		261823BF934242569224AEACC37DFF38 /* Pods_roadtrip.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_roadtrip.framework; path = "Pods-roadtrip.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
+		38BC8E32B00E2D51234B3E1F9EF323F3 /* Pods-roadtrip-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-roadtrip-frameworks.sh"; sourceTree = "<group>"; };
+		46A54147D0CE0E22C62340744C6A4155 /* Pods-roadtrip.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-roadtrip.modulemap"; sourceTree = "<group>"; };
+		5080427FC2DFE37BD59634296CC00AEB /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		63D783250CE7C7E078E078CEC529EF76 /* Pods-roadtrip.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-roadtrip.release.xcconfig"; sourceTree = "<group>"; };
 		6604A7D69453B4569E4E4827FB9155A9 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS10.3.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		6921B05AA7259B10D5998BAE00625889 /* Pods-roadtrip.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-roadtrip.debug.xcconfig"; sourceTree = "<group>"; };
 		70324FDF1FBB41BEA92DE76E00BD3E96 /* GooglePlaces.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GooglePlaces.framework; path = Frameworks/GooglePlaces.framework; sourceTree = "<group>"; };
-		810C69FC31CB9040B3DFF08964F2F53C /* Pods-roadtrip-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-roadtrip-acknowledgements.plist"; sourceTree = "<group>"; };
+		7D4422624D4C443BF7851FA83ADD3CCA /* Pods-roadtrip-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-roadtrip-resources.sh"; sourceTree = "<group>"; };
+		90DE4823ABDD393A47B3CD44B2F74C6E /* Pods-roadtrip-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-roadtrip-umbrella.h"; sourceTree = "<group>"; };
 		93A4A3777CF96A4AAC1D13BA6DCCEA73 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
-		96E688BE716FF53D8B08F79DDC6BE34F /* Pods-roadtrip-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-roadtrip-dummy.m"; sourceTree = "<group>"; };
 		A65ED65616C5861E2765BDC60AAAF910 /* GooglePlaces.bundle */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = "wrapper.plug-in"; name = GooglePlaces.bundle; path = Frameworks/GooglePlaces.framework/Resources/GooglePlaces.bundle; sourceTree = "<group>"; };
 		A92DFDA40F47C0FD221B2872C31099A1 /* GoogleMapsCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GoogleMapsCore.framework; path = Maps/Frameworks/GoogleMapsCore.framework; sourceTree = "<group>"; };
 		B22C69ADCE7C9D529F11B17B4EF5E065 /* GoogleMapsBase.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GoogleMapsBase.framework; path = Base/Frameworks/GoogleMapsBase.framework; sourceTree = "<group>"; };
-		D73D69CCAFEC93E42387A55DB0F19AEB /* Pods-roadtrip.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-roadtrip.release.xcconfig"; sourceTree = "<group>"; };
+		E2C9394497C6EC2A93D95589FC7EE3A2 /* Pods-roadtrip-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-roadtrip-dummy.m"; sourceTree = "<group>"; };
+		FE8FE52E9C2459AAAB32E27DE4B3C63C /* Pods-roadtrip-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-roadtrip-acknowledgements.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		4E6C6A9E6160DD1DA93385DE36926D36 /* Frameworks */ = {
+		8ED4064A0726C6B0306CFB6E5C2AA4FD /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D60090AB15685EECA249A60836D4BFE0 /* Foundation.framework in Frameworks */,
+				7B4B036199B5523827D5DD12F3B6C5F0 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -50,14 +54,6 @@
 			);
 			name = GooglePlaces;
 			path = GooglePlaces;
-			sourceTree = "<group>";
-		};
-		012E0949E00B0DDAA75D0369F6B09DB0 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				40EFAB19CFD05E43F9EBEA4243B5C4FB /* libPods-roadtrip.a */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 		09DB508F39D8BE758EA4A7B9047268E9 /* Resources */ = {
@@ -120,14 +116,22 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		71969A716881BE6BDE3CD2604AC00E31 /* Targets Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				DDA685B2F47DE55DD84BE03A47F2262A /* Pods-roadtrip */,
+			);
+			name = "Targets Support Files";
+			sourceTree = "<group>";
+		};
 		7DB346D0F39D3F0E887471402A8071AB = {
 			isa = PBXGroup;
 			children = (
 				93A4A3777CF96A4AAC1D13BA6DCCEA73 /* Podfile */,
 				BC3CA7F9E30CC8F7E2DD044DD34432FC /* Frameworks */,
 				385FA015FFB9210F372AB1078B856AAB /* Pods */,
-				012E0949E00B0DDAA75D0369F6B09DB0 /* Products */,
-				BEE173527D8AA4600F21A223BDB1A5D4 /* Targets Support Files */,
+				C3E5B425ECD0A24BA0BEDDAC78D329C4 /* Products */,
+				71969A716881BE6BDE3CD2604AC00E31 /* Targets Support Files */,
 			);
 			sourceTree = "<group>";
 		};
@@ -156,12 +160,12 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		BEE173527D8AA4600F21A223BDB1A5D4 /* Targets Support Files */ = {
+		C3E5B425ECD0A24BA0BEDDAC78D329C4 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				FBD27B7C1E321EC5167F9DA83DC5FF67 /* Pods-roadtrip */,
+				261823BF934242569224AEACC37DFF38 /* Pods_roadtrip.framework */,
 			);
-			name = "Targets Support Files";
+			name = Products;
 			sourceTree = "<group>";
 		};
 		D35AF013A5F0BAD4F32504907A52519E /* iOS */ = {
@@ -172,16 +176,19 @@
 			name = iOS;
 			sourceTree = "<group>";
 		};
-		FBD27B7C1E321EC5167F9DA83DC5FF67 /* Pods-roadtrip */ = {
+		DDA685B2F47DE55DD84BE03A47F2262A /* Pods-roadtrip */ = {
 			isa = PBXGroup;
 			children = (
-				3A046A50E36A80FC41C5AE83DF0EFCCD /* Pods-roadtrip-acknowledgements.markdown */,
-				810C69FC31CB9040B3DFF08964F2F53C /* Pods-roadtrip-acknowledgements.plist */,
-				96E688BE716FF53D8B08F79DDC6BE34F /* Pods-roadtrip-dummy.m */,
-				624A0974968F5232EEA32AB500EB229C /* Pods-roadtrip-frameworks.sh */,
-				1804947FC2BC20BE72BD31BE94A448BE /* Pods-roadtrip-resources.sh */,
-				5180434B8A94CB5C98A4BA86BB2A8D9B /* Pods-roadtrip.debug.xcconfig */,
-				D73D69CCAFEC93E42387A55DB0F19AEB /* Pods-roadtrip.release.xcconfig */,
+				5080427FC2DFE37BD59634296CC00AEB /* Info.plist */,
+				46A54147D0CE0E22C62340744C6A4155 /* Pods-roadtrip.modulemap */,
+				1308D8C895C61D964BEE55440EC2D824 /* Pods-roadtrip-acknowledgements.markdown */,
+				FE8FE52E9C2459AAAB32E27DE4B3C63C /* Pods-roadtrip-acknowledgements.plist */,
+				E2C9394497C6EC2A93D95589FC7EE3A2 /* Pods-roadtrip-dummy.m */,
+				38BC8E32B00E2D51234B3E1F9EF323F3 /* Pods-roadtrip-frameworks.sh */,
+				7D4422624D4C443BF7851FA83ADD3CCA /* Pods-roadtrip-resources.sh */,
+				90DE4823ABDD393A47B3CD44B2F74C6E /* Pods-roadtrip-umbrella.h */,
+				6921B05AA7259B10D5998BAE00625889 /* Pods-roadtrip.debug.xcconfig */,
+				63D783250CE7C7E078E078CEC529EF76 /* Pods-roadtrip.release.xcconfig */,
 			);
 			name = "Pods-roadtrip";
 			path = "Target Support Files/Pods-roadtrip";
@@ -189,13 +196,25 @@
 		};
 /* End PBXGroup section */
 
+/* Begin PBXHeadersBuildPhase section */
+		331E29270F43E6BEA717960976260925 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E34FA5C0E1FA73B4BCF88F948BF007D5 /* Pods-roadtrip-umbrella.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
 /* Begin PBXNativeTarget section */
-		9D28B5C23BE9C3FF5487AE1A6420F7AC /* Pods-roadtrip */ = {
+		B89C2EA1E69961F0E537E2ECD57DC209 /* Pods-roadtrip */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 90AEB421E928793A2933589AFDA7C19F /* Build configuration list for PBXNativeTarget "Pods-roadtrip" */;
+			buildConfigurationList = F526CA15B8B48E13148A3318AC87D459 /* Build configuration list for PBXNativeTarget "Pods-roadtrip" */;
 			buildPhases = (
-				8D26A58E5CAE69494B34AC86567F8380 /* Sources */,
-				4E6C6A9E6160DD1DA93385DE36926D36 /* Frameworks */,
+				BDB1D882F8481011F5B6856968809480 /* Sources */,
+				8ED4064A0726C6B0306CFB6E5C2AA4FD /* Frameworks */,
+				331E29270F43E6BEA717960976260925 /* Headers */,
 			);
 			buildRules = (
 			);
@@ -203,8 +222,8 @@
 			);
 			name = "Pods-roadtrip";
 			productName = "Pods-roadtrip";
-			productReference = 40EFAB19CFD05E43F9EBEA4243B5C4FB /* libPods-roadtrip.a */;
-			productType = "com.apple.product-type.library.static";
+			productReference = 261823BF934242569224AEACC37DFF38 /* Pods_roadtrip.framework */;
+			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
 
@@ -223,21 +242,21 @@
 				en,
 			);
 			mainGroup = 7DB346D0F39D3F0E887471402A8071AB;
-			productRefGroup = 012E0949E00B0DDAA75D0369F6B09DB0 /* Products */;
+			productRefGroup = C3E5B425ECD0A24BA0BEDDAC78D329C4 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				9D28B5C23BE9C3FF5487AE1A6420F7AC /* Pods-roadtrip */,
+				B89C2EA1E69961F0E537E2ECD57DC209 /* Pods-roadtrip */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
-		8D26A58E5CAE69494B34AC86567F8380 /* Sources */ = {
+		BDB1D882F8481011F5B6856968809480 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AC6F4243FC4991DFEA7C203000506C13 /* Pods-roadtrip-dummy.m in Sources */,
+				02BA66ADD3F4B7EBDCFBB03AE232385A /* Pods-roadtrip-dummy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -307,26 +326,39 @@
 			};
 			name = Debug;
 		};
-		53F95BC2871C50434AAA206F8E139C59 /* Debug */ = {
+		C12F7E22899A40EF8A0315ADBCA5929D /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5180434B8A94CB5C98A4BA86BB2A8D9B /* Pods-roadtrip.debug.xcconfig */;
+			baseConfigurationReference = 63D783250CE7C7E078E078CEC529EF76 /* Pods-roadtrip.release.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = NO;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "Target Support Files/Pods-roadtrip/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACH_O_TYPE = staticlib;
+				MODULEMAP_FILE = "Target Support Files/Pods-roadtrip/Pods-roadtrip.modulemap";
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOLFLAGS = "";
 				PODS_ROOT = "$(SRCROOT)";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_NAME = Pods_roadtrip;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
 			};
-			name = Debug;
+			name = Release;
 		};
 		CA33F186435244FD0FD5B7325332656C /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -386,27 +418,38 @@
 			};
 			name = Release;
 		};
-		F24A7083DEDFF8B17B877A346CA83024 /* Release */ = {
+		D75A0B4BA0BB48CDC0B8D21549957DDD /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D73D69CCAFEC93E42387A55DB0F19AEB /* Pods-roadtrip.release.xcconfig */;
+			baseConfigurationReference = 6921B05AA7259B10D5998BAE00625889 /* Pods-roadtrip.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = NO;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "Target Support Files/Pods-roadtrip/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACH_O_TYPE = staticlib;
+				MODULEMAP_FILE = "Target Support Files/Pods-roadtrip/Pods-roadtrip.modulemap";
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOLFLAGS = "";
 				PODS_ROOT = "$(SRCROOT)";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_NAME = Pods_roadtrip;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
 			};
-			name = Release;
+			name = Debug;
 		};
 /* End XCBuildConfiguration section */
 
@@ -420,11 +463,11 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		90AEB421E928793A2933589AFDA7C19F /* Build configuration list for PBXNativeTarget "Pods-roadtrip" */ = {
+		F526CA15B8B48E13148A3318AC87D459 /* Build configuration list for PBXNativeTarget "Pods-roadtrip" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				53F95BC2871C50434AAA206F8E139C59 /* Debug */,
-				F24A7083DEDFF8B17B877A346CA83024 /* Release */,
+				D75A0B4BA0BB48CDC0B8D21549957DDD /* Debug */,
+				C12F7E22899A40EF8A0315ADBCA5929D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
