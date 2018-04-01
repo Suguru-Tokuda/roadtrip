@@ -14,7 +14,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
     var locationPetrol : String = "petrol"
     var locationGasStation : String = "gas_station"
     var locationFood : String = "food"
-    var searchRadius : Int = 500
+    var searchRadius : Int = 1000
     let searchBar = UISearchBar()
     var markers=[String:[PlaceMarker]]()
     
@@ -189,8 +189,31 @@ extension MapViewController {
                     marker.snippet = "The place is \(place.openingHours?.isOpen == true ? "open" : "closed")"
                     switch true{
                     case place.types.contains("gas_station"),place.types.contains("petrol"):
-                        marker.icon = UIImage(named: "Gas_station")
+                        
+                        let DynamicView=UIView(frame: CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 50, height: 50)))
+                        DynamicView.backgroundColor=UIColor.clear
+                        var imageViewForPinMarker : UIImageView
+                        imageViewForPinMarker  = UIImageView(frame:CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 50, height: 50)))
+                        imageViewForPinMarker.image = UIImage(named:"prices")?.withRenderingMode(.alwaysTemplate)
+                        imageViewForPinMarker.tintColor = UIColor.green
+                        let text = UILabel(frame:CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 40, height: 30)))
+                        text.text = "$2.5"
+                        text.textColor = UIColor.black
+                        text.font = UIFont(name: text.font.fontName, size: 14)
+                        text.textAlignment = NSTextAlignment.center
+                        text.center = imageViewForPinMarker.convert(imageViewForPinMarker.center, from:imageViewForPinMarker.superview)
+
+                        imageViewForPinMarker.addSubview(text)
+                        imageViewForPinMarker.center = DynamicView.convert(DynamicView.center, from:DynamicView.superview)
+                        DynamicView.addSubview(imageViewForPinMarker)
+                        UIGraphicsBeginImageContextWithOptions(DynamicView.frame.size, false, UIScreen.main.scale)
+                        DynamicView.layer.render(in: UIGraphicsGetCurrentContext()!)
+                        let imageConverted: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
+                        UIGraphicsEndImageContext()
+                        
+                        marker.icon = imageConverted
                         marker.map = self.mapView
+                        
                     case place.types.contains("food"),place.types.contains("restaurant"),place.types.contains("bar"):
                         marker.icon = UIImage(named: "Food")
                         marker.map = self.mapView
@@ -216,8 +239,31 @@ extension MapViewController {
                         marker.snippet = "The place is \(place.openingHours?.isOpen == true ? "open" : "closed")"
                         switch true{
                         case place.types.contains("gas_station"):
-                            marker.icon = UIImage(named: "Gas_station")
+                            
+                            let DynamicView=UIView(frame: CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 50, height: 50)))
+                            DynamicView.backgroundColor=UIColor.clear
+                            var imageViewForPinMarker : UIImageView
+                            imageViewForPinMarker  = UIImageView(frame:CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 50, height: 50)))
+                            imageViewForPinMarker.image = UIImage(named:"prices")?.withRenderingMode(.alwaysTemplate)
+                            imageViewForPinMarker.tintColor = UIColor.green
+                            
+                            let text = UILabel(frame:CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 40, height: 30)))
+                            text.text = "$2.5"
+                            text.textColor = UIColor.black
+                            text.font = UIFont(name: text.font.fontName, size: 14)
+                            text.textAlignment = NSTextAlignment.center
+                            text.center = imageViewForPinMarker.convert(imageViewForPinMarker.center, from:imageViewForPinMarker.superview)
+                            imageViewForPinMarker.addSubview(text)
+                            imageViewForPinMarker.center = DynamicView.convert(DynamicView.center, from:DynamicView.superview)
+                            DynamicView.addSubview(imageViewForPinMarker)
+                            UIGraphicsBeginImageContextWithOptions(DynamicView.frame.size, false, UIScreen.main.scale)
+                            DynamicView.layer.render(in: UIGraphicsGetCurrentContext()!)
+                            let imageConverted: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
+                            UIGraphicsEndImageContext()
+                            
+                            marker.icon = imageConverted
                             marker.map = self.mapView
+
                         case place.types.contains("food"),place.types.contains("restaurant"),place.types.contains("bar"):
                             marker.icon = UIImage(named: "Food")
                             marker.map = self.mapView
@@ -243,8 +289,31 @@ extension MapViewController {
                         marker.snippet = "The place is \(place.openingHours?.isOpen == true ? "open" : "closed")"
                         switch true{
                         case place.types.contains("gas_station"):
-                            marker.icon = UIImage(named: "Gas_station")
+                            let DynamicView=UIView(frame: CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 50, height: 50)))
+                            DynamicView.backgroundColor=UIColor.clear
+                            var imageViewForPinMarker : UIImageView
+                            imageViewForPinMarker  = UIImageView(frame:CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 50, height: 50)))
+                            imageViewForPinMarker.image = UIImage(named:"prices")?.withRenderingMode(.alwaysTemplate)
+                            imageViewForPinMarker.tintColor = UIColor.green
+                            let text = UILabel(frame:CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 40, height: 30)))
+                            text.text = "$2.5"
+                            text.textColor = UIColor.black
+                            text.font = UIFont(name: text.font.fontName, size: 14)
+                            text.textAlignment = NSTextAlignment.center
+                            text.center = imageViewForPinMarker.convert(imageViewForPinMarker.center, from:imageViewForPinMarker.superview)
+
+                            imageViewForPinMarker.addSubview(text)
+                            imageViewForPinMarker.center = DynamicView.convert(DynamicView.center, from:DynamicView.superview)
+
+                            DynamicView.addSubview(imageViewForPinMarker)
+                            UIGraphicsBeginImageContextWithOptions(DynamicView.frame.size, false, UIScreen.main.scale)
+                            DynamicView.layer.render(in: UIGraphicsGetCurrentContext()!)
+                            let imageConverted: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
+                            UIGraphicsEndImageContext()
+                            
+                            marker.icon = imageConverted
                             marker.map = self.mapView
+                            
                         case place.types.contains("food"),place.types.contains("restaurant"),place.types.contains("bar"):
                             marker.icon = UIImage(named: "Food")
                             marker.map = self.mapView
