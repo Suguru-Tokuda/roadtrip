@@ -19,8 +19,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
     let searchBar = UISearchBar()
     var markers=[String:[PlaceMarker]]()
     
-    //part of exapandable search
-    var leftConstraint: NSLayoutConstraint!
     var navigationDirection: Direction?
     
     override func viewDidLoad() {
@@ -37,7 +35,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
         locationManager.requestWhenInUseAuthorization()
         
         // expandableview to end of code
-        addingExpandableSearch()
+        addingSearchAndFilterButtonToRightNavigation()
         // setting spanner for getting to settings
         let settingsBtn: UIBarButtonItem = UIBarButtonItem(image: UIImage(named: "spanner")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(settingsTapped(_:)))
         self.navigationItem.leftBarButtonItem = settingsBtn
@@ -367,7 +365,9 @@ extension MapViewController: GMSAutocompleteViewControllerDelegate {
 extension MapViewController {
     
     func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
-        return true
+        //dynamically buttons
+        
+        return false
     }
     
     func mapView(_ mapView: GMSMapView, didTapInfoWindowOf marker: GMSMarker) {
@@ -384,28 +384,12 @@ extension MapViewController {
 // MARK: needs to be changed - Sanket
 extension MapViewController {
     
-    func addingExpandableSearch(){
-        // Expandable area.
-        let expandableView = ExpandableView()
-        navigationItem.titleView = expandableView
-        
-        // Search button.
-        // navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(toggle))
+    func addingSearchAndFilterButtonToRightNavigation(){
         let imgforsearch = UIImage(named: "search")!.withRenderingMode(UIImageRenderingMode.alwaysOriginal)
         let imgforfilter = UIImage(named: "filter")!.withRenderingMode(UIImageRenderingMode.alwaysOriginal)
         let searchButton = UIBarButtonItem(image: imgforsearch, style: .plain, target: self, action: #selector(toggle))
         let forfilter = UIBarButtonItem(image: imgforfilter, style: .plain, target: self, action: #selector(filterClicked))
         navigationItem.setRightBarButtonItems([searchButton,forfilter], animated: true)
-        // Search bar.
-        
-        searchBar.translatesAutoresizingMaskIntoConstraints = false
-        expandableView.addSubview(searchBar)
-        leftConstraint = searchBar.leftAnchor.constraint(equalTo: expandableView.leftAnchor)
-        leftConstraint.isActive = false
-        searchBar.rightAnchor.constraint(equalTo: expandableView.rightAnchor).isActive = true
-        searchBar.topAnchor.constraint(equalTo: expandableView.topAnchor).isActive = true
-        searchBar.bottomAnchor.constraint(equalTo: expandableView.bottomAnchor).isActive = true
-        
     }
 }
 
@@ -420,16 +404,6 @@ extension MapViewController {
         let autocompleteController = GMSAutocompleteViewController()
         autocompleteController.delegate = self
         present(autocompleteController, animated: true, completion: nil)
-        let isOpen = leftConstraint.isActive == true
-        
-        // Inactivating the left constraint closes the expandable header.
-        leftConstraint.isActive = isOpen ? false : true
-        
-        // Animate change to visible.
-        UIView.animate(withDuration: 1, animations: {
-            self.navigationItem.titleView?.alpha = isOpen ? 0 : 1
-            self.navigationItem.titleView?.layoutIfNeeded()
-        })
     }
 }
 
