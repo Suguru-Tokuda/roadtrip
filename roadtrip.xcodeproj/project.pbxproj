@@ -81,7 +81,6 @@
 		BBDF006E2054D5BB002EF5F1 /* RoadtripAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoadtripAPI.swift; sourceTree = "<group>"; };
 		BBF2A6BE20587CFC00FD2871 /* CarInfoSettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarInfoSettingViewController.swift; sourceTree = "<group>"; };
 		BBF39D022055D2A1002F53A5 /* CarQueryDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarQueryDataStore.swift; sourceTree = "<group>"; };
-		D5291226AD2FABCEBC328D2D /* libPods-roadtrip.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-roadtrip.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FCAB4724364AABA8D1633D15 /* Pods_roadtrip.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_roadtrip.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -200,7 +199,6 @@
 			isa = PBXGroup;
 			children = (
 				BB6AD780205A21E500C713B6 /* PromiseKit.framework */,
-				D5291226AD2FABCEBC328D2D /* libPods-roadtrip.a */,
 				FCAB4724364AABA8D1633D15 /* Pods_roadtrip.framework */,
 			);
 			name = Frameworks;
