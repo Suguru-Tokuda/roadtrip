@@ -19,6 +19,10 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
     let searchBar = UISearchBar()
     var markers=[String:[PlaceMarker]]()
     
+    //part of exapandable search
+    var leftConstraint: NSLayoutConstraint!
+    var navigationDirection: Direction?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -31,11 +35,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
         mapView.delegate = self
         //self.navigationController?.isNavigationBarHidden = true
         locationManager.requestWhenInUseAuthorization()
-        // let jsonURLString = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.870943,151.190311&radius=1000&rankby=prominence&sensor=true&key=AIzaSyD14jarz6jPaHCozkfKHcNLVthhuJhtwqg"
-        // fetchGoogleData(forLocation: currentLocation, locationName: locationName, searchRadius: searchRadius )
         
-        // expandable search bar
-        // https://stackoverflow.com/questions/38580175/swift-expandable-search-bar-in-header
         // expandableview to end of code
         addingExpandableSearch()
         // setting spanner for getting to settings
@@ -44,14 +44,41 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
         
         // setting the navigation bar to transparent
         self.navigationController?.presentTransparentNavigationBar()
-        
-        // drawing lines
-        let origin:CLLocation = CLLocation(latitude: 40.6936, longitude: -89.5890)
-        let dest:CLLocation = CLLocation(latitude: 39.781721 , longitude: -89.650148)
-        drawPath(origin: origin, destination: dest)
     }
     
-    func fetchAllFor(getMarkerType markerType:String)->[PlaceMarker]{
+}
+
+// MARK: location manager functions
+extension MapViewController {
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        guard status == .authorizedWhenInUse else {
+            return
+        }
+        locationManager.startUpdatingLocation()
+        mapView.isMyLocationEnabled = true
+        mapView.settings.myLocationButton = true
+        mapView.settings.compassButton = true
+        
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        guard let location = locations.first else {
+            return
+        }
+        
+        mapView.camera = GMSCameraPosition(target: location.coordinate, zoom: 15, bearing: 0, viewingAngle: 0)
+        clearAllMarkers()
+        for keyword in searchKeywords{
+            self.fetchGoogleData(forLocation: location, locationName: keyword, searchRadius: self.searchRadius )
+        }
+        currentLocation = location
+    }
+}
+
+// MARK: showing markers and polylines
+extension MapViewController {
+    
+    func fetchAllFor(getMarkerType markerType:String)->[PlaceMarker] {
         for (key, values) in markers{
             if key == markerType{
                 return values
@@ -83,103 +110,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
         markers[markerType]?.append(marker)
     }
     
-    //MARK: GMS delegate functions
-    func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
-        return true
-    }
-    
-    func mapView(_ mapView: GMSMapView, didTapInfoWindowOf marker: GMSMarker) {
-        print("infowindow tapped")
-    }
-    
-    //part of exapandable search
-    var leftConstraint: NSLayoutConstraint!
-    var navigationDirection: Direction?
-    
-    @objc func settingsTapped(_ sender: UIBarButtonItem) {
-        performSegue(withIdentifier: "showCarSummary", sender: self)
-    }
-    
-    func mapView(_ mapView: GMSMapView, didTapAt coordinate: CLLocationCoordinate2D) {
-        //hiding keyboard on taping map
-        searchBar.resignFirstResponder()
-    }
-    
-    func addingExpandableSearch(){
-        // Expandable area.
-        let expandableView = ExpandableView()
-        navigationItem.titleView = expandableView
-        
-        // Search button.
-        // navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(toggle))
-        let imgforsearch = UIImage(named: "search")!.withRenderingMode(UIImageRenderingMode.alwaysOriginal)
-        let imgforfilter = UIImage(named: "filter")!.withRenderingMode(UIImageRenderingMode.alwaysOriginal)
-        let searchButton = UIBarButtonItem(image: imgforsearch, style: .plain, target: self, action: #selector(toggle))
-        let forfilter = UIBarButtonItem(image: imgforfilter, style: .plain, target: self, action: #selector(filterClicked))
-        navigationItem.setRightBarButtonItems([searchButton,forfilter], animated: true)
-        // Search bar.
-        
-        searchBar.translatesAutoresizingMaskIntoConstraints = false
-        expandableView.addSubview(searchBar)
-        leftConstraint = searchBar.leftAnchor.constraint(equalTo: expandableView.leftAnchor)
-        leftConstraint.isActive = false
-        searchBar.rightAnchor.constraint(equalTo: expandableView.rightAnchor).isActive = true
-        searchBar.topAnchor.constraint(equalTo: expandableView.topAnchor).isActive = true
-        searchBar.bottomAnchor.constraint(equalTo: expandableView.bottomAnchor).isActive = true
-        
-    }
-    
-    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-        guard status == .authorizedWhenInUse else {
-            return
-        }
-        
-        locationManager.startUpdatingLocation()
-        mapView.isMyLocationEnabled = true
-        mapView.settings.myLocationButton = true
-        mapView.settings.compassButton = true
-        
-    }
-    
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        guard let location = locations.first else {
-            return
-        }
-        
-        mapView.camera = GMSCameraPosition(target: location.coordinate, zoom: 15, bearing: 0, viewingAngle: 0)
-        //DispatchQueue.main.async {
-        //locationManager.stopUpdatingLocation()
-        clearAllMarkers()
-        for keyword in searchKeywords{
-            self.fetchGoogleData(forLocation: location, locationName: keyword, searchRadius: self.searchRadius )
-        }
-        currentLocation = location
-    }
-    private func reverseGeocodeCoordinate(_ coordinate: CLLocationCoordinate2D) {
-        let geocoder = GMSGeocoder()
-        
-        geocoder.reverseGeocodeCoordinate(coordinate) { response, error in
-            guard let address = response?.firstResult(), let lines = address.lines else {
-                return
-            }
-
-//            self.mapView.padding = UIEdgeInsets(top: self.view.safeAreaInsets.top, left: 0, bottom: labelHeight, right: 0)
-            
-            UIView.animate(withDuration: 0.25) {
-                self.view.layoutIfNeeded()
-            }
-        }
-    }
-    
-    func mapView(_ mapView: GMSMapView, idleAt position: GMSCameraPosition) {
-        reverseGeocodeCoordinate(position.target)
-    }
-    
-}
-
-extension MapViewController {
     func fetchGoogleData(forLocation: CLLocation, locationName: String, searchRadius: Int) {
-        //        let possibleTypes = ["bar", "gas_station", "restaurant"]
         let group1 = DispatchGroup()
         group1.enter()
         googleClient.getGooglePlacesData(forKeyword: locationName, location: forLocation, withinMeters: searchRadius) { (response) in
@@ -205,7 +136,7 @@ extension MapViewController {
                         text.font = UIFont(name: text.font.fontName, size: 14)
                         text.textAlignment = NSTextAlignment.center
                         text.center = imageViewForPinMarker.convert(imageViewForPinMarker.center, from:imageViewForPinMarker.superview)
-
+                        
                         imageViewForPinMarker.addSubview(text)
                         imageViewForPinMarker.center = DynamicView.convert(DynamicView.center, from:DynamicView.superview)
                         DynamicView.addSubview(imageViewForPinMarker)
@@ -266,7 +197,7 @@ extension MapViewController {
                             
                             marker.icon = imageConverted
                             marker.map = self.mapView
-
+                            
                         case place.types.contains("food"),place.types.contains("restaurant"),place.types.contains("bar"):
                             marker.icon = UIImage(named: "Food")
                             marker.map = self.mapView
@@ -304,10 +235,10 @@ extension MapViewController {
                             text.font = UIFont(name: text.font.fontName, size: 14)
                             text.textAlignment = NSTextAlignment.center
                             text.center = imageViewForPinMarker.convert(imageViewForPinMarker.center, from:imageViewForPinMarker.superview)
-
+                            
                             imageViewForPinMarker.addSubview(text)
                             imageViewForPinMarker.center = DynamicView.convert(DynamicView.center, from:DynamicView.superview)
-
+                            
                             DynamicView.addSubview(imageViewForPinMarker)
                             UIGraphicsBeginImageContextWithOptions(DynamicView.frame.size, false, UIScreen.main.scale)
                             DynamicView.layer.render(in: UIGraphicsGetCurrentContext()!)
@@ -353,34 +284,14 @@ extension MapViewController {
     }
 }
 
-extension MapViewController{
-    //    part of expandable search bar
-    @objc func toggle() {
-        
-        let autocompleteController = GMSAutocompleteViewController()
-        autocompleteController.delegate = self
-        present(autocompleteController, animated: true, completion: nil)
-        let isOpen = leftConstraint.isActive == true
-        
-        // Inactivating the left constraint closes the expandable header.
-        leftConstraint.isActive = isOpen ? false : true
-        
-        // Animate change to visible.
-        UIView.animate(withDuration: 1, animations: {
-            self.navigationItem.titleView?.alpha = isOpen ? 0 : 1
-            self.navigationItem.titleView?.layoutIfNeeded()
-        })
-    }
-    
-}
-
+// MARK: Filter functions
 extension MapViewController: FilterTableViewControllerDelegate {
     //    extension forgetting passing the selected filter form FilterViewController
     func typesController(_ controller: FilterTableViewController, didSelectTypes types: [String]) {
         searchKeywords = controller.selectedTypes.sorted()
         for (key, _) in markers{
             if !searchKeywords.contains(key){
-               clearMarkers(forType: key)
+                clearMarkers(forType: key)
             }
         }
         for key in searchKeywords{
@@ -406,6 +317,7 @@ extension MapViewController: FilterTableViewControllerDelegate {
     
 }
 
+// MARK: GMS Auto Complete Functions
 extension MapViewController: GMSAutocompleteViewControllerDelegate {
     
     func viewController(_ viewController: GMSAutocompleteViewController, didAutocompleteWith place: GMSPlace) {
@@ -426,7 +338,7 @@ extension MapViewController: GMSAutocompleteViewControllerDelegate {
         mapView.isMyLocationEnabled = true
         mapView.settings.myLocationButton = true
         mapView.settings.compassButton = true
-
+        
         print("Place name: \(place.name)")
         print("Place address: \(String(describing: place.formattedAddress))")
         print("Place attributions: \(String(describing: place.attributions))")
@@ -449,6 +361,76 @@ extension MapViewController: GMSAutocompleteViewControllerDelegate {
         UIApplication.shared.isNetworkActivityIndicatorVisible = false
     }
     
+}
+
+//MARK: GMS delegate functions
+extension MapViewController {
+    
+    func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
+        return true
+    }
+    
+    func mapView(_ mapView: GMSMapView, didTapInfoWindowOf marker: GMSMarker) {
+        print("infowindow tapped")
+    }
+    
+    func mapView(_ mapView: GMSMapView, didTapAt coordinate: CLLocationCoordinate2D) {
+        //hiding keyboard on taping map
+        searchBar.resignFirstResponder()
+    }
+    
+}
+
+// MARK: needs to be changed - Sanket
+extension MapViewController {
+    
+    func addingExpandableSearch(){
+        // Expandable area.
+        let expandableView = ExpandableView()
+        navigationItem.titleView = expandableView
+        
+        // Search button.
+        // navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(toggle))
+        let imgforsearch = UIImage(named: "search")!.withRenderingMode(UIImageRenderingMode.alwaysOriginal)
+        let imgforfilter = UIImage(named: "filter")!.withRenderingMode(UIImageRenderingMode.alwaysOriginal)
+        let searchButton = UIBarButtonItem(image: imgforsearch, style: .plain, target: self, action: #selector(toggle))
+        let forfilter = UIBarButtonItem(image: imgforfilter, style: .plain, target: self, action: #selector(filterClicked))
+        navigationItem.setRightBarButtonItems([searchButton,forfilter], animated: true)
+        // Search bar.
+        
+        searchBar.translatesAutoresizingMaskIntoConstraints = false
+        expandableView.addSubview(searchBar)
+        leftConstraint = searchBar.leftAnchor.constraint(equalTo: expandableView.leftAnchor)
+        leftConstraint.isActive = false
+        searchBar.rightAnchor.constraint(equalTo: expandableView.rightAnchor).isActive = true
+        searchBar.topAnchor.constraint(equalTo: expandableView.topAnchor).isActive = true
+        searchBar.bottomAnchor.constraint(equalTo: expandableView.bottomAnchor).isActive = true
+        
+    }
+}
+
+// MARK: Custom functions
+extension MapViewController {
+    @objc func settingsTapped(_ sender: UIBarButtonItem) {
+        performSegue(withIdentifier: "showCarSummary", sender: self)
+    }
+    
+    //    part of expandable search bar
+    @objc func toggle() {
+        let autocompleteController = GMSAutocompleteViewController()
+        autocompleteController.delegate = self
+        present(autocompleteController, animated: true, completion: nil)
+        let isOpen = leftConstraint.isActive == true
+        
+        // Inactivating the left constraint closes the expandable header.
+        leftConstraint.isActive = isOpen ? false : true
+        
+        // Animate change to visible.
+        UIView.animate(withDuration: 1, animations: {
+            self.navigationItem.titleView?.alpha = isOpen ? 0 : 1
+            self.navigationItem.titleView?.layoutIfNeeded()
+        })
+    }
 }
 
 //part of expandable search bar
@@ -485,4 +467,3 @@ extension UINavigationController {
         navigationBar.shadowImage = UINavigationBar.appearance().shadowImage
     }
 }
-
