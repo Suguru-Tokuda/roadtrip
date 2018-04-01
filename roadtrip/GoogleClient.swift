@@ -24,7 +24,7 @@ class GoogleClient {
     var googlePlacesKey: String?
     
     func getGooglePlacesData(forKeyword keyword: String, location: CLLocation, withinMeters radius: Int, using completionHandler: @escaping (GooglePlacesResponse) -> ())  {
-        let url = RoadtripAPI.googlePlacesDataURL(location: location, keyword: keyword,token: pagetoken)
+        let url = RoadtripAPI.googlePlacesDataURL(location: location, keyword: keyword, radius: radius ,token: pagetoken)
         
         let task = self.session.dataTask(with: url) { (responseData, _, error) in
             

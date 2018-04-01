@@ -49,13 +49,16 @@ struct RoadtripAPI {
         return url!
     }
     
-    public static func googlePlacesDataURL(location: CLLocation, keyword: String, token: String) -> URL {
+    public static func googlePlacesDataURL(location: CLLocation, keyword: String, radius: Int, token: String) -> URL {
         let locationString = "location=" + String(location.coordinate.latitude) + "," + String(location.coordinate.longitude)
-        let rankby = "rankby=distance"
+        let radiusstr = "radius=\(radius)"
+        let rankby = "rankby=prominence"
+//        let rankby = "rankby=distance"
         let keywrd = "keyword=" + keyword
         let key = "key=" + googleMapsAPIKey
         let pagetoken = "pagetoken="+token
-        return URL(string: googleAPIBaseURL + locationString + "&" + rankby + "&" + keywrd + "&" + key + "&" + pagetoken)!
+        return URL(string: googleAPIBaseURL + locationString + "&" + radiusstr + "&" + rankby + "&" + keywrd + "&" + key + "&" + pagetoken)!
+//        return URL(string: googleAPIBaseURL + locationString + "&" + rankby + "&" + keywrd + "&" + key + "&" + pagetoken)!
     }
     
     public static func googleDirectionURLWithCoordinates(originLat: Double, originLong: Double, destLat: Double, destLong: Double) -> URL {
