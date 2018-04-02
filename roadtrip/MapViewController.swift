@@ -14,7 +14,8 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
     var searchKeywords:[String] = []
     var locationPetrol : String = "petrol"
     var locationGasStation : String = "gas_station"
-    var locationFood : String = "food"
+    var locationPizza : String = "pizza"
+    var locationBurger : String = "burger"
     var searchRadius : Int = 1000
     let searchBar = UISearchBar()
     var isInNavigation: Bool?
@@ -117,9 +118,9 @@ extension MapViewController {
                     let marker = PlaceMarker(place: place)
                     marker.title = place.name
                     marker.snippet = "The place is \(place.openingHours?.isOpen == true ? "open" : "closed")"
-                    switch true{
-                    case place.types.contains("gas_station"),place.types.contains("petrol"):
-                        
+                    //                    switch true{
+                    //                    case place.types.contains("gas_station"),place.types.contains("petrol"):
+                    if locationName == "gas_station" || locationName == "petrol"{
                         let DynamicView=UIView(frame: CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 50, height: 50)))
                         DynamicView.backgroundColor=UIColor.clear
                         var imageViewForPinMarker : UIImageView
@@ -143,13 +144,21 @@ extension MapViewController {
                         
                         marker.icon = imageConverted
                         marker.map = self.mapView
-                        
-                    case place.types.contains("food"),place.types.contains("restaurant"),place.types.contains("bar"):
-                        marker.icon = UIImage(named: "Food")
-                        marker.map = self.mapView
-                    default:
-                        break
                     }
+                    //                    case place.types.contains("pizza"), place.name.range(of: "pizza", options: .caseInsensitive) != nil:
+                    if locationName == "pizza"{
+                        marker.icon = UIImage(named: "pizza")
+                        marker.map = self.mapView
+                    }
+                    if locationName == "burger"{
+                        marker.icon = UIImage(named: "burger")
+                        marker.map = self.mapView
+                    }
+                    //                    case place.types.contains("food"),place.types.contains("restaurant"),place.types.contains("bar"):
+//                    if locationName == "food"{
+//                        marker.icon = UIImage(named: "Food")
+//                        marker.map = self.mapView
+//                    }
                     self.addMarker(markerType: locationName, marker: marker)
                 }
                 group1.leave()
@@ -167,8 +176,10 @@ extension MapViewController {
                         let marker = PlaceMarker(place: place)
                         marker.title = place.name
                         marker.snippet = "The place is \(place.openingHours?.isOpen == true ? "open" : "closed")"
-                        switch true{
-                        case place.types.contains("gas_station"):
+                        //                        switch true{
+                        //                        case place.types.contains("gas_station"):
+                        //
+                        if locationName == "gas_station" || locationName == "petrol"{
                             
                             let DynamicView=UIView(frame: CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 50, height: 50)))
                             DynamicView.backgroundColor=UIColor.clear
@@ -193,13 +204,21 @@ extension MapViewController {
                             
                             marker.icon = imageConverted
                             marker.map = self.mapView
-                            
-                        case place.types.contains("food"),place.types.contains("restaurant"),place.types.contains("bar"):
-                            marker.icon = UIImage(named: "Food")
-                            marker.map = self.mapView
-                        default:
-                            break
                         }
+                        //                        case place.types.contains("pizza"), place.name.range(of: "pizza", options: .caseInsensitive) != nil:
+                        if locationName == "pizza"{
+                            marker.icon = UIImage(named: "pizza")
+                            marker.map = self.mapView
+                        }
+                        if locationName == "burger"{
+                            marker.icon = UIImage(named: "burger")
+                            marker.map = self.mapView
+                        }
+                        //                        case place.types.contains("food"),place.types.contains("restaurant"),place.types.contains("bar"):
+//                        if locationName == "food"{
+//                            marker.icon = UIImage(named: "Food")
+//                            marker.map = self.mapView
+//                        }
                         self.addMarker(markerType: locationName, marker: marker)
                     }
                     group2.leave()
@@ -217,8 +236,9 @@ extension MapViewController {
                         let marker = PlaceMarker(place: place)
                         marker.title = place.name
                         marker.snippet = "The place is \(place.openingHours?.isOpen == true ? "open" : "closed")"
-                        switch true{
-                        case place.types.contains("gas_station"):
+                        //                        switch true{
+                        //                        case place.types.contains("gas_station"):
+                        if locationName == "gas_station"{
                             let DynamicView=UIView(frame: CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 50, height: 50)))
                             DynamicView.backgroundColor=UIColor.clear
                             var imageViewForPinMarker : UIImageView
@@ -243,13 +263,21 @@ extension MapViewController {
                             
                             marker.icon = imageConverted
                             marker.map = self.mapView
-                            
-                        case place.types.contains("food"),place.types.contains("restaurant"),place.types.contains("bar"):
-                            marker.icon = UIImage(named: "Food")
-                            marker.map = self.mapView
-                        default:
-                            break
                         }
+                        //                        case place.types.contains("pizza"), place.name.range(of: "pizza", options: .caseInsensitive) != nil:
+                        if locationName == "pizza"{
+                            marker.icon = UIImage(named: "pizza")
+                            marker.map = self.mapView
+                        }
+                        if locationName == "burger"{
+                            marker.icon = UIImage(named: "burger")
+                            marker.map = self.mapView
+                        }
+                        //                        case place.types.contains("food"),place.types.contains("restaurant"),place.types.contains("bar"):
+//                        if locationName == "food"{
+//                            marker.icon = UIImage(named: "Food")
+//                            marker.map = self.mapView
+//                        }
                         self.addMarker(markerType: locationName, marker: marker)
                     }
                 }
@@ -524,3 +552,4 @@ extension UINavigationController {
         navigationBar.shadowImage = UINavigationBar.appearance().shadowImage
     }
 }
+
