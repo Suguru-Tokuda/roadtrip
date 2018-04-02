@@ -5,7 +5,7 @@ import GooglePlaces
 class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDelegate {
     //https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.870943,151.190311&radius=1000&rankby=prominence&sensor=true&key=AIzaSyD14jarz6jPaHCozkfKHcNLVthhuJhtwqg
     var locationManager = CLLocationManager()
-    var destination: GMSPlace?
+    var destination: CLLocationCoordinate2D?
     
     @IBOutlet weak var mapView: GMSMapView!
     
@@ -17,7 +17,9 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
     var locationFood : String = "food"
     var searchRadius : Int = 1000
     let searchBar = UISearchBar()
+    var isInNavigation: Bool?
     var markers=[String:[PlaceMarker]]()
+    var stackView: UIStackView?
     
     //part of exapandable search
     var leftConstraint: NSLayoutConstraint!
@@ -27,9 +29,9 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
         super.viewDidLoad()
         
         //adding all to search
-        searchKeywords.append(locationGasStation)
-        searchKeywords.append(locationPetrol)
-        searchKeywords.append(locationFood)
+//        searchKeywords.append(locationGasStation)
+//        searchKeywords.append(locationPetrol)
+//        searchKeywords.append(locationFood)
         
         locationManager.delegate = self
         mapView.delegate = self
@@ -44,6 +46,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
         
         // setting the navigation bar to transparent
         self.navigationController?.presentTransparentNavigationBar()
+        isInNavigation = false
     }
     
 }
@@ -273,7 +276,7 @@ extension MapViewController {
                 let path: GMSPath = GMSPath(fromEncodedPath: route!)!
                 let polyline = GMSPolyline(path: path)
                 polyline.strokeWidth = 4
-                polyline.strokeColor = .red
+                polyline.strokeColor = .blue
                 polyline.geodesic = true
                 polyline.map = self.mapView
             // show gas stations & restaurants on the steps
@@ -321,16 +324,12 @@ extension MapViewController: FilterTableViewControllerDelegate {
 extension MapViewController: GMSAutocompleteViewControllerDelegate {
     
     func viewController(_ viewController: GMSAutocompleteViewController, didAutocompleteWith place: GMSPlace) {
-        self.destination = place
-        let lat = self.destination!.coordinate.latitude
-        let long = self.destination!.coordinate.longitude
-        
-        let camera = GMSCameraPosition.camera(withLatitude: lat, longitude: long, zoom: 6.0)
+        let camera = GMSCameraPosition.camera(withLatitude: place.coordinate.latitude, longitude: place.coordinate.longitude, zoom: 6.0)
         self.mapView.camera = camera
         view = self.mapView
         
         let marker = GMSMarker()
-        marker.position = CLLocationCoordinate2D(latitude: lat, longitude: long)
+        marker.position = CLLocationCoordinate2D(latitude: place.coordinate.latitude, longitude: place.coordinate.longitude)
         marker.title = place.name
         marker.snippet = place.formattedAddress
         marker.map = self.mapView
@@ -367,7 +366,45 @@ extension MapViewController: GMSAutocompleteViewControllerDelegate {
 extension MapViewController {
     
     func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
-        return true
+        // setting the position to destination's coordinate
+        self.destination = marker.position
+        
+        let getDirectionBtn = UIButton(type: .system)
+        getDirectionBtn.frame = CGRect(x: 150, y: 100, width: 150, height: 30)
+        getDirectionBtn.setTitle("Get Direction", for: .normal)
+        getDirectionBtn.backgroundColor = UIColor(red:0.00, green:0.53, blue:1.00, alpha:1.0)
+        getDirectionBtn.layer.cornerRadius = 5
+        getDirectionBtn.setTitleColor(.white, for: .normal)
+        getDirectionBtn.addTarget(self, action: #selector(getDirectionBtnTapped), for: .touchUpInside)
+        
+        let cancelBtn = UIButton(type: .system)
+        cancelBtn.frame = CGRect(x: 150, y: 100, width: 150, height: 30)
+        cancelBtn.setTitle("Cancel", for: .normal)
+        cancelBtn.backgroundColor = UIColor(red:1.00, green:0.30, blue:0.00, alpha:1.0)
+        cancelBtn.layer.cornerRadius = 5
+        cancelBtn.setTitleColor(.white, for: .normal)
+        cancelBtn.addTarget(self, action: #selector(cancelBtnTapped), for: .touchUpInside)
+        
+        getDirectionBtn.translatesAutoresizingMaskIntoConstraints = false
+        cancelBtn.translatesAutoresizingMaskIntoConstraints = false
+
+        getDirectionBtn.widthAnchor.constraint(equalToConstant: 140).isActive = true
+        getDirectionBtn.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        cancelBtn.widthAnchor.constraint(equalToConstant: 140).isActive = true
+        cancelBtn.heightAnchor.constraint(equalToConstant: 50).isActive = true
+
+        // adding buttons to the subview
+        self.stackView = UIStackView(arrangedSubviews: [getDirectionBtn, cancelBtn])
+        self.stackView!.axis = .vertical
+        self.stackView!.spacing = 30
+        // enables auto layout for buttons
+        self.stackView!.translatesAutoresizingMaskIntoConstraints = false
+        self.mapView.addSubview(stackView!)
+        
+        self.stackView!.centerXAnchor.constraint(equalTo: self.mapView.centerXAnchor).isActive = true
+        self.stackView!.bottomAnchor.constraint(lessThanOrEqualTo: self.mapView.bottomAnchor, constant: -50).isActive = true
+
+        return false
     }
     
     func mapView(_ mapView: GMSMapView, didTapInfoWindowOf marker: GMSMarker) {
@@ -413,6 +450,60 @@ extension MapViewController {
 extension MapViewController {
     @objc func settingsTapped(_ sender: UIBarButtonItem) {
         performSegue(withIdentifier: "showCarSummary", sender: self)
+    }
+    
+    @objc func getDirectionBtnTapped(_ sender: UIButton) {
+        let currentLocation = self.currentLocation
+        let destination = CLLocation(latitude: self.destination!.latitude, longitude: self.destination!.longitude)
+        
+        self.drawPath(origin: currentLocation, destination: destination)
+        
+        // remove buttons from the view
+        self.stackView!.removeFromSuperview()
+        
+        let startNavBtn = UIButton(type: .system)
+        startNavBtn.frame = CGRect(x: 150, y: 100, width: 150, height: 30)
+        startNavBtn.setTitle("Start Navigation", for: .normal)
+        startNavBtn.backgroundColor = UIColor(red:0.00, green:0.53, blue:1.00, alpha:1.0)
+        startNavBtn.layer.cornerRadius = 5
+        startNavBtn.setTitleColor(.white, for: .normal)
+        startNavBtn.addTarget(self, action: #selector(startNavBtnTapped), for: .touchUpInside)
+        
+        let cancelBtn = UIButton(type: .system)
+        cancelBtn.frame = CGRect(x: 150, y: 100, width: 150, height: 30)
+        cancelBtn.setTitle("Cancel", for: .normal)
+        cancelBtn.backgroundColor = UIColor(red:1.00, green:0.30, blue:0.00, alpha:1.0)
+        cancelBtn.layer.cornerRadius = 5
+        cancelBtn.setTitleColor(.white, for: .normal)
+        cancelBtn.addTarget(self, action: #selector(cancelBtnTapped), for: .touchUpInside)
+        
+        startNavBtn.translatesAutoresizingMaskIntoConstraints = false
+        cancelBtn.translatesAutoresizingMaskIntoConstraints = false
+        
+        startNavBtn.widthAnchor.constraint(equalToConstant: 140).isActive = true
+        startNavBtn.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        cancelBtn.widthAnchor.constraint(equalToConstant: 140).isActive = true
+        cancelBtn.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        
+        // adding buttons to the subview
+        self.stackView = UIStackView(arrangedSubviews: [startNavBtn, cancelBtn])
+        self.stackView!.axis = .vertical
+        self.stackView!.spacing = 30
+        // enables auto layout for buttons
+        self.stackView!.translatesAutoresizingMaskIntoConstraints = false
+        self.mapView.addSubview(stackView!)
+        
+        self.stackView!.centerXAnchor.constraint(equalTo: self.mapView.centerXAnchor).isActive = true
+        self.stackView!.bottomAnchor.constraint(lessThanOrEqualTo: self.mapView.bottomAnchor, constant: -50).isActive = true
+    }
+    
+    @objc func startNavBtnTapped(_ sender: UIButton) {
+        
+    }
+    
+    @objc func cancelBtnTapped(_ sender: UIButton) {
+        print("cancelbtn tapped")
+        self.stackView?.removeFromSuperview()
     }
     
     //    part of expandable search bar
