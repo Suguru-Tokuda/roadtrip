@@ -15,7 +15,7 @@ class FilterTableViewController: UITableViewController {
     private var sortedKeys: [String] {
         return filterTypes.keys.sorted()
     }
-    private let filterTypes = ["food": "Food", "gas_station": "Gas Station", "petrol": "Petrol"]
+    private let filterTypes = ["food": "Food", "gas_station": "Gas Station", "petrol": "Petrol", "pizza": "pizza", "burger":"burger"]
     var selectedTypes = [String]()
     var delegate: FilterTableViewControllerDelegate?
     override func viewDidLoad() {
