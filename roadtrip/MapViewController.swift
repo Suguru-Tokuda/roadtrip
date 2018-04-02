@@ -27,6 +27,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        //adding all to search        
         locationManager.delegate = self
         mapView.delegate = self
         //self.navigationController?.isNavigationBarHidden = true
