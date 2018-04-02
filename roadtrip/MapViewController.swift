@@ -359,7 +359,6 @@ extension MapViewController: GMSAutocompleteViewControllerDelegate {
 extension MapViewController {
     
     func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
-<<<<<<< HEAD
         // setting the position to destination's coordinate
         self.destination = marker.position
         
@@ -397,11 +396,6 @@ extension MapViewController {
         
         self.stackView!.centerXAnchor.constraint(equalTo: self.mapView.centerXAnchor).isActive = true
         self.stackView!.bottomAnchor.constraint(lessThanOrEqualTo: self.mapView.bottomAnchor, constant: -50).isActive = true
-
-=======
-        //dynamically buttons
-        
->>>>>>> 2f6c7cbf4dc0e357a4cd0c7defd12719d5afb4d0
         return false
     }
     
