@@ -48,12 +48,28 @@ class GoogleClient {
         task.resume()
     }
     
-    func getDestinationPathByCoordinates(origin: CLLocation, destination: CLLocation, completion: @escaping (DirectionsResult) -> Void) {
+    func getDirection(origin: CLLocation, destination: CLLocation, completion: @escaping (DirectionsResult) -> Void) {
         let originLat = origin.coordinate.latitude
         let originLong = origin.coordinate.longitude
         let destLat = destination.coordinate.latitude
         let destLong = destination.coordinate.longitude
-        URLSession.shared.dataTask(with: RoadtripAPI.googleDirectionURLWithCoordinates(originLat: originLat, originLong: originLong, destLat: destLat, destLong: destLong)) {
+        URLSession.shared.dataTask(with: RoadtripAPI.googleDirectionURL(originLat: originLat, originLong: originLong, destLat: destLat, destLong: destLong)) {
+            (data, response, error) -> Void in
+            let result = self.processDirectionsRequest(data: data, error: error)
+            OperationQueue.main.addOperation {
+                completion(result)
+            }
+        }.resume()
+    }
+    
+    func getDirection(origin: CLLocation, destination: CLLocation, waypoint: CLLocation, completion: @escaping (DirectionsResult) -> Void) {
+        let originLat = origin.coordinate.latitude
+        let originLong = origin.coordinate.longitude
+        let destLat = destination.coordinate.latitude
+        let destLong = destination.coordinate.longitude
+        let waypointLat = waypoint.coordinate.latitude
+        let waypointLong = waypoint.coordinate.longitude
+        URLSession.shared.dataTask(with: RoadtripAPI.googleDirectionURL(originLat: originLat, originLong: originLong, destLat: destLat, destLong: destLong, waypointLat: waypointLat, waypointLong: waypointLong)) {
             (data, response, error) -> Void in
             let result = self.processDirectionsRequest(data: data, error: error)
             OperationQueue.main.addOperation {
