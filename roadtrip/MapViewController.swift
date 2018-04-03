@@ -42,6 +42,13 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
         // setting the navigation bar to transparent
         self.navigationController?.presentTransparentNavigationBar()
         isInNavigation = false
+        
+        let chicago = CLLocation(latitude: 41.8781, longitude: -87.6298)
+        let bloomington = CLLocation(latitude: 40.4842, longitude: -88.9937)
+        let peoria = CLLocation(latitude: 40.6936, longitude: -89.5890)
+        
+//        self.drawPath(origin: bloomington, destination: chicago)
+        self.drawPath(origin: bloomington, destination: chicago, waypoint: peoria)
     }
     
 }
@@ -289,7 +296,7 @@ extension MapViewController {
     }
     
     func drawPath(origin: CLLocation, destination: CLLocation) {
-        googleClient.getDestinationPathByCoordinates(origin: origin, destination: destination) { (directionsResult) in
+        googleClient.getDirection(origin: origin, destination: destination) { (directionsResult) in
             switch directionsResult {
             case let .success(direction):
                 self.navigationDirection = direction
@@ -307,6 +314,27 @@ extension MapViewController {
             }
         }
     }
+    
+    func drawPath(origin: CLLocation, destination: CLLocation, waypoint: CLLocation) {
+        googleClient.getDirection(origin: origin, destination: destination, waypoint: waypoint, completion: { (directionsResult) in
+            switch directionsResult {
+            case let .success(direction):
+                self.navigationDirection = direction
+                let overViewPolyine = direction.routes![0].overviewPolyline
+                let route = overViewPolyine!.points
+                let path: GMSPath = GMSPath(fromEncodedPath: route!)!
+                let polyline = GMSPolyline(path: path)
+                polyline.strokeWidth = 4
+                polyline.strokeColor = .blue
+                polyline.geodesic = true
+                polyline.map = self.mapView
+            case let .failure(error):
+                print(error)
+            }
+            })
+    }
+    
+    
 }
 
 // MARK: Filter functions
