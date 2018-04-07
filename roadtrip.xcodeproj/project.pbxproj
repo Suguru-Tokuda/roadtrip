@@ -24,6 +24,7 @@
 		BB628823204CB6A400D0F060 /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = BB628822204CB6A400D0F060 /* Podfile */; };
 		BB6F94FB205BA8AB00465C9A /* GoogleClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB6F94FA205BA8AB00465C9A /* GoogleClient.swift */; };
 		BB787694204CBA460013A2F4 /* Car.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB787693204CBA460013A2F4 /* Car.swift */; };
+		BBB39538207864230040BDF7 /* Distance.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBB39537207864230040BDF7 /* Distance.swift */; };
 		BBBC79732057695C0085044F /* Make.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBBC79722057695C0085044F /* Make.swift */; };
 		BBBC7975205770AC0085044F /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBBC7974205770AC0085044F /* Model.swift */; };
 		BBBC7977205775430085044F /* Trim.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBBC7976205775430085044F /* Trim.swift */; };
@@ -75,6 +76,7 @@
 		BB6AD780205A21E500C713B6 /* PromiseKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = PromiseKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BB6F94FA205BA8AB00465C9A /* GoogleClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleClient.swift; sourceTree = "<group>"; };
 		BB787693204CBA460013A2F4 /* Car.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Car.swift; sourceTree = "<group>"; };
+		BBB39537207864230040BDF7 /* Distance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Distance.swift; sourceTree = "<group>"; };
 		BBBC79722057695C0085044F /* Make.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Make.swift; sourceTree = "<group>"; };
 		BBBC7974205770AC0085044F /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 		BBBC7976205775430085044F /* Trim.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Trim.swift; sourceTree = "<group>"; };
@@ -160,6 +162,7 @@
 				BBF2A6BE20587CFC00FD2871 /* CarInfoSettingViewController.swift */,
 				BBF39D022055D2A1002F53A5 /* CarQueryDataStore.swift */,
 				BB2C7497205F378A0012B1B0 /* Direction.swift */,
+				BBB39537207864230040BDF7 /* Distance.swift */,
 				5F96B45F2065B4F200707E3E /* FilterViewController.swift */,
 				BB41127B20675C7E007098E0 /* FuelRemainingViewController.swift */,
 				BB6F94FA205BA8AB00465C9A /* GoogleClient.swift */,
@@ -415,6 +418,7 @@
 				BBBC79732057695C0085044F /* Make.swift in Sources */,
 				BBDF006F2054D5BB002EF5F1 /* RoadtripAPI.swift in Sources */,
 				BB787694204CBA460013A2F4 /* Car.swift in Sources */,
+				BBB39538207864230040BDF7 /* Distance.swift in Sources */,
 				5F18447D2054D6F6004A30A1 /* PlaceMarker.swift in Sources */,
 				5F1844872055ABC4004A30A1 /* GooglePlacesResponse.swift in Sources */,
 			);
