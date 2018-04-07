@@ -20,15 +20,17 @@ enum GoogleAPIMethod: String {
 }
 
 struct RoadtripAPI {
-    
+
     private static let carQueryBaseURL = "https://www.carqueryapi.com/api/0.3/?callback=?&cmd="
     private static let googleAPIBaseURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?"
     private static let googleDirectionsAPIBaseURL = "https://maps.googleapis.com/maps/api/directions/json?"
-    
+    private static let googleDistanceMatrixAPIBaseURL = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&"
+
     public static let googleMapsAPIKey = "AIzaSyDEdKM_L4ArIhHSyZdOImGpmAWArGT8W38"
     public static let googleDirectionsAPIKey = "AIzaSyB5MtWNCa49FD9dSqC0iXd5JA4Vl-_Rf-c"
     public static let googlePlacesAPIKey = "AIzaSyD96g2BYcVjnEstQLSXrOQ9kGQ1IqWq9wI"
-    
+    public static let googleDistanceMatrixAPI = "AIzaSyDinG-UL4O0n5B6sMWsrwD1v2zjRURtt24"
+
     public static func carQueryURL(method: CarQueryMethod, parameter: String) -> URL {
         let urlString = carQueryBaseURL + method.rawValue + parameter
         let url = URL(string: urlString)
@@ -77,7 +79,13 @@ struct RoadtripAPI {
         let urlString = "\(googleDirectionsAPIBaseURL)origin=place_id:\(originId)&destination=place_id:\(destinationId)&key=\(googleDirectionsAPIKey)"
         let url = URL(string: urlString)
         return url!
-    }    
+    }
+    
+    public static func googleDistanceMatrixURL(originLat: Double, originLong: Double, destinationLat: Double, destinationLong: Double) -> URL {
+        let urlString = "\(googleDistanceMatrixAPIBaseURL)origins=\(originLat),\(originLong)&destinations=\(destinationLat),\(destinationLong)&key=\(googleDistanceMatrixAPI)"
+        let url = URL(string: urlString)
+        return url!
+    }
     
     public static func getYearsResult(fromJSON data: Data) -> YearsResult {
         var maxYear: Int?
@@ -198,6 +206,17 @@ struct RoadtripAPI {
         do {
             let decoder = JSONDecoder()
             let response = try decoder.decode(Direction.self, from: data)
+            return .success(response)
+        } catch let jsonDecoderError {
+            return .failure(jsonDecoderError)
+        }
+    }
+    
+    public static func getDistanceResult(fromJSON data: Data) -> DistanceResult {
+        do {
+            let decoder = JSONDecoder()
+            decoder.keyDecodingStrategy = .convertFromSnakeCase
+            let response = try decoder.decode(Distance.self, from: data)
             return .success(response)
         } catch let jsonDecoderError {
             return .failure(jsonDecoderError)

@@ -73,7 +73,7 @@ extension MapViewController {
     }
 }
 
-// MARK: showing markers and polylines
+// MARK: GoogleAPI calls from Controller
 extension MapViewController {
     
     func fetchAllFor(getMarkerType markerType:String)->[PlaceMarker] {
@@ -325,6 +325,17 @@ extension MapViewController {
                 print(error)
             }
             })
+    }
+    
+    func getDistance(origin: CLLocation, destination: CLLocation) {
+        googleClient.getDistance(origin: origin, destination: destination) { (distanceResult) in
+            switch distanceResult {
+            case let .success(disntace):
+                print(disntace)
+            case let .failure(error):
+                print(error)
+            }
+        }
     }
     
     

@@ -17,6 +17,11 @@ enum DirectionsResult {
     case failure(Error)
 }
 
+enum DistanceResult {
+    case success(Distance)
+    case failure(Error)
+}
+
 class GoogleClient {
     
     let session = URLSession(configuration: .default)
@@ -78,11 +83,32 @@ class GoogleClient {
         }.resume()
     }
     
+    func getDistance(origin: CLLocation, destination: CLLocation, completion: @escaping (DistanceResult) -> Void) {
+        let originLat = origin.coordinate.latitude
+        let originLong = origin.coordinate.longitude
+        let destLat = destination.coordinate.latitude
+        let destLong = destination.coordinate.longitude
+        URLSession.shared.dataTask(with: RoadtripAPI.googleDistanceMatrixURL(originLat: originLat, originLong: originLong, destinationLat: destLat, destinationLong: destLong)) {
+            (data, response, error) -> Void in
+            let result = self.processDistanceRequest(data: data, error: error)
+            OperationQueue.main.addOperation {
+                completion(result)
+            }
+        }.resume()
+    }
+    
     private func processDirectionsRequest(data: Data?, error: Error?) -> DirectionsResult {
         guard let jsonData = data else {
             return .failure(error!)
         }
         return RoadtripAPI.getDirectionsResult(fromJSON: jsonData)
+    }
+    
+    private func processDistanceRequest(data: Data?, error: Error?) -> DistanceResult {
+        guard let jsonData = data else {
+            return .failure(error!)
+        }
+        return RoadtripAPI.getDistanceResult(fromJSON: jsonData)
     }
     
 }
