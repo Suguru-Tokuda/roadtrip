@@ -42,13 +42,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
         // setting the navigation bar to transparent
         self.navigationController?.presentTransparentNavigationBar()
         isInNavigation = false
-        
-        let chicago = CLLocation(latitude: 41.8781, longitude: -87.6298)
-        let bloomington = CLLocation(latitude: 40.4842, longitude: -88.9937)
-        let peoria = CLLocation(latitude: 40.6936, longitude: -89.5890)
-        
-//        self.drawPath(origin: bloomington, destination: chicago)
-        self.drawPath(origin: bloomington, destination: chicago, waypoint: peoria)
     }
     
 }
