@@ -12,6 +12,7 @@ public class Car {
     private var _mpgHwy: Double?
     private var _mpgCity: Double?
     private var _fuelRemainingInPercent: Double?
+    private var _fuelRemaining: Double?
     
     // MARK: Initializer
     public init(make: String, model: String, trim: String, year: String, fuelCapacity: Double, gasType: String, mpgHwy: Double, mpgCity: Double) {
@@ -24,6 +25,7 @@ public class Car {
         self._mpgHwy = mpgHwy
         self._mpgCity = mpgCity
         self._fuelRemainingInPercent = 100.0
+        self._fuelRemaining = self._fuelCapacity
     }
     
     // MARK: Getters & Setters
@@ -108,8 +110,16 @@ public class Car {
         }
     }
     
-    public func getRemainingGas() -> Double {
+    public func getFuelRemaining() -> Double {
         return round(1000 * self._fuelCapacity! * _fuelRemainingInPercent! / 100) / 1000
+    }
+    
+    public func consumeFuel(speed: Double, distance: Double) {
+        if speed >= 60 {
+            self._fuelRemaining! -= (distance / self._mpgHwy!)
+        } else if speed < 60 {
+            self._fuelRemaining! -= (distance / self._mpgCity!)
+        }
     }
     
 }
