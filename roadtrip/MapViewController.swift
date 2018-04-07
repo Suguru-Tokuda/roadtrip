@@ -3,6 +3,8 @@ import GoogleMaps
 import GooglePlaces
 
 class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDelegate {
+    let appDelegate: AppDelegate? = UIApplication.shared.delegate as? AppDelegate
+    
     //https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.870943,151.190311&radius=1000&rankby=prominence&sensor=true&key=AIzaSyD14jarz6jPaHCozkfKHcNLVthhuJhtwqg
     var locationManager = CLLocationManager()
     var destination: CLLocationCoordinate2D?
@@ -10,7 +12,9 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
     @IBOutlet weak var mapView: GMSMapView!
     
     lazy var googleClient = GoogleClient()
-    var currentLocation: CLLocation = CLLocation(latitude: 42.361145, longitude: -71.057083)
+    var myCar: Car?
+    var currentLocation: CLLocation?
+    var lastLocation: CLLocation?
     var searchKeywords:[String] = []
     var locationPetrol : String = "petrol"
     var locationGasStation : String = "gas_station"
@@ -21,11 +25,14 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
     var isInNavigation: Bool?
     var markers=[String:[PlaceMarker]]()
     var stackView: UIStackView?
+    var currentTime: Date?
+    var lastTime: Date?
     
     var navigationDirection: Direction?
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        myCar = appDelegate!.myCar
         
         //adding all to search        
         locationManager.delegate = self
@@ -60,8 +67,30 @@ extension MapViewController {
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        if let location = locations.first {
+            lastLocation = location
+            lastTime = Date()
+        }
         guard let location = locations.first else {
             return
+        }
+        
+        /*
+         If 5 minutes have passed, it gets the distance between the current and last locations.
+         Then it will reduce the fuel remaining.
+        */
+        if lastTime!.timeIntervalSinceNow >= 5.0 * 60 {
+            googleClient.getDistance(origin: lastLocation!, destination: location) { (distanceResult) in
+                switch distanceResult {
+                case let .success(distance):
+                    let distanceParam = distance.rows![0].elements![0].distance!.value
+                    self.lastLocation = self.currentLocation
+                    self.currentLocation = location
+                    self.myCar!.consumeFuel(speed: self.locationManager.location!.speed, distance: distanceParam!)
+                case let .failure(error):
+                    print(error)
+                }
+            }
         }
         
         mapView.camera = GMSCameraPosition(target: location.coordinate, zoom: 15, bearing: 0, viewingAngle: 0)
@@ -327,18 +356,6 @@ extension MapViewController {
             })
     }
     
-    func getDistance(origin: CLLocation, destination: CLLocation) {
-        googleClient.getDistance(origin: origin, destination: destination) { (distanceResult) in
-            switch distanceResult {
-            case let .success(disntace):
-                print(disntace)
-            case let .failure(error):
-                print(error)
-            }
-        }
-    }
-    
-    
 }
 
 // MARK: Filter functions
@@ -353,7 +370,7 @@ extension MapViewController: FilterTableViewControllerDelegate {
         }
         for key in searchKeywords{
             if !markers.keys.contains(key){
-                self.fetchGoogleData(forLocation: currentLocation, locationName: key, searchRadius: self.searchRadius )
+                self.fetchGoogleData(forLocation: currentLocation!, locationName: key, searchRadius: self.searchRadius )
             }
         }
         dismiss(animated: true)
@@ -493,7 +510,7 @@ extension MapViewController {
         let currentLocation = self.currentLocation
         let destination = CLLocation(latitude: self.destination!.latitude, longitude: self.destination!.longitude)
         
-        self.drawPath(origin: currentLocation, destination: destination)
+        self.drawPath(origin: currentLocation!, destination: destination)
         
         // remove buttons from the view
         self.stackView!.removeFromSuperview()

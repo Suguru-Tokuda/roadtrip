@@ -22,7 +22,7 @@ class FuelRemainingViewController: UIViewController {
         myCar = appDelegate?.myCar
         fuelRemainingSlider.value = Float(myCar!.fuelRemainingInPercent)
         percentageLabel.text = "\(fuelRemainingSlider.value.description)%"
-        fuelLabel.text = "\(String(describing: myCar!.getRemainingGas())) / \(String(describing: myCar!.fuelCapacity)) gallons"
+        fuelLabel.text = "\(String(describing: myCar!.getFuelRemaining())) / \(String(describing: myCar!.fuelCapacity)) gallons"
     }
 
     override func didReceiveMemoryWarning() {
@@ -33,7 +33,7 @@ class FuelRemainingViewController: UIViewController {
         myCar?.fuelRemainingInPercent = Double(fuelRemainingSlider.value)
         let percentage = round(1000 * fuelRemainingSlider.value)/1000
         percentageLabel.text = "\(percentage.description)%"
-        fuelLabel.text = "\(String(describing: myCar!.getRemainingGas())) / \(String(describing: myCar!.fuelCapacity)) gallons"
+        fuelLabel.text = "\(String(describing: myCar!.getFuelRemaining())) / \(String(describing: myCar!.fuelCapacity)) gallons"
     }
     
     @IBAction func ctnBtnClicked(_ sender: Any) {
