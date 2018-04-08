@@ -22,11 +22,13 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
     var locationBurger : String = "burger"
     var searchRadius : Int = 1000
     let searchBar = UISearchBar()
-    var isInNavigation: Bool?
+    var isInNavigation: Bool = false
     var markers=[String:[PlaceMarker]]()
     var stackView: UIStackView?
     var currentTime: Date?
     var lastTime: Date?
+    var lastTimeToCheckSpeed: Date?
+    var reacheableLegs = [Direction.Route.Leg]()
     
     var navigationDirection: Direction?
     
@@ -70,9 +72,18 @@ extension MapViewController {
         if let location = locations.first {
             lastLocation = location
             lastTime = Date()
+            lastTimeToCheckSpeed = Date()
         }
         guard let location = locations.first else {
             return
+        }
+        
+        /*
+         Every 5 seconds, check the current speed and put the speed into the speeds, array of Double
+        */
+        if lastTimeToCheckSpeed!.timeIntervalSinceNow >= 5.0 {
+            self.myCar!.appendSpeed(speed: self.locationManager.location!.speed)
+            lastTimeToCheckSpeed = Date() // assiging the current time
         }
         
         /*
@@ -86,7 +97,8 @@ extension MapViewController {
                     let distanceParam = distance.rows![0].elements![0].distance!.value
                     self.lastLocation = self.currentLocation
                     self.currentLocation = location
-                    self.myCar!.consumeFuel(speed: self.locationManager.location!.speed, distance: distanceParam!)
+                    self.myCar!.consumeFuel(speed: self.myCar!.getAverageSpeed(), distance: distanceParam!)
+                    self.myCar!.resetSpeeds()
                 case let .failure(error):
                     print(error)
                 }
@@ -330,6 +342,28 @@ extension MapViewController {
                 polyline.strokeColor = .blue
                 polyline.geodesic = true
                 polyline.map = self.mapView
+                // check if start points of each leg is reacheable
+                if let legs = direction.routes![0].legs {
+                    for leg in legs {
+                        let destLat = leg.startLocation!.lat
+                        let destLng = leg.startLocation!.lng
+                        let destination = CLLocation(latitude: destLat!, longitude: destLng!)
+                        self.googleClient.getDistance(origin: self.currentLocation!, destination: destination, completion: { (distanceResult) in
+                            switch distanceResult {
+                            case let .success(distance):
+                                if let distanceVal = distance.rows![0].elements![0].distance!.value {
+                                    let reachableDistanceInMiles = self.myCar!.getFuelRemaining() * self.myCar!.mpgHwy
+                                    // if the start location of a leg is reacheable, put into the reacheableLegs array
+                                    if distanceVal < reachableDistanceInMiles {
+                                        self.reacheableLegs.append(leg)
+                                    }
+                                }
+                            case let .failure(error):
+                                print(error)
+                            }
+                        })
+                    }
+                }
             // show gas stations & restaurants on the steps
             case let .failure(error):
                 print(error)
@@ -395,7 +429,7 @@ extension MapViewController: FilterTableViewControllerDelegate {
 extension MapViewController: GMSAutocompleteViewControllerDelegate {
     
     func viewController(_ viewController: GMSAutocompleteViewController, didAutocompleteWith place: GMSPlace) {
-        let camera = GMSCameraPosition.camera(withLatitude: place.coordinate.latitude, longitude: place.coordinate.longitude, zoom: 6.0)
+        let camera = GMSCameraPosition.camera(withLatitude: place.coordinate.latitude, longitude: place.coordinate.longitude, zoom: 15.0)
         self.mapView.camera = camera
         view = self.mapView
         
@@ -552,11 +586,14 @@ extension MapViewController {
     }
     
     @objc func startNavBtnTapped(_ sender: UIButton) {
-        
+        print("startNavBtnTapped")
     }
     
     @objc func cancelBtnTapped(_ sender: UIButton) {
         print("cancelbtn tapped")
+        self.mapView.clear()
+        let camera = GMSCameraPosition.camera(withLatitude: self.currentLocation!.coordinate.latitude, longitude: self.currentLocation!.coordinate.longitude, zoom: 16)
+        self.mapView.camera = camera
         self.stackView?.removeFromSuperview()
     }
     

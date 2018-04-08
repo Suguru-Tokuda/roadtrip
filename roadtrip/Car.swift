@@ -13,6 +13,7 @@ public class Car {
     private var _mpgCity: Double?
     private var _fuelRemainingInPercent: Double?
     private var _fuelRemaining: Double?
+    private var _speeds: [Double]?
     
     // MARK: Initializer
     public init(make: String, model: String, trim: String, year: String, fuelCapacity: Double, gasType: String, mpgHwy: Double, mpgCity: Double) {
@@ -26,6 +27,7 @@ public class Car {
         self._mpgCity = mpgCity
         self._fuelRemainingInPercent = 100.0
         self._fuelRemaining = self._fuelCapacity
+        self._speeds = [Double]()
     }
     
     // MARK: Getters & Setters
@@ -120,6 +122,26 @@ public class Car {
         } else if speed < 60 {
             self._fuelRemaining! -= (distance / self._mpgCity!)
         }
+        self._fuelRemainingInPercent = self._fuelRemaining! / self._fuelCapacity!
+    }
+    
+    public func appendSpeed(speed: Double) {
+        if speed < 0 {
+            self._speeds!.append(speed)
+        }
+    }
+    
+    public func resetSpeeds() {
+        self._speeds!.removeAll()
+    }
+    
+    public func getAverageSpeed() -> Double {
+        let count = self._speeds!.count
+        var totalSpeeds = 0.0
+        for speed in self._speeds! {
+            totalSpeeds += speed
+        }
+        return totalSpeeds / Double(count)
     }
     
 }

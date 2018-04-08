@@ -22,14 +22,16 @@ enum GoogleAPIMethod: String {
 struct RoadtripAPI {
 
     private static let carQueryBaseURL = "https://www.carqueryapi.com/api/0.3/?callback=?&cmd="
+    private static let myGasFeedBaseURL = "http://devapi.mygasfeed.com/stations/radius/"
     private static let googleAPIBaseURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?"
     private static let googleDirectionsAPIBaseURL = "https://maps.googleapis.com/maps/api/directions/json?"
     private static let googleDistanceMatrixAPIBaseURL = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&"
-
+    
+    public static let myGasFeedAPIKey = "rfej9napna"
     public static let googleMapsAPIKey = "AIzaSyDEdKM_L4ArIhHSyZdOImGpmAWArGT8W38"
     public static let googleDirectionsAPIKey = "AIzaSyB5MtWNCa49FD9dSqC0iXd5JA4Vl-_Rf-c"
     public static let googlePlacesAPIKey = "AIzaSyD96g2BYcVjnEstQLSXrOQ9kGQ1IqWq9wI"
-    public static let googleDistanceMatrixAPI = "AIzaSyDinG-UL4O0n5B6sMWsrwD1v2zjRURtt24"
+    public static let googleDistanceMatrixAPI = "AIzaSyDinG-UL4O0n5B6sMWsrwD1v2zjRURtt24"    
 
     public static func carQueryURL(method: CarQueryMethod, parameter: String) -> URL {
         let urlString = carQueryBaseURL + method.rawValue + parameter
@@ -47,6 +49,12 @@ struct RoadtripAPI {
     public static func carQueryTrimURL(model: String, year: String) -> URL {
         let modelStr = model.replacingOccurrences(of: " ", with: "")
         let urlString = "\(carQueryBaseURL)getTrims&model=\(modelStr)&year=\(year)"
+        let url = URL(string: urlString)
+        return url!
+    }
+    // /stations/radius/(Latitude)/(Longitude)/(distance)/(fuel type)/(sort by)/apikey.json?callback=?
+    public static func myGasFeedURL(latitude: Double, longitude: Double, distance: Double) -> URL {
+        let urlString = "\(myGasFeedBaseURL)\(latitude)/\(longitude)/\(distance)/\(myGasFeedAPIKey).json?callback=?"
         let url = URL(string: urlString)
         return url!
     }
