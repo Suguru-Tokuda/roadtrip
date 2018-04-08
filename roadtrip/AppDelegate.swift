@@ -19,6 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var myCar: Car?
     var years: [Int]?
     var carQueryDataStore = CarQueryDataStore()
+    var gasPricesDataStore = GasPricesDataStore()
     
     func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey : Any]? = nil) -> Bool {
         return true

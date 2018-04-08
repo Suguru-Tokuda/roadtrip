@@ -4,6 +4,7 @@ import GooglePlaces
 
 class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDelegate {
     let appDelegate: AppDelegate? = UIApplication.shared.delegate as? AppDelegate
+    var gasPricesDataStore: GasPricesDataStore?
     
     //https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.870943,151.190311&radius=1000&rankby=prominence&sensor=true&key=AIzaSyD14jarz6jPaHCozkfKHcNLVthhuJhtwqg
     var locationManager = CLLocationManager()
@@ -35,6 +36,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
     override func viewDidLoad() {
         super.viewDidLoad()
         myCar = appDelegate!.myCar
+        gasPricesDataStore = appDelegate!.gasPricesDataStore
         
         //adding all to search        
         locationManager.delegate = self

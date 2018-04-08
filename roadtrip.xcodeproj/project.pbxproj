@@ -31,6 +31,8 @@
 		BBDF006F2054D5BB002EF5F1 /* RoadtripAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBDF006E2054D5BB002EF5F1 /* RoadtripAPI.swift */; };
 		BBF2A6BF20587CFC00FD2871 /* CarInfoSettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBF2A6BE20587CFC00FD2871 /* CarInfoSettingViewController.swift */; };
 		BBF39D032055D2A1002F53A5 /* CarQueryDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBF39D022055D2A1002F53A5 /* CarQueryDataStore.swift */; };
+		BBF3F018207AB3800051BE39 /* GasStations.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBF3F017207AB3800051BE39 /* GasStations.swift */; };
+		BBF3F01A207AB47E0051BE39 /* GasPricesDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBF3F019207AB47E0051BE39 /* GasPricesDataStore.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -83,6 +85,8 @@
 		BBDF006E2054D5BB002EF5F1 /* RoadtripAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoadtripAPI.swift; sourceTree = "<group>"; };
 		BBF2A6BE20587CFC00FD2871 /* CarInfoSettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarInfoSettingViewController.swift; sourceTree = "<group>"; };
 		BBF39D022055D2A1002F53A5 /* CarQueryDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarQueryDataStore.swift; sourceTree = "<group>"; };
+		BBF3F017207AB3800051BE39 /* GasStations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GasStations.swift; sourceTree = "<group>"; };
+		BBF3F019207AB47E0051BE39 /* GasPricesDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GasPricesDataStore.swift; sourceTree = "<group>"; };
 		FCAB4724364AABA8D1633D15 /* Pods_roadtrip.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_roadtrip.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -165,6 +169,8 @@
 				BBB39537207864230040BDF7 /* Distance.swift */,
 				5F96B45F2065B4F200707E3E /* FilterViewController.swift */,
 				BB41127B20675C7E007098E0 /* FuelRemainingViewController.swift */,
+				BBF3F019207AB47E0051BE39 /* GasPricesDataStore.swift */,
+				BBF3F017207AB3800051BE39 /* GasStations.swift */,
 				BB6F94FA205BA8AB00465C9A /* GoogleClient.swift */,
 				5F1844862055ABC4004A30A1 /* GooglePlacesResponse.swift */,
 				BBBC79722057695C0085044F /* Make.swift */,
@@ -406,8 +412,10 @@
 			files = (
 				BB017C6F205B343000FD9DC6 /* CarInfoConfirmationViewController.swift in Sources */,
 				BBBC7975205770AC0085044F /* Model.swift in Sources */,
+				BBF3F018207AB3800051BE39 /* GasStations.swift in Sources */,
 				BBBC7977205775430085044F /* Trim.swift in Sources */,
 				BB41127C20675C7E007098E0 /* FuelRemainingViewController.swift in Sources */,
+				BBF3F01A207AB47E0051BE39 /* GasPricesDataStore.swift in Sources */,
 				BBF39D032055D2A1002F53A5 /* CarQueryDataStore.swift in Sources */,
 				BB6F94FB205BA8AB00465C9A /* GoogleClient.swift in Sources */,
 				BB60C04420360E6800ADF586 /* MapViewController.swift in Sources */,

@@ -38,13 +38,7 @@ public class CarQueryDataStore {
     func getYears(completion: @escaping (YearsResult) -> Void) {
         URLSession.shared.dataTask(with: RoadtripAPI.carQueryURL(method: .years, parameter: "")) {
             (data, response, error) -> Void in
-            var jsonAsString = String(data: data!, encoding: .utf8)
-            let start = jsonAsString!.index(jsonAsString!.startIndex, offsetBy: 2)
-            let end = jsonAsString!.index(jsonAsString!.endIndex, offsetBy: -2)
-            let range = start..<end
-            jsonAsString = String(jsonAsString![range])
-            let jsonData = jsonAsString!.data(using: .utf8)!
-            let result = self.processYearsRequest(data: jsonData, error: error)
+            let result = self.processYearsRequest(data: data, error: error)
             OperationQueue.main.addOperation {
                 completion(result)
             }
@@ -54,13 +48,7 @@ public class CarQueryDataStore {
     func getMakes(year: Int, completion: @escaping (MakesResult) -> Void) {
         URLSession.shared.dataTask(with: RoadtripAPI.carQueryURL(method: .makes, parameter: String(year))) {
             (data, response, error) -> Void in
-            var jsonAsString = String(data: data!, encoding: .utf8)
-            let start = jsonAsString!.index(jsonAsString!.startIndex, offsetBy: 2)
-            let end = jsonAsString!.index(jsonAsString!.endIndex, offsetBy: -2)
-            let range = start..<end
-            jsonAsString = String(jsonAsString![range])
-            let jsonData = jsonAsString!.data(using: .utf8)!
-            let result = self.processMakesResult(data: jsonData, error: error)
+            let result = self.processMakesResult(data: data, error: error)
             OperationQueue.main.addOperation {
                 completion(result)
             }
@@ -70,13 +58,7 @@ public class CarQueryDataStore {
     func getModels(make: String, year: Int, completion: @escaping (ModelsResult) -> Void) {
         URLSession.shared.dataTask(with: RoadtripAPI.carQueryModelURL(make: make, year: String(year))) {
             (data, response, error) -> Void in
-            var jsonAsString = String(data: data!, encoding: .utf8)
-            let start = jsonAsString!.index(jsonAsString!.startIndex, offsetBy: 2)
-            let end = jsonAsString!.index(jsonAsString!.endIndex, offsetBy: -2)
-            let range = start..<end
-            jsonAsString = String(jsonAsString![range])
-            let jsonData = jsonAsString!.data(using: .utf8)!
-            let result = self.processModelsResult(data: jsonData, error: error)
+            let result = self.processModelsResult(data: data, error: error)
             OperationQueue.main.addOperation {
                 completion(result)
             }
@@ -86,13 +68,7 @@ public class CarQueryDataStore {
     func getTrims(model: String, year: Int, completion: @escaping (TrimsResult) -> Void) {
         URLSession.shared.dataTask(with: RoadtripAPI.carQueryTrimURL(model: model, year: String(year))) {
             (data, response, error) -> Void in
-            var jsonAsString = String(data: data!, encoding: .utf8)
-            let start = jsonAsString!.index(jsonAsString!.startIndex, offsetBy: 2)
-            let end = jsonAsString!.index(jsonAsString!.endIndex, offsetBy: -2)
-            let range = start..<end
-            jsonAsString = String(jsonAsString![range])
-            let jsonData = jsonAsString!.data(using: .utf8)!
-            let result = self.processTrimsResult(data: jsonData, error: error)
+            let result = self.processTrimsResult(data: data, error: error)
             OperationQueue.main.addOperation {
                 completion(result)
             }
