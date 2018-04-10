@@ -32,6 +32,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
     var reacheableLegs = [Direction.Route.Leg]()
     var zoom: Float?
     
+    var gasStationsDuringNavigation = GasStations()
     var navigationDirection: Direction?
     
     override func viewDidLoad() {
@@ -40,7 +41,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
         gasPricesDataStore = appDelegate!.gasPricesDataStore
         zoom = 6
         
-        //adding all to search
+        //adding all to search        
         locationManager.delegate = self
         locationManager.startUpdatingHeading()
         mapView.delegate = self
