@@ -40,7 +40,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
         gasPricesDataStore = appDelegate!.gasPricesDataStore
         zoom = 6
         
-        //adding all to search        
+        //adding all to search
         locationManager.delegate = self
         locationManager.startUpdatingHeading()
         mapView.delegate = self
@@ -85,7 +85,7 @@ extension MapViewController {
         
         /*
          Every 5 seconds, check the current speed and put the speed into the speeds, array of Double
-        */
+         */
         if lastTimeToCheckSpeed!.timeIntervalSinceNow >= 5.0 {
             self.myCar!.appendSpeed(speed: self.locationManager.location!.speed)
             lastTimeToCheckSpeed = Date() // assiging the current time
@@ -94,7 +94,7 @@ extension MapViewController {
         /*
          If 5 minutes have passed, it gets the distance between the current and last locations.
          Then it will reduce the fuel remaining.
-        */
+         */
         if lastTime!.timeIntervalSinceNow >= 5.0 * 60 {
             googleClient.getDistance(origin: lastLocation!, destination: location) { (distanceResult) in
                 switch distanceResult {
@@ -158,6 +158,74 @@ extension MapViewController {
         markers[markerType]?.append(marker)
     }
     
+    func setMarkersWhileNavigation(){
+        if isInNavigation {
+            let group5 = DispatchGroup()
+            
+                for leg in self.reacheableLegs{
+                    for step in leg.steps!{
+                        
+                            group5.enter()
+                        self.gasPricesDataStore?.getGasPrices(latitude: step.startLocation!.lat!, longitutde: step.startLocation!.lng!, distanceInMiles: 2, gasType: "reg"){
+                            (response) in
+                            DispatchQueue.main.async{
+                            switch response{
+                            case let .success(gasStations):
+                                self.gasStationsDuringNavigation = gasStations
+                                group5.leave()
+                            case let .failure(error):
+                                print(error)
+                            }
+                        }
+                    
+                    }
+                }
+                
+            }
+            
+            group5.notify(queue: .main, execute: {
+                if let _ = self.gasStationsDuringNavigation.stations{
+                for gasStationForPrice in self.gasStationsDuringNavigation.stations! {
+                    let DynamicView=UIView(frame: CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 50, height: 50)))
+                    DynamicView.backgroundColor=UIColor.clear
+                    var imageViewForPinMarker : UIImageView
+                    imageViewForPinMarker  = UIImageView(frame:CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 50, height: 50)))
+                    imageViewForPinMarker.image = UIImage(named:"prices")?.withRenderingMode(.alwaysTemplate)
+                    imageViewForPinMarker.tintColor = UIColor.green
+                    let text = UILabel(frame:CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 40, height: 30)))
+                    guard let _ = gasStationForPrice.regPrice else {
+                        continue
+                    }
+                    text.text = String(gasStationForPrice.regPrice!)
+                    text.textColor = UIColor.black
+                    text.font = UIFont(name: text.font.fontName, size: 14)
+                    text.textAlignment = NSTextAlignment.center
+                    text.center = imageViewForPinMarker.convert(imageViewForPinMarker.center, from:imageViewForPinMarker.superview)
+                    
+                    imageViewForPinMarker.addSubview(text)
+                    imageViewForPinMarker.center = DynamicView.convert(DynamicView.center, from:DynamicView.superview)
+                    DynamicView.addSubview(imageViewForPinMarker)
+                    UIGraphicsBeginImageContextWithOptions(DynamicView.frame.size, false, UIScreen.main.scale)
+                    DynamicView.layer.render(in: UIGraphicsGetCurrentContext()!)
+                    let imageConverted: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
+                    UIGraphicsEndImageContext()
+                    let marker = GMSMarker()
+                    marker.position = CLLocationCoordinate2DMake(gasStationForPrice.lat!, gasStationForPrice.lng!)
+                    
+                    marker.groundAnchor = CGPoint(x: 0.5, y: 1)
+                    marker.appearAnimation = .pop
+                    
+                    marker.icon = imageConverted
+                    marker.title = gasStationForPrice.station//////incomplete
+                    //                                marker.snippet = "The place is \(place.openingHours?.isOpen == true ? "open" : "closed")"
+                    marker.map = self.mapView
+                    
+                }
+                }
+            })
+        }
+    }
+    
     func fetchGoogleData(forLocation: CLLocation, locationName: String, searchRadius: Int) {
         let group1 = DispatchGroup()
         group1.enter()
@@ -206,10 +274,10 @@ extension MapViewController {
                         marker.map = self.mapView
                     }
                     //                    case place.types.contains("food"),place.types.contains("restaurant"),place.types.contains("bar"):
-//                    if locationName == "food"{
-//                        marker.icon = UIImage(named: "Food")
-//                        marker.map = self.mapView
-//                    }
+                    //                    if locationName == "food"{
+                    //                        marker.icon = UIImage(named: "Food")
+                    //                        marker.map = self.mapView
+                    //                    }
                     self.addMarker(markerType: locationName, marker: marker)
                 }
                 group1.leave()
@@ -266,10 +334,10 @@ extension MapViewController {
                             marker.map = self.mapView
                         }
                         //                        case place.types.contains("food"),place.types.contains("restaurant"),place.types.contains("bar"):
-//                        if locationName == "food"{
-//                            marker.icon = UIImage(named: "Food")
-//                            marker.map = self.mapView
-//                        }
+                        //                        if locationName == "food"{
+                        //                            marker.icon = UIImage(named: "Food")
+                        //                            marker.map = self.mapView
+                        //                        }
                         self.addMarker(markerType: locationName, marker: marker)
                     }
                     group2.leave()
@@ -325,10 +393,10 @@ extension MapViewController {
                             marker.map = self.mapView
                         }
                         //                        case place.types.contains("food"),place.types.contains("restaurant"),place.types.contains("bar"):
-//                        if locationName == "food"{
-//                            marker.icon = UIImage(named: "Food")
-//                            marker.map = self.mapView
-//                        }
+                        //                        if locationName == "food"{
+                        //                            marker.icon = UIImage(named: "Food")
+                        //                            marker.map = self.mapView
+                        //                        }
                         self.addMarker(markerType: locationName, marker: marker)
                     }
                 }
@@ -352,12 +420,16 @@ extension MapViewController {
                 polyline.geodesic = true
                 polyline.map = self.mapView
                 // check if start points of each leg is reacheable
+                let group5 = DispatchGroup()
                 if let legs = direction.routes![0].legs {
                     for leg in legs {
                         let destLat = leg.startLocation!.lat
                         let destLng = leg.startLocation!.lng
                         let destination = CLLocation(latitude: destLat!, longitude: destLng!)
+                        
+                        group5.enter()
                         self.googleClient.getDistance(origin: self.currentLocation!, destination: destination, completion: { (distanceResult) in
+                            DispatchQueue.main.async{
                             switch distanceResult {
                             case let .success(distance):
                                 if let distanceVal = distance.rows![0].elements![0].distance!.value {
@@ -365,15 +437,22 @@ extension MapViewController {
                                     // if the start location of a leg is reacheable, put into the reacheableLegs array
                                     if distanceVal < reachableDistanceInMiles {
                                         self.reacheableLegs.append(leg)
+                                        group5.leave()
                                     }
                                 }
                             case let .failure(error):
                                 print(error)
                             }
+                        }
                         })
                     }
                 }
-            // show gas stations & restaurants on the steps
+                // show gas stations & restaurants on the steps
+                group5.notify(queue: .main, execute :{
+                    self.isInNavigation = true
+                    self.setMarkersWhileNavigation()
+                })
+                
             case let .failure(error):
                 print(error)
             }
@@ -396,7 +475,7 @@ extension MapViewController {
             case let .failure(error):
                 print(error)
             }
-            })
+        })
     }
     
 }
@@ -465,6 +544,7 @@ extension MapViewController: GMSAutocompleteViewControllerDelegate {
     }
     
     func wasCancelled(_ viewController: GMSAutocompleteViewController) {
+        self.isInNavigation = false
         dismiss(animated: true, completion: nil)
     }
     
@@ -503,12 +583,12 @@ extension MapViewController {
         
         getDirectionBtn.translatesAutoresizingMaskIntoConstraints = false
         cancelBtn.translatesAutoresizingMaskIntoConstraints = false
-
+        
         getDirectionBtn.widthAnchor.constraint(equalToConstant: 140).isActive = true
         getDirectionBtn.heightAnchor.constraint(equalToConstant: 50).isActive = true
         cancelBtn.widthAnchor.constraint(equalToConstant: 140).isActive = true
         cancelBtn.heightAnchor.constraint(equalToConstant: 50).isActive = true
-
+        
         // adding buttons to the subview
         self.stackView = UIStackView(arrangedSubviews: [getDirectionBtn, cancelBtn])
         self.stackView!.axis = .vertical
@@ -666,4 +746,5 @@ extension UINavigationController {
         navigationBar.shadowImage = UINavigationBar.appearance().shadowImage
     }
 }
+
 
