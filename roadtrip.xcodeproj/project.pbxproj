@@ -594,6 +594,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = A33153FF928D660E0DCAA99D /* Pods-roadtrip.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = FVEGF5DQ7U;
@@ -610,6 +611,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 68B46FE21B9B8F67943E6DFA /* Pods-roadtrip.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = FVEGF5DQ7U;

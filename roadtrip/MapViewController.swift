@@ -30,6 +30,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
     var lastTime: Date?
     var lastTimeToCheckSpeed: Date?
     var reacheableLegs = [Direction.Route.Leg]()
+    var zoom: Float?
     
     var navigationDirection: Direction?
     
@@ -37,9 +38,11 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
         super.viewDidLoad()
         myCar = appDelegate!.myCar
         gasPricesDataStore = appDelegate!.gasPricesDataStore
+        zoom = 6
         
         //adding all to search        
         locationManager.delegate = self
+        locationManager.startUpdatingHeading()
         mapView.delegate = self
         //self.navigationController?.isNavigationBarHidden = true
         locationManager.requestWhenInUseAuthorization()
@@ -107,12 +110,16 @@ extension MapViewController {
             }
         }
         
-        mapView.camera = GMSCameraPosition(target: location.coordinate, zoom: 15, bearing: 0, viewingAngle: 0)
+        mapView.camera = GMSCameraPosition(target: location.coordinate, zoom: zoom!, bearing: 0, viewingAngle: 0)
         clearAllMarkers()
         for keyword in searchKeywords{
             self.fetchGoogleData(forLocation: location, locationName: keyword, searchRadius: self.searchRadius )
         }
         currentLocation = location
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
+        self.mapView.camera = GMSCameraPosition.camera(withLatitude: currentLocation!.coordinate.latitude, longitude: currentLocation!.coordinate.longitude, zoom: zoom!, bearing: newHeading.magneticHeading, viewingAngle: 0)
     }
 }
 
@@ -444,6 +451,8 @@ extension MapViewController: GMSAutocompleteViewControllerDelegate {
         mapView.isMyLocationEnabled = true
         mapView.settings.myLocationButton = true
         mapView.settings.compassButton = true
+        mapView.settings.zoomGestures = true
+        mapView.settings.tiltGestures = true
         
         print("Place name: \(place.name)")
         print("Place address: \(String(describing: place.formattedAddress))")
@@ -522,6 +531,10 @@ extension MapViewController {
         searchBar.resignFirstResponder()
     }
     
+    func mapView(_ mapView: GMSMapView, idleAt position: GMSCameraPosition) {
+        self.zoom = position.zoom
+    }
+    
 }
 
 // MARK: needs to be changed - Sanket
@@ -545,6 +558,18 @@ extension MapViewController {
     @objc func getDirectionBtnTapped(_ sender: UIButton) {
         let currentLocation = self.currentLocation
         let destination = CLLocation(latitude: self.destination!.latitude, longitude: self.destination!.longitude)
+        
+        let currentLocation2D = CLLocationCoordinate2D(latitude: currentLocation!.coordinate.latitude, longitude: currentLocation!.coordinate.longitude)
+        let destination2D = CLLocationCoordinate2D(latitude: destination.coordinate.latitude, longitude: destination.coordinate.longitude)
+        
+        let bounds = GMSCoordinateBounds(coordinate: currentLocation2D, coordinate: destination2D)
+        var insets = UIEdgeInsets()
+        insets.bottom = 50
+        insets.top = 50
+        insets.right = 50
+        insets.left = 50
+        let camera = self.mapView.camera(for: bounds, insets: insets)!
+        self.mapView.camera = camera
         
         self.drawPath(origin: currentLocation!, destination: destination)
         

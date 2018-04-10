@@ -111,17 +111,11 @@
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <gestureRecognizers/>
-                                <connections>
-                                    <outletCollection property="gestureRecognizers" destination="OrE-kr-qr7" appends="YES" id="glS-SG-5rc"/>
-                                </connections>
                             </view>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <gestureRecognizers/>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
-                        <connections>
-                            <outletCollection property="gestureRecognizers" destination="OrE-kr-qr7" appends="YES" id="XIN-rq-O8h"/>
-                        </connections>
                     </view>
                     <navigationItem key="navigationItem" id="ZvD-U4-U2G"/>
                     <connections>
@@ -156,11 +150,6 @@
                         <outlet property="searchResultsDelegate" destination="BYZ-38-t0r" id="GI3-s0-gMu"/>
                     </connections>
                 </searchDisplayController>
-                <tapGestureRecognizer id="OrE-kr-qr7">
-                    <connections>
-                        <action selector="viewTapped:" destination="BYZ-38-t0r" id="S9Y-Y9-c5t"/>
-                    </connections>
-                </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="3061.5999999999999" y="1132.9835082458771"/>
         </scene>
