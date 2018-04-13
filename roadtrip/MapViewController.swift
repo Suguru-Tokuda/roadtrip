@@ -189,8 +189,16 @@ extension MapViewController {
                         DispatchQueue.main.async{
                             switch response{
                             case let .success(gasStations):
-                                self.gasStationsDuringNavigation = gasStations
-                                group5.leave()
+                                if self.gasStationsDuringNavigation.stations == nil{
+                                 self.gasStationsDuringNavigation = gasStations
+                                }else{
+                                    self.gasStationsDuringNavigation.stations! += gasStations.stations!
+                                }
+                                
+                                if self.reacheableLegs.last!.steps!.last?.startLocation?.lat == step.startLocation?.lat && self.reacheableLegs.last!.steps!.last?.startLocation?.lng == step.startLocation?.lng {
+                                    group5.leave()
+                                }
+                                
                             case let .failure(error):
                                 print(error)
                             }
