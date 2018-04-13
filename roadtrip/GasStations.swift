@@ -11,7 +11,11 @@ import Foundation
 public struct GasStations: Codable {
     var stations: [Station]?
     
-    public struct Station: Codable {
+    public struct Station: Codable, Hashable {
+        public var hashValue: Int{
+            return Int(lat!*10000000)
+        }
+        
         
         var country: String?
         var zip: String?

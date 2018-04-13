@@ -162,18 +162,26 @@ extension MapViewController {
     func setMarkersWhileNavigation(){
         if isInNavigation {
             let group5 = DispatchGroup()
-            
+            group5.enter()
                 for leg in self.reacheableLegs{
                     for step in leg.steps!{
                         
-                            group5.enter()
-                        self.gasPricesDataStore?.getGasPrices(latitude: step.startLocation!.lat!, longitutde: step.startLocation!.lng!, distanceInMiles: 2, gasType: "reg"){
+                        
+                        self.gasPricesDataStore?.getGasPrices(latitude: step.startLocation!.lat!, longitutde: step.startLocation!.lng!, distanceInMiles: 1, gasType: "reg"){
                             (response) in
                             DispatchQueue.main.async{
                             switch response{
                             case let .success(gasStations):
-                                self.gasStationsDuringNavigation = gasStations
-                                group5.leave()
+                                if self.gasStationsDuringNavigation.stations == nil{
+                                 self.gasStationsDuringNavigation = gasStations
+                                }else{
+                                    self.gasStationsDuringNavigation.stations! += gasStations.stations!
+                                }
+                                
+                                if self.reacheableLegs.last!.steps!.last?.startLocation?.lat == step.startLocation?.lat && self.reacheableLegs.last!.steps!.last?.startLocation?.lng == step.startLocation?.lng {
+                                    group5.leave()
+                                }
+                                
                             case let .failure(error):
                                 print(error)
                             }
@@ -186,6 +194,15 @@ extension MapViewController {
             
             group5.notify(queue: .main, execute: {
                 if let _ = self.gasStationsDuringNavigation.stations{
+                    for station in self.gasStationsDuringNavigation.stations!.sorted(by: {$0.lat!<$1.lat!}){
+                        print("lat:\(station.lat!) lng:\(station.lng!)")
+                        
+                    }
+                    self.gasStationsDuringNavigation.stations = Array(Set(self.gasStationsDuringNavigation.stations!))
+                    for station in self.gasStationsDuringNavigation.stations!.sorted(by: {$0.lat!<$1.lat!}){
+                        print("lat:\(station.lat!) lng:\(station.lng!)")
+                        
+                    }
                 for gasStationForPrice in self.gasStationsDuringNavigation.stations! {
                     let DynamicView=UIView(frame: CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 50, height: 50)))
                     DynamicView.backgroundColor=UIColor.clear
