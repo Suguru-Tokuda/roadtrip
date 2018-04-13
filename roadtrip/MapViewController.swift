@@ -37,6 +37,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
     
     var gasStationsDuringNavigation = GasStations()
     var navigationDirection: Direction?
+    var searchIsOn: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -126,7 +127,7 @@ extension MapViewController {
                 }
             }
         }
-        if !usingCompus {
+        if !usingCompus && !searchIsOn{
             mapView.camera = GMSCameraPosition(target: location.coordinate, zoom: zoom!, bearing: 0, viewingAngle: 0)
         }
         clearAllMarkers()
@@ -137,7 +138,7 @@ extension MapViewController {
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
-        if usingCompus {
+        if usingCompus && !searchIsOn{
             self.mapView.camera = GMSCameraPosition.camera(withLatitude: currentLocation!.coordinate.latitude, longitude: currentLocation!.coordinate.longitude, zoom: zoom!, bearing: newHeading.magneticHeading, viewingAngle: 0)
             
         }
@@ -744,9 +745,11 @@ extension MapViewController {
     
     @objc func startNavBtnTapped(_ sender: UIButton) {
         print("startNavBtnTapped")
+        locationManager.startUpdatingLocation()
     }
     
     @objc func cancelBtnTapped(_ sender: UIButton) {
+        locationManager.startUpdatingLocation()
         print("cancelbtn tapped")
         for view in self.stackView.subviews {
             view.removeFromSuperview()
@@ -763,8 +766,11 @@ extension MapViewController {
     
     //    part of expandable search bar
     @objc func toggle() {
+//        searchIsOn = true
+        
         let autocompleteController = GMSAutocompleteViewController()
         autocompleteController.delegate = self
+        locationManager.stopUpdatingLocation()
         present(autocompleteController, animated: true, completion: nil)
     }
 }
