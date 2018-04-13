@@ -23,7 +23,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
     let searchBar = UISearchBar()
     var isInNavigation: Bool = false
     var markers=[String:[PlaceMarker]]()
-    var stackView: UIStackView?
+    var stackView: UIStackView! = UIStackView()
     var currentTime: Date?
     var lastTime: Date?
     var lastTimeToCheckSpeed: Date?
@@ -31,6 +31,9 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
     var zoom: Float?
     var usingCompus: Bool = false
     var directionBtn: UIButton!
+    var getDirectionBtn: UIButton?
+    var startNavigationBtn: UIButton?
+    var cancelBtn: UIButton?
     
     var gasStationsDuringNavigation = GasStations()
     var navigationDirection: Direction?
@@ -600,32 +603,36 @@ extension MapViewController {
         // setting the position to destination's coordinate
         self.destination = marker.position
         
-        let getDirectionBtn = UIButton(type: .system)
-        getDirectionBtn.frame = CGRect(x: 150, y: 100, width: 150, height: 30)
-        getDirectionBtn.setTitle("Get Direction", for: .normal)
-        getDirectionBtn.backgroundColor = UIColor(red:0.00, green:0.53, blue:1.00, alpha:1.0)
-        getDirectionBtn.layer.cornerRadius = 5
-        getDirectionBtn.setTitleColor(.white, for: .normal)
-        getDirectionBtn.addTarget(self, action: #selector(getDirectionBtnTapped), for: .touchUpInside)
+        self.getDirectionBtn = UIButton(type: .system)
+        self.getDirectionBtn!.frame = CGRect(x: 150, y: 100, width: 150, height: 30)
+        self.getDirectionBtn!.setTitle("Get Direction", for: .normal)
+        self.getDirectionBtn!.backgroundColor = UIColor(red:0.00, green:0.53, blue:1.00, alpha:1.0)
+        self.getDirectionBtn!.layer.cornerRadius = 5
+        self.getDirectionBtn!.setTitleColor(.white, for: .normal)
+        self.getDirectionBtn!.addTarget(self, action: #selector(getDirectionBtnTapped), for: .touchUpInside)
         
-        let cancelBtn = UIButton(type: .system)
-        cancelBtn.frame = CGRect(x: 150, y: 100, width: 150, height: 30)
-        cancelBtn.setTitle("Cancel", for: .normal)
-        cancelBtn.backgroundColor = UIColor(red:1.00, green:0.30, blue:0.00, alpha:1.0)
-        cancelBtn.layer.cornerRadius = 5
-        cancelBtn.setTitleColor(.white, for: .normal)
-        cancelBtn.addTarget(self, action: #selector(cancelBtnTapped), for: .touchUpInside)
+        self.cancelBtn = UIButton(type: .system)
+        cancelBtn!.frame = CGRect(x: 150, y: 100, width: 150, height: 30)
+        cancelBtn!.setTitle("Cancel", for: .normal)
+        cancelBtn!.backgroundColor = UIColor(red:1.00, green:0.30, blue:0.00, alpha:1.0)
+        cancelBtn!.layer.cornerRadius = 5
+        cancelBtn!.setTitleColor(.white, for: .normal)
+        cancelBtn!.addTarget(self, action: #selector(cancelBtnTapped), for: .touchUpInside)
         
-        getDirectionBtn.translatesAutoresizingMaskIntoConstraints = false
-        cancelBtn.translatesAutoresizingMaskIntoConstraints = false
+        self.getDirectionBtn!.translatesAutoresizingMaskIntoConstraints = false
+        cancelBtn!.translatesAutoresizingMaskIntoConstraints = false
         
-        getDirectionBtn.widthAnchor.constraint(equalToConstant: 140).isActive = true
-        getDirectionBtn.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        cancelBtn.widthAnchor.constraint(equalToConstant: 140).isActive = true
-        cancelBtn.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        self.getDirectionBtn!.widthAnchor.constraint(equalToConstant: 140).isActive = true
+        self.getDirectionBtn!.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        cancelBtn!.widthAnchor.constraint(equalToConstant: 140).isActive = true
+        cancelBtn!.heightAnchor.constraint(equalToConstant: 50).isActive = true
         
         // adding buttons to the subview
-        self.stackView = UIStackView(arrangedSubviews: [getDirectionBtn, cancelBtn])
+        for view in self.stackView.subviews {
+            view.removeFromSuperview()
+        }
+        self.stackView.addArrangedSubview(self.getDirectionBtn!)
+        self.stackView.addArrangedSubview(self.cancelBtn!)
         self.stackView!.axis = .vertical
         self.stackView!.spacing = 30
         // enables auto layout for buttons
@@ -671,6 +678,7 @@ extension MapViewController {
     }
     
     @objc func getDirectionBtnTapped(_ sender: UIButton) {
+        self.stackView!.removeFromSuperview()
         let currentLocation = self.currentLocation
         let destination = CLLocation(latitude: self.destination!.latitude, longitude: self.destination!.longitude)
         
@@ -689,34 +697,41 @@ extension MapViewController {
         self.drawPath(origin: currentLocation!, destination: destination)
         
         // remove buttons from the view
+        for view in self.stackView.subviews {
+            view.removeFromSuperview()
+        }
         self.stackView!.removeFromSuperview()
+        self.cancelBtn = nil
+        self.getDirectionBtn = nil
+        self.startNavigationBtn = nil
         
-        let startNavBtn = UIButton(type: .system)
-        startNavBtn.frame = CGRect(x: 150, y: 100, width: 150, height: 30)
-        startNavBtn.setTitle("Start Navigation", for: .normal)
-        startNavBtn.backgroundColor = UIColor(red:0.00, green:0.53, blue:1.00, alpha:1.0)
-        startNavBtn.layer.cornerRadius = 5
-        startNavBtn.setTitleColor(.white, for: .normal)
-        startNavBtn.addTarget(self, action: #selector(startNavBtnTapped), for: .touchUpInside)
+        self.startNavigationBtn = UIButton(type: .system)
+        startNavigationBtn!.frame = CGRect(x: 150, y: 100, width: 150, height: 30)
+        startNavigationBtn!.setTitle("Start Navigation", for: .normal)
+        startNavigationBtn!.backgroundColor = UIColor(red:0.00, green:0.53, blue:1.00, alpha:1.0)
+        startNavigationBtn!.layer.cornerRadius = 5
+        startNavigationBtn!.setTitleColor(.white, for: .normal)
+        startNavigationBtn!.addTarget(self, action: #selector(startNavBtnTapped), for: .touchUpInside)
         
-        let cancelBtn = UIButton(type: .system)
-        cancelBtn.frame = CGRect(x: 150, y: 100, width: 150, height: 30)
-        cancelBtn.setTitle("Cancel", for: .normal)
-        cancelBtn.backgroundColor = UIColor(red:1.00, green:0.30, blue:0.00, alpha:1.0)
-        cancelBtn.layer.cornerRadius = 5
-        cancelBtn.setTitleColor(.white, for: .normal)
-        cancelBtn.addTarget(self, action: #selector(cancelBtnTapped), for: .touchUpInside)
+        self.cancelBtn = UIButton(type: .system)
+        cancelBtn!.frame = CGRect(x: 150, y: 100, width: 150, height: 30)
+        cancelBtn!.setTitle("Cancel", for: .normal)
+        cancelBtn!.backgroundColor = UIColor(red:1.00, green:0.30, blue:0.00, alpha:1.0)
+        cancelBtn!.layer.cornerRadius = 5
+        cancelBtn!.setTitleColor(.white, for: .normal)
+        cancelBtn!.addTarget(self, action: #selector(cancelBtnTapped), for: .touchUpInside)
         
-        startNavBtn.translatesAutoresizingMaskIntoConstraints = false
-        cancelBtn.translatesAutoresizingMaskIntoConstraints = false
+        startNavigationBtn!.translatesAutoresizingMaskIntoConstraints = false
+        cancelBtn!.translatesAutoresizingMaskIntoConstraints = false
         
-        startNavBtn.widthAnchor.constraint(equalToConstant: 140).isActive = true
-        startNavBtn.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        cancelBtn.widthAnchor.constraint(equalToConstant: 140).isActive = true
-        cancelBtn.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        startNavigationBtn!.widthAnchor.constraint(equalToConstant: 140).isActive = true
+        startNavigationBtn!.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        cancelBtn!.widthAnchor.constraint(equalToConstant: 140).isActive = true
+        cancelBtn!.heightAnchor.constraint(equalToConstant: 50).isActive = true
         
         // adding buttons to the subview
-        self.stackView = UIStackView(arrangedSubviews: [startNavBtn, cancelBtn])
+        self.stackView.addArrangedSubview(self.startNavigationBtn!)
+        self.stackView.addArrangedSubview(self.cancelBtn!)
         self.stackView!.axis = .vertical
         self.stackView!.spacing = 30
         // enables auto layout for buttons
@@ -733,10 +748,13 @@ extension MapViewController {
     
     @objc func cancelBtnTapped(_ sender: UIButton) {
         print("cancelbtn tapped")
+        for view in self.stackView.subviews {
+            view.removeFromSuperview()
+        }
         self.mapView.clear()
         let camera = GMSCameraPosition.camera(withLatitude: self.currentLocation!.coordinate.latitude, longitude: self.currentLocation!.coordinate.longitude, zoom: 16)
         self.mapView.camera = camera
-        self.stackView?.removeFromSuperview()
+        self.stackView!.removeFromSuperview()
     }
     
     @objc func locationBtnTapped(_ sender: UIButton) {
