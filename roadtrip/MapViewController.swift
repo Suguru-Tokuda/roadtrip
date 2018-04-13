@@ -179,14 +179,14 @@ extension MapViewController {
     func setMarkersWhileNavigation(){
         if isInNavigation {
             let group5 = DispatchGroup()
-            
-            for leg in self.reacheableLegs{
-                for step in leg.steps!{
-                    
-                    group5.enter()
-                    self.gasPricesDataStore?.getGasPrices(latitude: step.startLocation!.lat!, longitutde: step.startLocation!.lng!, distanceInMiles: 2, gasType: "reg"){
-                        (response) in
-                        DispatchQueue.main.async{
+            group5.enter()
+                for leg in self.reacheableLegs{
+                    for step in leg.steps!{
+                        
+                        
+                        self.gasPricesDataStore?.getGasPrices(latitude: step.startLocation!.lat!, longitutde: step.startLocation!.lng!, distanceInMiles: 1, gasType: "reg"){
+                            (response) in
+                            DispatchQueue.main.async{
                             switch response{
                             case let .success(gasStations):
                                 if self.gasStationsDuringNavigation.stations == nil{
@@ -211,42 +211,51 @@ extension MapViewController {
             
             group5.notify(queue: .main, execute: {
                 if let _ = self.gasStationsDuringNavigation.stations{
-                    for gasStationForPrice in self.gasStationsDuringNavigation.stations! {
-                        let DynamicView=UIView(frame: CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 50, height: 50)))
-                        DynamicView.backgroundColor=UIColor.clear
-                        var imageViewForPinMarker : UIImageView
-                        imageViewForPinMarker  = UIImageView(frame:CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 50, height: 50)))
-                        imageViewForPinMarker.image = UIImage(named:"prices")?.withRenderingMode(.alwaysTemplate)
-                        imageViewForPinMarker.tintColor = UIColor.green
-                        let text = UILabel(frame:CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 40, height: 30)))
-                        guard let _ = gasStationForPrice.regPrice else {
-                            continue
-                        }
-                        text.text = String(gasStationForPrice.regPrice!)
-                        text.textColor = UIColor.black
-                        text.font = UIFont(name: text.font.fontName, size: 14)
-                        text.textAlignment = NSTextAlignment.center
-                        text.center = imageViewForPinMarker.convert(imageViewForPinMarker.center, from:imageViewForPinMarker.superview)
-                        
-                        imageViewForPinMarker.addSubview(text)
-                        imageViewForPinMarker.center = DynamicView.convert(DynamicView.center, from:DynamicView.superview)
-                        DynamicView.addSubview(imageViewForPinMarker)
-                        UIGraphicsBeginImageContextWithOptions(DynamicView.frame.size, false, UIScreen.main.scale)
-                        DynamicView.layer.render(in: UIGraphicsGetCurrentContext()!)
-                        let imageConverted: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
-                        UIGraphicsEndImageContext()
-                        let marker = GMSMarker()
-                        marker.position = CLLocationCoordinate2DMake(gasStationForPrice.lat!, gasStationForPrice.lng!)
-                        
-                        marker.groundAnchor = CGPoint(x: 0.5, y: 1)
-                        marker.appearAnimation = .pop
-                        
-                        marker.icon = imageConverted
-                        marker.title = gasStationForPrice.station//////incomplete
-                        //                                marker.snippet = "The place is \(place.openingHours?.isOpen == true ? "open" : "closed")"
-                        marker.map = self.mapView
+                    for station in self.gasStationsDuringNavigation.stations!.sorted(by: {$0.lat!<$1.lat!}){
+                        print("lat:\(station.lat!) lng:\(station.lng!)")
                         
                     }
+                    self.gasStationsDuringNavigation.stations = Array(Set(self.gasStationsDuringNavigation.stations!))
+                    for station in self.gasStationsDuringNavigation.stations!.sorted(by: {$0.lat!<$1.lat!}){
+                        print("lat:\(station.lat!) lng:\(station.lng!)")
+                        
+                    }
+                for gasStationForPrice in self.gasStationsDuringNavigation.stations! {
+                    let DynamicView=UIView(frame: CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 50, height: 50)))
+                    DynamicView.backgroundColor=UIColor.clear
+                    var imageViewForPinMarker : UIImageView
+                    imageViewForPinMarker  = UIImageView(frame:CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 50, height: 50)))
+                    imageViewForPinMarker.image = UIImage(named:"prices")?.withRenderingMode(.alwaysTemplate)
+                    imageViewForPinMarker.tintColor = UIColor.green
+                    let text = UILabel(frame:CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 40, height: 30)))
+                    guard let _ = gasStationForPrice.regPrice else {
+                        continue
+                    }
+                    text.text = String(gasStationForPrice.regPrice!)
+                    text.textColor = UIColor.black
+                    text.font = UIFont(name: text.font.fontName, size: 14)
+                    text.textAlignment = NSTextAlignment.center
+                    text.center = imageViewForPinMarker.convert(imageViewForPinMarker.center, from:imageViewForPinMarker.superview)
+                    
+                    imageViewForPinMarker.addSubview(text)
+                    imageViewForPinMarker.center = DynamicView.convert(DynamicView.center, from:DynamicView.superview)
+                    DynamicView.addSubview(imageViewForPinMarker)
+                    UIGraphicsBeginImageContextWithOptions(DynamicView.frame.size, false, UIScreen.main.scale)
+                    DynamicView.layer.render(in: UIGraphicsGetCurrentContext()!)
+                    let imageConverted: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
+                    UIGraphicsEndImageContext()
+                    let marker = GMSMarker()
+                    marker.position = CLLocationCoordinate2DMake(gasStationForPrice.lat!, gasStationForPrice.lng!)
+                    
+                    marker.groundAnchor = CGPoint(x: 0.5, y: 1)
+                    marker.appearAnimation = .pop
+                    
+                    marker.icon = imageConverted
+                    marker.title = gasStationForPrice.station//////incomplete
+                    //                                marker.snippet = "The place is \(place.openingHours?.isOpen == true ? "open" : "closed")"
+                    marker.map = self.mapView
+                    
+                }
                 }
             })
         }
