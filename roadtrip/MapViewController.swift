@@ -29,6 +29,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
     var lastTimeToCheckSpeed: Date?
     var reacheableLegs = [Direction.Route.Leg]()
     var zoom: Float?
+    var viewAngle: Double?
     var usingCompus: Bool = false
     var directionBtn: UIButton!
     var getDirectionBtn: UIButton?
@@ -43,6 +44,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
         myCar = appDelegate!.myCar
         gasPricesDataStore = appDelegate!.gasPricesDataStore
         zoom = 6
+        viewAngle = 0
         
         directionBtn = UIButton(type: .system) as UIButton
         directionBtn.addTarget(self, action: #selector(locationBtnTapped), for: .touchUpInside)
@@ -127,7 +129,7 @@ extension MapViewController {
             }
         }
         if !usingCompus {
-            mapView.camera = GMSCameraPosition(target: location.coordinate, zoom: zoom!, bearing: 0, viewingAngle: 0)
+            mapView.camera = GMSCameraPosition(target: location.coordinate, zoom: zoom!, bearing: 0, viewingAngle: self.viewAngle!)
         }
         clearAllMarkers()
         for keyword in searchKeywords{
@@ -653,8 +655,22 @@ extension MapViewController {
         searchBar.resignFirstResponder()
     }
     
+    func mapView(_ mapView: GMSMapView, didLongPressAt coordinate: CLLocationCoordinate2D) {
+        let geocoder = GMSGeocoder()
+        geocoder.reverseGeocodeCoordinate(coordinate) { (response, error) in
+            let marker = GMSMarker(position: coordinate)
+            var strVal = ""
+            for line in response!.firstResult()!.lines! {
+                strVal += line
+            }
+            marker.title = strVal
+            marker.map = self.mapView
+        }
+    }
+    
     func mapView(_ mapView: GMSMapView, idleAt position: GMSCameraPosition) {
         self.zoom = position.zoom
+        self.viewAngle = position.viewingAngle
     }
     
 }
