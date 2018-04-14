@@ -25,7 +25,7 @@ struct RoadtripAPI {
     private static let myGasFeedBaseURL = "http://api.mygasfeed.com/stations/radius/"
     private static let googleAPIBaseURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?"
     private static let googleDirectionsAPIBaseURL = "https://maps.googleapis.com/maps/api/directions/json?"
-    private static let googleDistanceMatrixAPIBaseURL = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&"
+    private static let googleDistanceMatrixAPIBaseURL = "https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&"
     
     public static let myGasFeedAPIKey = "3gi91gd4i1"
     public static let googleMapsAPIKey = "AIzaSyDEdKM_L4ArIhHSyZdOImGpmAWArGT8W38"

@@ -27,7 +27,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
     var currentTime: Date?
     var lastTime: Date?
     var lastTimeToCheckSpeed: Date?
-    var reacheableLegs = [Direction.Route.Leg]()
+    var reacheableSteps = [Direction.Route.Leg.Step]()
     var zoom: Float?
     var viewAngle: Double?
     var usingCompus: Bool = false
@@ -129,7 +129,7 @@ extension MapViewController {
                 }
             }
         }
-
+        
         if !usingCompus {
             mapView.camera = GMSCameraPosition(target: location.coordinate, zoom: zoom!, bearing: 0, viewingAngle: self.viewAngle!)
         }
@@ -187,33 +187,25 @@ extension MapViewController {
         if isInNavigation {
             let group5 = DispatchGroup()
             group5.enter()
-                for leg in self.reacheableLegs{
-                    for step in leg.steps!{
-                        
-                        
-                        self.gasPricesDataStore?.getGasPrices(latitude: step.startLocation!.lat!, longitutde: step.startLocation!.lng!, distanceInMiles: 1, gasType: "reg"){
-                            (response) in
-                            DispatchQueue.main.async{
-                            switch response{
-                            case let .success(gasStations):
-                                if self.gasStationsDuringNavigation.stations == nil{
-                                 self.gasStationsDuringNavigation = gasStations
-                                }else{
-                                    self.gasStationsDuringNavigation.stations! += gasStations.stations!
-                                }
-                                
-                                if self.reacheableLegs.last!.steps!.last?.startLocation?.lat == step.startLocation?.lat && self.reacheableLegs.last!.steps!.last?.startLocation?.lng == step.startLocation?.lng {
-                                    group5.leave()
-                                }
-                                
-                            case let .failure(error):
-                                print(error)
+            for step in self.reacheableSteps {
+                self.gasPricesDataStore?.getGasPrices(latitude: step.startLocation!.lat!, longitutde: step.startLocation!.lng!, distanceInMiles: 1, gasType: "reg"){
+                    (response) in
+                    DispatchQueue.main.async{
+                        switch response{
+                        case let .success(gasStations):
+                            if self.gasStationsDuringNavigation.stations == nil{
+                                self.gasStationsDuringNavigation = gasStations
+                            }else{
+                                self.gasStationsDuringNavigation.stations! += gasStations.stations!
                             }
+                            if self.reacheableSteps.last?.startLocation?.lat == step.startLocation?.lat && self.reacheableSteps.last?.startLocation?.lng == step.startLocation?.lng {
+                                group5.leave()
+                            }
+                        case let .failure(error):
+                            print(error)
                         }
-                        
                     }
                 }
-                
             }
             
             group5.notify(queue: .main, execute: {
@@ -227,42 +219,42 @@ extension MapViewController {
                         print("lat:\(station.lat!) lng:\(station.lng!)")
                         
                     }
-                for gasStationForPrice in self.gasStationsDuringNavigation.stations! {
-                    let DynamicView=UIView(frame: CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 50, height: 50)))
-                    DynamicView.backgroundColor=UIColor.clear
-                    var imageViewForPinMarker : UIImageView
-                    imageViewForPinMarker  = UIImageView(frame:CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 50, height: 50)))
-                    imageViewForPinMarker.image = UIImage(named:"prices")?.withRenderingMode(.alwaysTemplate)
-                    imageViewForPinMarker.tintColor = UIColor.green
-                    let text = UILabel(frame:CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 40, height: 30)))
-                    guard let _ = gasStationForPrice.regPrice else {
-                        continue
+                    for gasStationForPrice in self.gasStationsDuringNavigation.stations! {
+                        let DynamicView=UIView(frame: CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 50, height: 50)))
+                        DynamicView.backgroundColor=UIColor.clear
+                        var imageViewForPinMarker : UIImageView
+                        imageViewForPinMarker  = UIImageView(frame:CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 50, height: 50)))
+                        imageViewForPinMarker.image = UIImage(named:"prices")?.withRenderingMode(.alwaysTemplate)
+                        imageViewForPinMarker.tintColor = UIColor.green
+                        let text = UILabel(frame:CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 40, height: 30)))
+                        guard let _ = gasStationForPrice.regPrice else {
+                            continue
+                        }
+                        text.text = String(gasStationForPrice.regPrice!)
+                        text.textColor = UIColor.black
+                        text.font = UIFont(name: text.font.fontName, size: 14)
+                        text.textAlignment = NSTextAlignment.center
+                        text.center = imageViewForPinMarker.convert(imageViewForPinMarker.center, from:imageViewForPinMarker.superview)
+                        
+                        imageViewForPinMarker.addSubview(text)
+                        imageViewForPinMarker.center = DynamicView.convert(DynamicView.center, from:DynamicView.superview)
+                        DynamicView.addSubview(imageViewForPinMarker)
+                        UIGraphicsBeginImageContextWithOptions(DynamicView.frame.size, false, UIScreen.main.scale)
+                        DynamicView.layer.render(in: UIGraphicsGetCurrentContext()!)
+                        let imageConverted: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
+                        UIGraphicsEndImageContext()
+                        let marker = GMSMarker()
+                        marker.position = CLLocationCoordinate2DMake(gasStationForPrice.lat!, gasStationForPrice.lng!)
+                        
+                        marker.groundAnchor = CGPoint(x: 0.5, y: 1)
+                        marker.appearAnimation = .pop
+                        
+                        marker.icon = imageConverted
+                        marker.title = gasStationForPrice.station//////incomplete
+                        //                                marker.snippet = "The place is \(place.openingHours?.isOpen == true ? "open" : "closed")"
+                        marker.map = self.mapView
+                        
                     }
-                    text.text = String(gasStationForPrice.regPrice!)
-                    text.textColor = UIColor.black
-                    text.font = UIFont(name: text.font.fontName, size: 14)
-                    text.textAlignment = NSTextAlignment.center
-                    text.center = imageViewForPinMarker.convert(imageViewForPinMarker.center, from:imageViewForPinMarker.superview)
-                    
-                    imageViewForPinMarker.addSubview(text)
-                    imageViewForPinMarker.center = DynamicView.convert(DynamicView.center, from:DynamicView.superview)
-                    DynamicView.addSubview(imageViewForPinMarker)
-                    UIGraphicsBeginImageContextWithOptions(DynamicView.frame.size, false, UIScreen.main.scale)
-                    DynamicView.layer.render(in: UIGraphicsGetCurrentContext()!)
-                    let imageConverted: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
-                    UIGraphicsEndImageContext()
-                    let marker = GMSMarker()
-                    marker.position = CLLocationCoordinate2DMake(gasStationForPrice.lat!, gasStationForPrice.lng!)
-                    
-                    marker.groundAnchor = CGPoint(x: 0.5, y: 1)
-                    marker.appearAnimation = .pop
-                    
-                    marker.icon = imageConverted
-                    marker.title = gasStationForPrice.station//////incomplete
-                    //                                marker.snippet = "The place is \(place.openingHours?.isOpen == true ? "open" : "closed")"
-                    marker.map = self.mapView
-                    
-                }
                 }
             })
         }
@@ -463,22 +455,28 @@ extension MapViewController {
                 polyline.map = self.mapView
                 // check if start points of each leg is reacheable
                 let group5 = DispatchGroup()
-                if let legs = direction.routes![0].legs {
-                    for leg in legs {
-                        let destLat = leg.startLocation!.lat
-                        let destLng = leg.startLocation!.lng
-                        let destination = CLLocation(latitude: destLat!, longitude: destLng!)
+                if let steps = direction.routes![0].legs![0].steps {
+                    for step in steps {
+                        let destLat = step.endLocation!.lat
+                        let destLng = step.endLocation!.lng
+                        print("dest")
+                        print(destLat!)
+                        print(destLng!)
+                        print("current")
+                        print(self.currentLocation!.coordinate.latitude)
+                        print(self.currentLocation!.coordinate.longitude)
                         
+                        let destination = CLLocation(latitude: destLat!, longitude: destLng!)
                         group5.enter()
                         self.googleClient.getDistance(origin: self.currentLocation!, destination: destination, completion: { (distanceResult) in
                             DispatchQueue.main.async{
                                 switch distanceResult {
                                 case let .success(distance):
                                     if let distanceVal = distance.rows![0].elements![0].distance!.value {
-                                        let reachableDistanceInMiles = self.myCar!.getFuelRemaining() * self.myCar!.mpgHwy
+                                        let reachableDistanceInMiles = self.myCar!.getFuelRemaining() * self.myCar!.mpgHwy * 1.600934 * 1000
                                         // if the start location of a leg is reacheable, put into the reacheableLegs array
                                         if distanceVal < reachableDistanceInMiles {
-                                            self.reacheableLegs.append(leg)
+                                            self.reacheableSteps.append(step)
                                             group5.leave()
                                         }
                                     }
@@ -783,7 +781,7 @@ extension MapViewController {
     
     //    part of expandable search bar
     @objc func toggle() {
-//        searchIsOn = true
+        //        searchIsOn = true
         
         let autocompleteController = GMSAutocompleteViewController()
         autocompleteController.delegate = self
