@@ -56,7 +56,14 @@ class CarInfoConfirmationViewController: UIViewController {
     }
     
     @IBAction func confirmBtnClicked(_ sender: Any) {
-        
+        if appDelegate!.myCar == nil {
+            // create a new care data
+            CoreDataHandler.saveCar(car: tempCar!)
+        } else {
+            // update
+            CoreDataHandler.updateCar(car: tempCar!)
+        }
+        performSegue(withIdentifier: "carInfoConfirm", sender: self)
     }
     
     
