@@ -13,19 +13,19 @@
         <!--Fuel Remaining View Controller-->
         <scene sceneID="AJp-nl-6Mi">
             <objects>
-                <viewController id="CLZ-my-OnF" customClass="FuelRemainingViewController" customModule="roadtrip" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="FuelRemainingViewController" id="CLZ-my-OnF" customClass="FuelRemainingViewController" customModule="roadtrip" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="BUO-pe-omk">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Fuel Remaining" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="a0B-Jl-K3H">
-                                <rect key="frame" x="102.5" y="88" width="171.5" height="31.5"/>
+                                <rect key="frame" x="102.5" y="132" width="171.5" height="31.5"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleTitle1"/>
                                 <color key="textColor" red="0.96235281230000003" green="0.58689227830000001" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="50" minValue="0.0" maxValue="100" translatesAutoresizingMaskIntoConstraints="NO" id="CbC-aP-9zx">
-                                <rect key="frame" x="16" y="187.5" width="345" height="30"/>
+                                <rect key="frame" x="16" y="231.5" width="345" height="30"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="29" id="bZ9-07-rYl"/>
                                     <constraint firstAttribute="width" constant="341" id="eme-Kf-6lJ"/>
@@ -35,19 +35,19 @@
                                 </connections>
                             </slider>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ct4-ge-cVs">
-                                <rect key="frame" x="156" y="459" width="62" height="30"/>
+                                <rect key="frame" x="156" y="503" width="62" height="30"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="30" id="62I-DG-IIB"/>
                                     <constraint firstAttribute="width" constant="62" id="GNd-vk-ub9"/>
                                 </constraints>
                                 <state key="normal" title="Continue"/>
                                 <connections>
+                                    <action selector="confBtnClicked:" destination="CLZ-my-OnF" eventType="touchUpInside" id="XUY-CO-Iup"/>
                                     <action selector="ctnBtnClicked:" destination="CLZ-my-OnF" eventType="touchUpInside" id="9bO-XO-jCg"/>
-                                    <segue destination="BYZ-38-t0r" kind="show" id="t72-q7-z5j"/>
                                 </connections>
                             </button>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="Qzh-km-IAS">
-                                <rect key="frame" x="18" y="279" width="341" height="108"/>
+                                <rect key="frame" x="18" y="323" width="341" height="108"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FAP-no-5g3">
                                         <rect key="frame" x="0.0" y="0.0" width="341" height="55"/>
@@ -92,6 +92,7 @@
                         <outlet property="fuelLabel" destination="FAP-no-5g3" id="feQ-Uv-5uh"/>
                         <outlet property="fuelRemainingSlider" destination="CbC-aP-9zx" id="hSp-DN-0YY"/>
                         <outlet property="percentageLabel" destination="4Bs-qE-66G" id="fSt-Lg-iWE"/>
+                        <segue destination="dsz-55-JKe" kind="show" identifier="showMapView" id="LgD-q9-unB"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="TUp-CS-Xol" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -151,7 +152,7 @@
                     </connections>
                 </searchDisplayController>
             </objects>
-            <point key="canvasLocation" x="3061.5999999999999" y="1132.9835082458771"/>
+            <point key="canvasLocation" x="4359" y="1131"/>
         </scene>
         <!--Filter Table View Controller-->
         <scene sceneID="mnG-Yw-ACR">
@@ -186,18 +187,18 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="VK8-6N-sHq" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="5226" y="1133"/>
+            <point key="canvasLocation" x="6239" y="1132"/>
         </scene>
         <!--Car Info Setting View Controller-->
         <scene sceneID="JsG-xo-Wl9">
             <objects>
-                <viewController id="gcs-WB-Jlh" customClass="CarInfoSettingViewController" customModule="roadtrip" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="CarInfoSettingViewController" id="gcs-WB-Jlh" customClass="CarInfoSettingViewController" customModule="roadtrip" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="MgV-UH-GtM">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jJm-G3-1cC">
-                                <rect key="frame" x="111" y="382.5" width="153" height="30"/>
+                                <rect key="frame" x="111" y="426.5" width="153" height="30"/>
                                 <constraints>
                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="153" id="xPL-fa-VS6"/>
                                     <constraint firstAttribute="height" constant="30" id="yKh-K9-35d"/>
@@ -209,13 +210,13 @@
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Your Car Information" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6Ub-yx-z63">
-                                <rect key="frame" x="68" y="51" width="229" height="31.5"/>
+                                <rect key="frame" x="68" y="95" width="229" height="31.5"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleTitle1"/>
                                 <color key="textColor" red="0.96235281230000003" green="0.58689227830000001" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="au4-nF-MOR">
-                                <rect key="frame" x="121" y="113.5" width="250" height="190"/>
+                                <rect key="frame" x="121" y="157.5" width="250" height="190"/>
                                 <subviews>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="9j8-Q7-1lG">
                                         <rect key="frame" x="0.0" y="0.0" width="250" height="30"/>
@@ -253,7 +254,7 @@
                                 </subviews>
                             </stackView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="mgQ-eV-eBe">
-                                <rect key="frame" x="16" y="113.5" width="172" height="182.5"/>
+                                <rect key="frame" x="16" y="157.5" width="172" height="182.5"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Year" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tAl-v6-UoP">
                                         <rect key="frame" x="0.0" y="0.0" width="172" height="20.5"/>
@@ -499,7 +500,7 @@
                                 </subviews>
                             </stackView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Your Car Summary" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LnX-h7-LZr">
-                                <rect key="frame" x="98" y="55" width="209" height="31.5"/>
+                                <rect key="frame" x="98" y="99" width="209" height="31.5"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleTitle1"/>
                                 <color key="textColor" red="0.96235281229019165" green="0.58689227831483892" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 <nil key="highlightedColor"/>
@@ -527,7 +528,6 @@
                                         <state key="normal" title="Confirm"/>
                                         <connections>
                                             <action selector="confirmBtnClicked:" destination="Ltj-9N-24P" eventType="touchUpInside" id="Hip-bP-jJe"/>
-                                            <segue destination="CLZ-my-OnF" kind="show" id="91d-8V-8bJ"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -556,6 +556,7 @@
                         <outlet property="trimTextField" destination="X9p-Qo-ewr" id="FXP-S0-r3e"/>
                         <outlet property="yearTextField" destination="2kG-9z-Slj" id="Dpc-kE-DJU"/>
                         <segue destination="gcs-WB-Jlh" kind="show" identifier="backToCarInfoInput" id="lEw-GB-XCj"/>
+                        <segue destination="CLZ-my-OnF" kind="show" identifier="carInfoConfirm" id="HFv-l4-lCg"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kFK-eH-Dv9" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -571,12 +572,12 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
-                        <segue destination="gcs-WB-Jlh" kind="relationship" relationship="rootViewController" id="wKf-pY-tlk"/>
+                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="hs7-ah-DLI"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5oh-jz-R4p" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="295" y="731"/>
+            <point key="canvasLocation" x="3353" y="1486"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="lLT-7i-C1Q">
@@ -594,11 +595,10 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kUT-cI-S96" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4185.6000000000004" y="1132.5337331334333"/>
+            <point key="canvasLocation" x="5359" y="1131"/>
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
         <segue reference="o5y-jJ-u3C"/>
-        <segue reference="lEw-GB-XCj"/>
     </inferredMetricsTieBreakers>
 </document>

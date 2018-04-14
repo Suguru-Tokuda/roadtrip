@@ -3,6 +3,7 @@ import CoreData
 
 public class Car {
     
+    private var _id: Int?
     private var _make: String?
     private var _model: String?
     private var _trim: String?
@@ -17,6 +18,7 @@ public class Car {
     
     // MARK: Initializer
     public init(make: String, model: String, trim: String, year: String, fuelCapacity: Double, gasType: String, mpgHwy: Double, mpgCity: Double) {
+        self._id = 1
         self._make = make
         self._model = model
         self._trim = trim
@@ -31,6 +33,12 @@ public class Car {
     }
     
     // MARK: Getters & Setters
+    public var id: Int {
+        get {
+            return self._id!
+        }
+    }
+    
     public var make: String {
         get {
             return self._make!
