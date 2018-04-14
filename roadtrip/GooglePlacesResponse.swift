@@ -23,6 +23,7 @@ struct Place : Codable {
     let name : String
     let openingHours : OpenNow?
     let photos : [PhotoInfo]?
+    let placeID: String
     let types : [String]
     let address : String
     
@@ -33,6 +34,7 @@ struct Place : Codable {
         case photos = "photos"
         case types = "types"
         case address = "vicinity"
+        case placeID = "place_id"
     }
     
     struct Location : Codable {

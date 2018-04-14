@@ -188,7 +188,7 @@ extension MapViewController {
             let group5 = DispatchGroup()
             group5.enter()
             for step in self.reacheableSteps {
-                self.gasPricesDataStore?.getGasPrices(latitude: step.startLocation!.lat!, longitutde: step.startLocation!.lng!, distanceInMiles: 1, gasType: "reg"){
+                self.gasPricesDataStore?.getGasPrices(latitude: step.startLocation!.lat!, longitutde: step.startLocation!.lng!, distanceInMiles: 2, gasType: "reg"){
                     (response) in
                     DispatchQueue.main.async{
                         switch response{
@@ -456,6 +456,7 @@ extension MapViewController {
                 // check if start points of each leg is reacheable
                 let group5 = DispatchGroup()
                 if let steps = direction.routes![0].legs![0].steps {
+                    group5.enter()
                     for step in steps {
                         let destLat = step.endLocation!.lat
                         let destLng = step.endLocation!.lng
@@ -467,7 +468,7 @@ extension MapViewController {
                         print(self.currentLocation!.coordinate.longitude)
                         
                         let destination = CLLocation(latitude: destLat!, longitude: destLng!)
-                        group5.enter()
+                        
                         self.googleClient.getDistance(origin: self.currentLocation!, destination: destination, completion: { (distanceResult) in
                             DispatchQueue.main.async{
                                 switch distanceResult {
@@ -477,6 +478,8 @@ extension MapViewController {
                                         // if the start location of a leg is reacheable, put into the reacheableLegs array
                                         if distanceVal < reachableDistanceInMiles {
                                             self.reacheableSteps.append(step)
+                                        }
+                                        if step.endLocation?.lat == direction.routes![0].legs![0].steps?.last?.endLocation?.lat && step.endLocation?.lng == direction.routes![0].legs![0].steps?.last?.endLocation?.lng{
                                             group5.leave()
                                         }
                                     }
@@ -485,6 +488,7 @@ extension MapViewController {
                                 }
                             }
                         })
+                        
                     }
                 }
                 // show gas stations & restaurants on the steps
