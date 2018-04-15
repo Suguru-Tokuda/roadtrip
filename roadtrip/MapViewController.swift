@@ -1,6 +1,7 @@
 import UIKit
 import GoogleMaps
 import GooglePlaces
+import CoreLocation
 
 class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDelegate {
     let appDelegate: AppDelegate? = UIApplication.shared.delegate as? AppDelegate
@@ -33,12 +34,18 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
     var usingCompus: Bool = false
     var directionBtn: UIButton!
     var getDirectionBtn: UIButton?
-    var startNavigationBtn: UIButton?
+    var startNavBtn: UIButton?
     var cancelBtn: UIButton?
     
     var gasStationsDuringNavigation = GasStations()
     var navigationDirection: Direction?
+    var currentStep: Direction.Route.Leg.Step?
+    var currentStepIndex: Int?
+    var navigationTextView: UITextView = UITextView()
     var searchIsOn: Bool = false
+    var stopNavBtn: UIButton?
+    var showingStopNavBtn: Bool = false
+    var speedLabel: UILabel = UILabel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -107,7 +114,7 @@ extension MapViewController {
          Every 5 seconds, check the current speed and put the speed into the speeds, array of Double
          */
         if lastTimeToCheckSpeed!.timeIntervalSinceNow >= 5.0 {
-            self.myCar!.appendSpeed(speed: self.locationManager.location!.speed)
+            self.myCar!.appendSpeed(speed: (self.locationManager.location!.speed * 360.0 * 0.000621371))
             lastTimeToCheckSpeed = Date() // assiging the current time
         }
         
@@ -130,11 +137,24 @@ extension MapViewController {
             }
         }
         
+        if isInNavigation {
+            speedLabel.text = "\(round(abs(self.locationManager.location!.speed * 360.0 * 0.000621371)).description)/mph"
+            let hasArrivedToEndOfStep = self.arrivedEndOfStep(currentLocation: self.currentLocation!, endPointInStep: CLLocation(latitude: self.currentStep!.endLocation!.lat!, longitude: self.currentStep!.endLocation!.lng!))
+            if hasArrivedToEndOfStep {
+                let hasNextStep = self.switchStep()
+                if !hasNextStep {
+                    // end of destination.
+                    self.showEndOfNavigationLabel()
+                    usingCompus = false
+                }
+            }
+        }
+        
         if !usingCompus {
             mapView.camera = GMSCameraPosition(target: location.coordinate, zoom: zoom!, bearing: 0, viewingAngle: self.viewAngle!)
         }
         clearAllMarkers()
-        for keyword in searchKeywords{
+        for keyword in searchKeywords {
             self.fetchGoogleData(forLocation: location, locationName: keyword, searchRadius: self.searchRadius )
         }
         currentLocation = location
@@ -142,7 +162,7 @@ extension MapViewController {
     
     func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
         if usingCompus && !searchIsOn{
-            self.mapView.camera = GMSCameraPosition.camera(withLatitude: currentLocation!.coordinate.latitude, longitude: currentLocation!.coordinate.longitude, zoom: zoom!, bearing: newHeading.magneticHeading, viewingAngle: 0)
+            self.mapView.camera = GMSCameraPosition.camera(withLatitude: currentLocation!.coordinate.latitude, longitude: currentLocation!.coordinate.longitude, zoom: zoom!, bearing: newHeading.magneticHeading, viewingAngle: self.viewAngle!)
             
         }
     }
@@ -445,58 +465,53 @@ extension MapViewController {
             switch directionsResult {
             case let .success(direction):
                 self.navigationDirection = direction
-                let overViewPolyine = direction.routes![0].overviewPolyline
-                let route = overViewPolyine!.points
-                let path: GMSPath = GMSPath(fromEncodedPath: route!)!
-                let polyline = GMSPolyline(path: path)
-                polyline.strokeWidth = 4
-                polyline.strokeColor = .blue
-                polyline.geodesic = true
-                polyline.map = self.mapView
-                // check if start points of each leg is reacheable
-                let group5 = DispatchGroup()
-                if let steps = direction.routes![0].legs![0].steps {
-                    group5.enter()
-                    for step in steps {
-                        let destLat = step.endLocation!.lat
-                        let destLng = step.endLocation!.lng
-                        print("dest")
-                        print(destLat!)
-                        print(destLng!)
-                        print("current")
-                        print(self.currentLocation!.coordinate.latitude)
-                        print(self.currentLocation!.coordinate.longitude)
-                        
-                        let destination = CLLocation(latitude: destLat!, longitude: destLng!)
-                        
-                        self.googleClient.getDistance(origin: self.currentLocation!, destination: destination, completion: { (distanceResult) in
-                            DispatchQueue.main.async{
-                                switch distanceResult {
-                                case let .success(distance):
-                                    if let distanceVal = distance.rows![0].elements![0].distance!.value {
-                                        let reachableDistanceInMiles = self.myCar!.getFuelRemaining() * self.myCar!.mpgHwy * 1.600934 * 1000
-                                        // if the start location of a leg is reacheable, put into the reacheableLegs array
-                                        if distanceVal < reachableDistanceInMiles {
-                                            self.reacheableSteps.append(step)
+                if direction.routes!.count > 0 {
+                    // check if start points of each leg is reacheable
+                    let group5 = DispatchGroup()
+                    if let steps = direction.routes![0].legs![0].steps {
+                        group5.enter()
+                        for step in steps {
+                            let route = step.polyline!.points
+                            let path: GMSPath = GMSPath(fromEncodedPath: route!)!
+                            let polyline = GMSPolyline(path: path)
+                            polyline.strokeWidth = 4
+                            polyline.strokeColor = .blue
+                            polyline.geodesic = true
+                            polyline.map = self.mapView
+                            let destLat = step.endLocation!.lat
+                            let destLng = step.endLocation!.lng
+                            
+                            let destination = CLLocation(latitude: destLat!, longitude: destLng!)
+                            
+                            self.googleClient.getDistance(origin: self.currentLocation!, destination: destination, completion: { (distanceResult) in
+                                DispatchQueue.main.async{
+                                    switch distanceResult {
+                                    case let .success(distance):
+                                        if let distanceVal = distance.rows![0].elements![0].distance!.value {
+                                            let reachableDistanceInMiles = self.myCar!.getFuelRemaining() * self.myCar!.mpgHwy * 1.600934 * 1000
+                                            // if the start location of a leg is reacheable, put into the reacheableLegs array
+                                            if distanceVal < reachableDistanceInMiles {
+                                                self.reacheableSteps.append(step)
+                                            }
+                                            if step.endLocation?.lat == direction.routes![0].legs![0].steps?.last?.endLocation?.lat && step.endLocation?.lng == direction.routes![0].legs![0].steps?.last?.endLocation?.lng{
+                                                group5.leave()
+                                            }
                                         }
-                                        if step.endLocation?.lat == direction.routes![0].legs![0].steps?.last?.endLocation?.lat && step.endLocation?.lng == direction.routes![0].legs![0].steps?.last?.endLocation?.lng{
-                                            group5.leave()
-                                        }
+                                    case let .failure(error):
+                                        print(error)
                                     }
-                                case let .failure(error):
-                                    print(error)
                                 }
-                            }
-                        })
-                        
+                            })
+                            
+                        }
                     }
+                    // show gas stations & restaurants on the steps
+                    group5.notify(queue: .main, execute :{
+                        self.setMarkersWhileNavigation()
+                    })
+                } else {
+                    print("No routes to that destination")
                 }
-                // show gas stations & restaurants on the steps
-                group5.notify(queue: .main, execute :{
-                    self.isInNavigation = true
-                    self.setMarkersWhileNavigation()
-                })
-                
             case let .failure(error):
                 print(error)
             }
@@ -508,14 +523,19 @@ extension MapViewController {
             switch directionsResult {
             case let .success(direction):
                 self.navigationDirection = direction
-                let overViewPolyine = direction.routes![0].overviewPolyline
-                let route = overViewPolyine!.points
-                let path: GMSPath = GMSPath(fromEncodedPath: route!)!
-                let polyline = GMSPolyline(path: path)
-                polyline.strokeWidth = 4
-                polyline.strokeColor = .blue
-                polyline.geodesic = true
-                polyline.map = self.mapView
+                if direction.routes!.count > 0 {
+                    if let steps = direction.routes![0].legs![0].steps {
+                        for step in steps {
+                            let route = step.polyline!.points
+                            let path: GMSPath = GMSPath(fromEncodedPath: route!)!
+                            let polyline = GMSPolyline(path: path)
+                            polyline.strokeWidth = 4
+                            polyline.strokeColor = .blue
+                            polyline.geodesic = true
+                            polyline.map = self.mapView
+                        }
+                    }
+                }
             case let .failure(error):
                 print(error)
             }
@@ -655,6 +675,29 @@ extension MapViewController {
     }
     
     func mapView(_ mapView: GMSMapView, didTapAt coordinate: CLLocationCoordinate2D) {
+        if isInNavigation {
+            if showingStopNavBtn == false {
+                stopNavBtn = UIButton(type: .system)
+                stopNavBtn!.frame = CGRect(x: 0, y: 0, width: 100, height: 30)
+                stopNavBtn!.setTitle("Exit", for: .normal)
+                stopNavBtn!.backgroundColor = UIColor(red:1.00, green:0.30, blue:0.00, alpha:1.0)
+                stopNavBtn!.layer.cornerRadius = 5
+                stopNavBtn!.setTitleColor(.white, for: .normal)
+                stopNavBtn!.addTarget(self, action: #selector(stopNavBtnTapped), for: .touchUpInside)
+                
+                stopNavBtn!.translatesAutoresizingMaskIntoConstraints = false
+                
+                self.mapView.addSubview(stopNavBtn!)
+                
+                stopNavBtn!.bottomAnchor.constraint(equalTo: self.mapView.bottomAnchor).isActive = true
+                stopNavBtn!.leadingAnchor.constraint(equalTo: self.navigationTextView.trailingAnchor, constant: 10).isActive = true
+                stopNavBtn!.widthAnchor.constraint(equalToConstant: 80).isActive = true
+                stopNavBtn!.heightAnchor.constraint(equalToConstant: 40).isActive = true
+            } else {
+                self.stopNavBtn?.removeFromSuperview()
+            }
+            showingStopNavBtn = !showingStopNavBtn
+        }
         //hiding keyboard on taping map
         searchBar.resignFirstResponder()
     }
@@ -766,15 +809,15 @@ extension MapViewController {
         self.stackView!.removeFromSuperview()
         self.cancelBtn = nil
         self.getDirectionBtn = nil
-        self.startNavigationBtn = nil
+        self.startNavBtn = nil
         
-        self.startNavigationBtn = UIButton(type: .system)
-        startNavigationBtn!.frame = CGRect(x: 150, y: 100, width: 150, height: 30)
-        startNavigationBtn!.setTitle("Start Navigation", for: .normal)
-        startNavigationBtn!.backgroundColor = UIColor(red:0.00, green:0.53, blue:1.00, alpha:1.0)
-        startNavigationBtn!.layer.cornerRadius = 5
-        startNavigationBtn!.setTitleColor(.white, for: .normal)
-        startNavigationBtn!.addTarget(self, action: #selector(startNavBtnTapped), for: .touchUpInside)
+        self.startNavBtn = UIButton(type: .system)
+        startNavBtn!.frame = CGRect(x: 150, y: 100, width: 150, height: 30)
+        startNavBtn!.setTitle("Start Navigation", for: .normal)
+        startNavBtn!.backgroundColor = UIColor(red:0.00, green:0.53, blue:1.00, alpha:1.0)
+        startNavBtn!.layer.cornerRadius = 5
+        startNavBtn!.setTitleColor(.white, for: .normal)
+        startNavBtn!.addTarget(self, action: #selector(startNavBtnTapped), for: .touchUpInside)
         
         self.cancelBtn = UIButton(type: .system)
         cancelBtn!.frame = CGRect(x: 150, y: 100, width: 150, height: 30)
@@ -784,16 +827,16 @@ extension MapViewController {
         cancelBtn!.setTitleColor(.white, for: .normal)
         cancelBtn!.addTarget(self, action: #selector(cancelBtnTapped), for: .touchUpInside)
         
-        startNavigationBtn!.translatesAutoresizingMaskIntoConstraints = false
+        startNavBtn!.translatesAutoresizingMaskIntoConstraints = false
         cancelBtn!.translatesAutoresizingMaskIntoConstraints = false
         
-        startNavigationBtn!.widthAnchor.constraint(equalToConstant: 140).isActive = true
-        startNavigationBtn!.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        startNavBtn!.widthAnchor.constraint(equalToConstant: 140).isActive = true
+        startNavBtn!.heightAnchor.constraint(equalToConstant: 50).isActive = true
         cancelBtn!.widthAnchor.constraint(equalToConstant: 140).isActive = true
         cancelBtn!.heightAnchor.constraint(equalToConstant: 50).isActive = true
         
         // adding buttons to the subview
-        self.stackView.addArrangedSubview(self.startNavigationBtn!)
+        self.stackView.addArrangedSubview(self.startNavBtn!)
         self.stackView.addArrangedSubview(self.cancelBtn!)
         self.stackView!.axis = .vertical
         self.stackView!.spacing = 30
@@ -807,7 +850,53 @@ extension MapViewController {
     
     @objc func startNavBtnTapped(_ sender: UIButton) {
         print("startNavBtnTapped")
+        for view in self.stackView.subviews {
+            view.removeFromSuperview()
+        }
+        self.speedLabel.text = "\(round(abs(self.locationManager.location!.speed * 360.0 * 0.000621371)).description)/mph"
+        self.speedLabel.textAlignment = .center
+        self.speedLabel.backgroundColor = UIColor.black
+        self.speedLabel.alpha = 0.8
+        self.speedLabel.layer.cornerRadius = 5
+        self.speedLabel.textColor = UIColor.white
+        
+        self.mapView.addSubview(self.speedLabel)
+        
+        self.zoom = 18
+        self.viewAngle = 45
+        self.isInNavigation = true
+        self.usingCompus = true
+        self.currentStep = self.navigationDirection!.routes![0].legs![0].steps![0]
+        self.navigationTextView.text = self.currentStep?.htmlInstructions!.html2String
+        self.navigationTextView.backgroundColor = UIColor(red:0.00, green:0.53, blue:1.00, alpha:1.0)
+        self.navigationTextView.textColor = UIColor.white
+        self.navigationTextView.alpha = 0.8
+        self.navigationTextView.layer.cornerRadius = 5
+        
+        self.mapView.addSubview(self.navigationTextView)
+        // constraints for navigationTextView
+        self.navigationTextView.translatesAutoresizingMaskIntoConstraints = false
+        self.navigationTextView.widthAnchor.constraint(equalToConstant: 150).isActive = true
+        self.navigationTextView.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        self.navigationTextView.leadingAnchor.constraint(equalTo: self.mapView.leadingAnchor).isActive = true
+        self.navigationTextView.bottomAnchor.constraint(equalTo: self.mapView.bottomAnchor).isActive = true
+        // constraints for speedLabel
+        self.speedLabel.translatesAutoresizingMaskIntoConstraints = false
+        self.speedLabel.widthAnchor.constraint(equalToConstant: 100).isActive = true
+        self.speedLabel.heightAnchor.constraint(equalToConstant: 40).isActive = true
+        self.speedLabel.leadingAnchor.constraint(equalTo: self.mapView.leadingAnchor).isActive = true
+        self.speedLabel.bottomAnchor.constraint(equalTo: self.navigationTextView.topAnchor, constant: -10).isActive = true
+        
+        currentStepIndex = 0
         locationManager.startUpdatingLocation()
+    }
+    
+    @objc func stopNavBtnTapped(_ sender: UIButton) {
+        self.navigationTextView.removeFromSuperview()
+        self.speedLabel.removeFromSuperview()
+        self.stopNavBtn!.removeFromSuperview()
+        self.isInNavigation = false
+        self.mapView.clear()
     }
     
     @objc func cancelBtnTapped(_ sender: UIButton) {
@@ -826,22 +915,51 @@ extension MapViewController {
     }
     
     @objc func locationBtnTapped(_ sender: UIButton) {
+        let camera = GMSCameraPosition.camera(withLatitude: self.currentLocation!.coordinate.latitude, longitude: self.currentLocation!.coordinate.longitude, zoom: 16)
+        self.mapView.camera = camera
         self.usingCompus = !self.usingCompus
     }
     
     //    part of expandable search bar
     @objc func toggle() {
-        //        searchIsOn = true
-        
         let autocompleteController = GMSAutocompleteViewController()
         autocompleteController.delegate = self
         locationManager.stopUpdatingLocation()
         present(autocompleteController, animated: true, completion: nil)
     }
     
+
+    // returns true if the distance between the current location to the end point of the current step in the navigation mode.
+    private func arrivedEndOfStep (currentLocation: CLLocation, endPointInStep: CLLocation) -> Bool {
+        let distanceInMeters = currentLocation.distance(from: endPointInStep)
+        if distanceInMeters < 20 {
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    private func switchStep() -> Bool {
+        self.currentStepIndex! += 1
+        // checks if there are any more steps to take. If there are, it switches to the next step and return true. If not, it will return false - end of the destination.
+        if let nextStep = self.navigationDirection!.routes![0].legs![0].steps?[self.currentStepIndex!] {
+            self.currentStep = nextStep
+            self.navigationTextView.text! = self.currentStep!.htmlInstructions!.html2String
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    private func showEndOfNavigationLabel() {
+        self.navigationTextView.text! = "You have arrived"
+        
+    }
+    
     @objc func placeDetailsNav(_ sender: UIButton) {
         self.performSegue(withIdentifier: "GoToDetailsContoller", sender:self)
     }
+
 }
 
 //part of expandable search bar
@@ -879,5 +997,26 @@ extension UINavigationController {
     }
 }
 
+extension Data {
+    var html2AttributedString: NSAttributedString? {
+        do {
+            return try NSAttributedString(data: self, options: [.documentType: NSAttributedString.DocumentType.html, .characterEncoding: String.Encoding.utf8.rawValue], documentAttributes: nil)
+        } catch {
+            print("error:", error)
+            return  nil
+        }
+    }
+    var html2String: String {
+        return html2AttributedString?.string ?? ""
+    }
+}
 
+extension String {
+    var html2AttributedString: NSAttributedString? {
+        return Data(utf8).html2AttributedString
+    }
+    var html2String: String {
+        return html2AttributedString?.string ?? ""
+    }
+}
 

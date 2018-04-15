@@ -18,18 +18,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     var myCar: Car?
+    var hasCarInfo: Bool?
     var years: [Int]?
     var carQueryDataStore = CarQueryDataStore()
     var gasPricesDataStore = GasPricesDataStore()
     
     func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey : Any]? = nil) -> Bool {
-        myCar = CoreDataHandler.fetchCar()!
+//        CoreDataHandler.cleanDelete()
+        myCar = CoreDataHandler.fetchCar()
         
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         var initialViewController: UIViewController?
         if myCar == nil {
+            hasCarInfo = false
             initialViewController = storyboard.instantiateViewController(withIdentifier: "CarInfoSettingViewController")
         } else {
+            hasCarInfo = true
             initialViewController = storyboard.instantiateViewController(withIdentifier: "FuelRemainingViewController")
         }
         self.window?.rootViewController = initialViewController
