@@ -27,9 +27,11 @@ class FilterTableViewController: UITableViewController {
     @IBAction func FilterDone(_ sender: UIBarButtonItem) {
         delegate?.typesController(self, didSelectTypes: selectedTypes)
     }
+    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return filterTypes.count
     }
+    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "typeCell", for: indexPath)
         let key = sortedKeys[indexPath.row]
