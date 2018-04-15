@@ -91,14 +91,14 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
 
 // MARK: location manager functions
 extension MapViewController {
-
+    
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         guard status == .authorizedWhenInUse else {
             return
         }
         locationManager.startUpdatingLocation()
+        locationManager.stopUpdatingHeading()
         mapView.isMyLocationEnabled = true
-//        mapView.settings.myLocationButton = true
         mapView.settings.compassButton = true
     }
     
@@ -152,9 +152,10 @@ extension MapViewController {
             }
         }
         
-        if !usingCompus || updateCamera {
+        if updateCamera {
             mapView.camera = GMSCameraPosition(target: location.coordinate, zoom: zoom!, bearing: 0, viewingAngle: self.viewAngle!)
         }
+        
         clearAllMarkers()
         for keyword in searchKeywords {
             self.fetchGoogleData(forLocation: location, locationName: keyword, searchRadius: self.searchRadius )
@@ -163,9 +164,7 @@ extension MapViewController {
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
-        if usingCompus && !searchIsOn{
-            self.mapView.camera = GMSCameraPosition.camera(withLatitude: currentLocation!.coordinate.latitude, longitude: currentLocation!.coordinate.longitude, zoom: zoom!, bearing: newHeading.magneticHeading, viewingAngle: self.viewAngle!)
-        }
+        self.mapView.camera = GMSCameraPosition.camera(withLatitude: currentLocation!.coordinate.latitude, longitude: currentLocation!.coordinate.longitude, zoom: zoom!, bearing: newHeading.magneticHeading, viewingAngle: self.viewAngle!)
     }
 }
 
@@ -582,6 +581,7 @@ extension MapViewController: FilterTableViewControllerDelegate {
 extension MapViewController: GMSAutocompleteViewControllerDelegate {
     
     func viewController(_ viewController: GMSAutocompleteViewController, didAutocompleteWith place: GMSPlace) {
+        
         let camera = GMSCameraPosition.camera(withLatitude: place.coordinate.latitude, longitude: place.coordinate.longitude, zoom: 15.0)
         self.mapView.camera = camera
         view = self.mapView
@@ -723,9 +723,11 @@ extension MapViewController {
     }
     
     func mapView(_ mapView: GMSMapView, willMove gesture: Bool) {
-        print("moving")
-        locationBtnHasBeenTapped = false
-        updateCamera = false
+        if gesture {
+            updateCamera = false
+            locationBtnHasBeenTapped = false
+            locationManager.stopUpdatingLocation()
+        }
     }
     
     func mapView(_ mapView: GMSMapView, markerInfoWindow marker: GMSMarker) -> UIView? {
@@ -768,11 +770,11 @@ extension MapViewController {
             //        view.addSubview(lbl2)
             
             return view
-
+            
         }
         return nil
     }
-
+    
 }
 
 // MARK: needs to be changed - Sanket
@@ -781,7 +783,7 @@ extension MapViewController {
     func addingSearchAndFilterButtonToRightNavigation(){
         let imgforsearch = UIImage(named: "search")!.withRenderingMode(UIImageRenderingMode.alwaysOriginal)
         let imgforfilter = UIImage(named: "filter")!.withRenderingMode(UIImageRenderingMode.alwaysOriginal)
-        let searchButton = UIBarButtonItem(image: imgforsearch, style: .plain, target: self, action: #selector(toggle))
+        let searchButton = UIBarButtonItem(image: imgforsearch, style: .plain, target: self, action: #selector(searchBtnTapped))
         let forfilter = UIBarButtonItem(image: imgforfilter, style: .plain, target: self, action: #selector(filterClicked))
         navigationItem.setRightBarButtonItems([searchButton,forfilter], animated: true)
     }
@@ -927,25 +929,26 @@ extension MapViewController {
     @objc func locationBtnTapped(_ sender: UIButton) {
         let camera = GMSCameraPosition.camera(withLatitude: self.currentLocation!.coordinate.latitude, longitude: self.currentLocation!.coordinate.longitude, zoom: 16)
         self.mapView.camera = camera
-        
+        self.locationManager.startUpdatingLocation()
         if locationBtnHasBeenTapped {
-            self.usingCompus = false
+            self.locationManager.startUpdatingHeading()
         } else {
-            self.usingCompus = true
+            self.locationManager.stopUpdatingHeading()
         }
         locationBtnHasBeenTapped = !locationBtnHasBeenTapped
         updateCamera = true
     }
     
     //    part of expandable search bar
-    @objc func toggle() {
+    @objc func searchBtnTapped() {
         let autocompleteController = GMSAutocompleteViewController()
         autocompleteController.delegate = self
         locationManager.stopUpdatingLocation()
+        locationManager.stopUpdatingHeading()
         present(autocompleteController, animated: true, completion: nil)
     }
     
-
+    
     // returns true if the distance between the current location to the end point of the current step in the navigation mode.
     private func arrivedEndOfStep (currentLocation: CLLocation, endPointInStep: CLLocation) -> Bool {
         let distanceInMeters = currentLocation.distance(from: endPointInStep)
@@ -976,7 +979,7 @@ extension MapViewController {
     @objc func placeDetailsNav(_ sender: UIButton) {
         self.performSegue(withIdentifier: "GoToDetailsContoller", sender:self)
     }
-
+    
 }
 
 //part of expandable search bar
