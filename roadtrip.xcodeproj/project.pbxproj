@@ -10,6 +10,7 @@
 		4490EC8AD9A71FBBB3E42C2C /* Pods_roadtrip.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FCAB4724364AABA8D1633D15 /* Pods_roadtrip.framework */; };
 		5F18447D2054D6F6004A30A1 /* PlaceMarker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F18447C2054D6F6004A30A1 /* PlaceMarker.swift */; };
 		5F1844872055ABC4004A30A1 /* GooglePlacesResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F1844862055ABC4004A30A1 /* GooglePlacesResponse.swift */; };
+		5F62F78B2082900E00CB1133 /* GooglePlaceDetailsDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F62F78A2082900E00CB1133 /* GooglePlaceDetailsDataStore.swift */; };
 		5F96B4602065B4F200707E3E /* FilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F96B45F2065B4F200707E3E /* FilterViewController.swift */; };
 		BB017C6F205B343000FD9DC6 /* CarInfoConfirmationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB017C6E205B343000FD9DC6 /* CarInfoConfirmationViewController.swift */; };
 		BB2C7498205F378A0012B1B0 /* Direction.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB2C7497205F378A0012B1B0 /* Direction.swift */; };
@@ -55,6 +56,7 @@
 /* Begin PBXFileReference section */
 		5F18447C2054D6F6004A30A1 /* PlaceMarker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceMarker.swift; sourceTree = "<group>"; };
 		5F1844862055ABC4004A30A1 /* GooglePlacesResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GooglePlacesResponse.swift; sourceTree = "<group>"; };
+		5F62F78A2082900E00CB1133 /* GooglePlaceDetailsDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GooglePlaceDetailsDataStore.swift; sourceTree = "<group>"; };
 		5F96B45F2065B4F200707E3E /* FilterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterViewController.swift; sourceTree = "<group>"; };
 		68B46FE21B9B8F67943E6DFA /* Pods-roadtrip.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-roadtrip.release.xcconfig"; path = "Pods/Target Support Files/Pods-roadtrip/Pods-roadtrip.release.xcconfig"; sourceTree = "<group>"; };
 		A33153FF928D660E0DCAA99D /* Pods-roadtrip.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-roadtrip.debug.xcconfig"; path = "Pods/Target Support Files/Pods-roadtrip/Pods-roadtrip.debug.xcconfig"; sourceTree = "<group>"; };
@@ -182,6 +184,7 @@
 				BB60C04820360E6800ADF586 /* Assets.xcassets */,
 				BB60C04A20360E6800ADF586 /* LaunchScreen.storyboard */,
 				BB60C04520360E6800ADF586 /* Main.storyboard */,
+				5F62F78A2082900E00CB1133 /* GooglePlaceDetailsDataStore.swift */,
 			);
 			path = roadtrip;
 			sourceTree = "<group>";
@@ -422,6 +425,7 @@
 				BBF2A6BF20587CFC00FD2871 /* CarInfoSettingViewController.swift in Sources */,
 				BB2C7498205F378A0012B1B0 /* Direction.swift in Sources */,
 				BB60C04220360E6800ADF586 /* AppDelegate.swift in Sources */,
+				5F62F78B2082900E00CB1133 /* GooglePlaceDetailsDataStore.swift in Sources */,
 				5F96B4602065B4F200707E3E /* FilterViewController.swift in Sources */,
 				BBBC79732057695C0085044F /* Make.swift in Sources */,
 				BBDF006F2054D5BB002EF5F1 /* RoadtripAPI.swift in Sources */,

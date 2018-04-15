@@ -13,7 +13,7 @@ public struct GasStations: Codable {
     
     public struct Station: Codable, Hashable {
         public var hashValue: Int{
-            return Int(lat!*10000000)
+            return Int(lat!*10000000+lng!*10000000)
         }
         
         
