@@ -85,6 +85,10 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
         // setting the navigation bar to transparent
         self.navigationController?.presentTransparentNavigationBar()
         isInNavigation = false
+        
+//        let chicago = CLLocation(latitude: 41.8781, longitude: -87.6298)
+//        let bloomington = CLLocation(latitude: 40.4842, longitude: -88.9937)
+//        self.drawPath(origin: bloomington, destination: chicago)
     }
     
 }
@@ -118,7 +122,7 @@ extension MapViewController {
          Every 5 seconds, check the current speed and put the speed into the speeds, array of Double
          */
         if lastTimeToCheckSpeed!.timeIntervalSinceNow >= 5.0 {
-            self.myCar!.appendSpeed(speed: (self.locationManager.location!.speed * 360.0 * 0.000621371))
+            self.myCar!.appendSpeed(speed: (self.locationManager.location!.speed * 36.0 * 0.000621371))
             lastTimeToCheckSpeed = Date() // assiging the current time
         }
         
@@ -142,7 +146,7 @@ extension MapViewController {
         }
         
         if isInNavigation {
-            speedLabel.text = "\(round(abs(self.locationManager.location!.speed * 360.0 * 0.000621371)).description)/mph"
+            speedLabel.text = "\(round(abs(self.locationManager.location!.speed * 36.0 * 0.000621371)).description)/mph"
             let hasArrivedToEndOfStep = self.arrivedEndOfStep(currentLocation: self.currentLocation!, endPointInStep: CLLocation(latitude: self.currentStep!.endLocation!.lat!, longitude: self.currentStep!.endLocation!.lng!))
             if hasArrivedToEndOfStep {
                 let hasNextStep = self.switchStep()
@@ -155,7 +159,11 @@ extension MapViewController {
         }
         
         if updateCamera {
-            mapView.camera = GMSCameraPosition(target: location.coordinate, zoom: zoom!, bearing: 0, viewingAngle: self.viewingAngle!)
+            if self.currentLocation != nil {
+                let currentLoc2D = CLLocationCoordinate2D(latitude: self.currentLocation!.coordinate.latitude, longitude: self.currentLocation!.coordinate.longitude)
+                mapView.animate(toLocation: currentLoc2D)
+            }
+//            mapView.camera = GMSCameraPosition.camera(withLatitude: location.coordinate.latitude, longitude: location.coordinate.longitude, zoom: self.zoom!)
         }
         
         clearAllMarkers()
@@ -206,7 +214,7 @@ extension MapViewController {
     }
     
     func setMarkersWhileNavigation(){
-        if isInNavigation {
+        self.gasStationsDuringNavigation.stations?.removeAll()
             let group5 = DispatchGroup()
             group5.enter()
             for step in self.reacheableSteps {
@@ -215,9 +223,9 @@ extension MapViewController {
                     DispatchQueue.main.async{
                         switch response{
                         case let .success(gasStations):
-                            if self.gasStationsDuringNavigation.stations == nil{
+                            if self.gasStationsDuringNavigation.stations == nil {
                                 self.gasStationsDuringNavigation = gasStations
-                            }else{
+                            } else {
                                 self.gasStationsDuringNavigation.stations! += gasStations.stations!
                             }
                             if self.reacheableSteps.last?.startLocation?.lat == step.startLocation?.lat && self.reacheableSteps.last?.startLocation?.lng == step.startLocation?.lng {
@@ -232,15 +240,16 @@ extension MapViewController {
             
             group5.notify(queue: .main, execute: {
                 if let _ = self.gasStationsDuringNavigation.stations{
-                    for station in self.gasStationsDuringNavigation.stations!.sorted(by: {$0.lat!<$1.lat!}){
+                    
+                    for station in self.gasStationsDuringNavigation.stations!.sorted(by: {$0.lat!<$1.lat!}) {
                         print("lat:\(station.lat!) lng:\(station.lng!)")
-                        
                     }
+                    
                     self.gasStationsDuringNavigation.stations = Array(Set(self.gasStationsDuringNavigation.stations!))
                     for station in self.gasStationsDuringNavigation.stations!.sorted(by: {$0.lat!<$1.lat!}){
                         print("lat:\(station.lat!) lng:\(station.lng!)")
-                        
                     }
+                    
                     for gasStationForPrice in self.gasStationsDuringNavigation.stations! {
                         let DynamicView=UIView(frame: CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 50, height: 50)))
                         DynamicView.backgroundColor=UIColor.clear
@@ -275,11 +284,9 @@ extension MapViewController {
                         marker.title = gasStationForPrice.station//////incomplete
                         //                                marker.snippet = "The place is \(place.openingHours?.isOpen == true ? "open" : "closed")"
                         marker.map = self.mapView
-                        
                     }
                 }
             })
-        }
     }
     
     func fetchGoogleData(forLocation: CLLocation, locationName: String, searchRadius: Int) {
@@ -463,6 +470,7 @@ extension MapViewController {
     }
     
     func drawPath(origin: CLLocation, destination: CLLocation) {
+        self.reacheableSteps.removeAll()
         googleClient.getDirection(origin: origin, destination: destination) { (directionsResult) in
             switch directionsResult {
             case let .success(direction):
@@ -521,6 +529,7 @@ extension MapViewController {
     }
     
     func drawPath(origin: CLLocation, destination: CLLocation, waypoint: CLLocation) {
+        self.reacheableSteps.removeAll()
         googleClient.getDirection(origin: origin, destination: destination, waypoint: waypoint, completion: { (directionsResult) in
             switch directionsResult {
             case let .success(direction):
@@ -726,6 +735,7 @@ extension MapViewController {
             updateCamera = false
             locationBtnHasBeenTapped = false
             locationManager.stopUpdatingLocation()
+            locationManager.stopUpdatingHeading()
         }
     }
     
@@ -860,11 +870,12 @@ extension MapViewController {
     }
     
     @objc func startNavBtnTapped(_ sender: UIButton) {
+        UIApplication.shared.isIdleTimerDisabled = true
         print("startNavBtnTapped")
         for view in self.stackView.subviews {
             view.removeFromSuperview()
         }
-        self.speedLabel.text = "\(round(abs(self.locationManager.location!.speed * 360.0 * 0.000621371)).description)/mph"
+        self.speedLabel.text = "\(round(abs(self.locationManager.location!.speed * 36.0 * 0.000621371)).description)/mph"
         self.speedLabel.textAlignment = .center
         self.speedLabel.backgroundColor = UIColor.black
         self.speedLabel.alpha = 0.8
@@ -908,11 +919,15 @@ extension MapViewController {
     }
     
     @objc func stopNavBtnTapped(_ sender: UIButton) {
+        UIApplication.shared.isIdleTimerDisabled = false
         self.navigationTextView.removeFromSuperview()
         self.speedLabel.removeFromSuperview()
         self.stopNavBtn!.removeFromSuperview()
         self.isInNavigation = false
         self.mapView.clear()
+        self.zoom = 15
+        let camera = GMSCameraPosition.camera(withLatitude: self.currentLocation!.coordinate.latitude, longitude: self.currentLocation!.coordinate.longitude, zoom: zoom!)
+        self.mapView.animate(to: camera)
     }
     
     @objc func cancelBtnTapped(_ sender: UIButton) {
