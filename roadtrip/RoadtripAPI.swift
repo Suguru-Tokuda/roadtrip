@@ -26,7 +26,7 @@ struct RoadtripAPI {
     private static let googleAPIBaseURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?"
     private static let googleDirectionsAPIBaseURL = "https://maps.googleapis.com/maps/api/directions/json?"
     private static let googleDistanceMatrixAPIBaseURL = "https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&"
-    private static let googlePlaceDetailBaseURL = "hhttps://maps.googleapis.com/maps/api/place/details/json?"
+    private static let googlePlaceDetailBaseURL = "https://maps.googleapis.com/maps/api/place/details/json?"
 
     public static let myGasFeedAPIKey = "3gi91gd4i1"
     public static let googleMapsAPIKey = "AIzaSyDEdKM_L4ArIhHSyZdOImGpmAWArGT8W38"
@@ -81,6 +81,7 @@ struct RoadtripAPI {
     
     public static func googlePlaceDetailURL(placeid: String) -> URL {
         let urlString = "\(googlePlaceDetailBaseURL)placeid=\(placeid)&key=\(googlePlacesAPIKey)"
+        print(urlString)
         let url = URL(string: urlString)
         return url!
     }
@@ -253,7 +254,7 @@ struct RoadtripAPI {
     public static func getPlaceDetailResult(fromJSON data: Data) -> PlaceDetailResult {
         do {
             let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
+//            decoder.keyDecodingStrategy = .convertFromSnakeCase
             let response = try decoder.decode(PlaceDetail.self, from: data)
             return .success(response)
         } catch let jsonDecoderError {
