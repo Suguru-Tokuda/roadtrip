@@ -100,6 +100,8 @@ extension MapViewController {
         locationManager.stopUpdatingHeading()
         mapView.isMyLocationEnabled = true
         mapView.settings.compassButton = true
+        mapView.settings.zoomGestures = true
+        mapView.settings.tiltGestures = true
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
@@ -592,11 +594,7 @@ extension MapViewController: GMSAutocompleteViewControllerDelegate {
         marker.snippet = place.formattedAddress
         marker.map = self.mapView
         
-        mapView.isMyLocationEnabled = true
-        mapView.settings.myLocationButton = true
-        mapView.settings.compassButton = true
-        mapView.settings.zoomGestures = true
-        mapView.settings.tiltGestures = true
+
         
         print("Place name: \(place.name)")
         print("Place address: \(String(describing: place.formattedAddress))")
