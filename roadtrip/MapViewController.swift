@@ -30,7 +30,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
     var lastTimeToCheckSpeed: Date?
     var reacheableSteps = [Direction.Route.Leg.Step]()
     var zoom: Float?
-    var viewAngle: Double?
+    var viewingAngle: Double?
     var usingCompus: Bool = false
     var directionBtn: UIButton!
     var getDirectionBtn: UIButton?
@@ -54,7 +54,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
         myCar = appDelegate!.myCar
         gasPricesDataStore = appDelegate!.gasPricesDataStore
         zoom = 6
-        viewAngle = 0
+        viewingAngle = 0
         
         directionBtn = UIButton(type: .system) as UIButton
         directionBtn.addTarget(self, action: #selector(locationBtnTapped), for: .touchUpInside)
@@ -155,7 +155,7 @@ extension MapViewController {
         }
         
         if updateCamera {
-            mapView.camera = GMSCameraPosition(target: location.coordinate, zoom: zoom!, bearing: 0, viewingAngle: self.viewAngle!)
+            mapView.camera = GMSCameraPosition(target: location.coordinate, zoom: zoom!, bearing: 0, viewingAngle: self.viewingAngle!)
         }
         
         clearAllMarkers()
@@ -166,7 +166,7 @@ extension MapViewController {
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
-        self.mapView.camera = GMSCameraPosition.camera(withLatitude: currentLocation!.coordinate.latitude, longitude: currentLocation!.coordinate.longitude, zoom: zoom!, bearing: newHeading.magneticHeading, viewingAngle: self.viewAngle!)
+        self.mapView.animate(toBearing: newHeading.magneticHeading)
     }
 }
 
@@ -585,8 +585,9 @@ extension MapViewController: GMSAutocompleteViewControllerDelegate {
     func viewController(_ viewController: GMSAutocompleteViewController, didAutocompleteWith place: GMSPlace) {
         
         let camera = GMSCameraPosition.camera(withLatitude: place.coordinate.latitude, longitude: place.coordinate.longitude, zoom: 15.0)
-        self.mapView.camera = camera
+        self.mapView.animate(to: camera)
         view = self.mapView
+
         
         let marker = GMSMarker()
         marker.position = CLLocationCoordinate2D(latitude: place.coordinate.latitude, longitude: place.coordinate.longitude)
@@ -717,7 +718,7 @@ extension MapViewController {
     
     func mapView(_ mapView: GMSMapView, idleAt position: GMSCameraPosition) {
         self.zoom = position.zoom
-        self.viewAngle = position.viewingAngle
+        self.viewingAngle = position.viewingAngle
     }
     
     func mapView(_ mapView: GMSMapView, willMove gesture: Bool) {
@@ -808,7 +809,7 @@ extension MapViewController {
         insets.right = 50
         insets.left = 50
         let camera = self.mapView.camera(for: bounds, insets: insets)!
-        self.mapView.camera = camera
+        self.mapView.animate(to: camera)
         
         self.drawPath(origin: currentLocation!, destination: destination)
         
@@ -873,10 +874,11 @@ extension MapViewController {
         self.mapView.addSubview(self.speedLabel)
         
         self.zoom = 18
-        self.viewAngle = 45
+        self.viewingAngle = 45
         self.isInNavigation = true
         self.usingCompus = true
         self.currentStep = self.navigationDirection!.routes![0].legs![0].steps![0]
+        
         self.navigationTextView.text = self.currentStep?.htmlInstructions!.html2String
         self.navigationTextView.backgroundColor = UIColor(red:0.00, green:0.53, blue:1.00, alpha:1.0)
         self.navigationTextView.textColor = UIColor.white
@@ -899,6 +901,10 @@ extension MapViewController {
         
         currentStepIndex = 0
         locationManager.startUpdatingLocation()
+        locationManager.startUpdatingHeading()
+        
+        let camera = GMSCameraPosition.camera(withLatitude: currentLocation!.coordinate.latitude, longitude: currentLocation!.coordinate.longitude, zoom: self.zoom!, bearing: 0, viewingAngle: self.viewingAngle!)
+        self.mapView.animate(to: camera)
     }
     
     @objc func stopNavBtnTapped(_ sender: UIButton) {
@@ -917,7 +923,7 @@ extension MapViewController {
         }
         self.mapView.clear()
         let camera = GMSCameraPosition.camera(withLatitude: self.currentLocation!.coordinate.latitude, longitude: self.currentLocation!.coordinate.longitude, zoom: zoom!)
-        self.mapView.camera = camera
+        self.mapView.animate(to: camera)
         self.stackView!.removeFromSuperview()
         for keyword in searchKeywords{
             self.fetchGoogleData(forLocation: currentLocation!, locationName: keyword, searchRadius: self.searchRadius )
@@ -925,8 +931,13 @@ extension MapViewController {
     }
     
     @objc func locationBtnTapped(_ sender: UIButton) {
-        let camera = GMSCameraPosition.camera(withLatitude: self.currentLocation!.coordinate.latitude, longitude: self.currentLocation!.coordinate.longitude, zoom: 16)
-        self.mapView.camera = camera
+        self.zoom = 16
+        if isInNavigation {
+            self.viewingAngle = 45
+            self.zoom = 18
+        }
+        let camera = GMSCameraPosition.camera(withLatitude: self.currentLocation!.coordinate.latitude, longitude: self.currentLocation!.coordinate.longitude, zoom: self.zoom!, bearing: 0, viewingAngle: self.viewingAngle!)
+        mapView.animate(to: camera)
         self.locationManager.startUpdatingLocation()
         if locationBtnHasBeenTapped {
             self.locationManager.startUpdatingHeading()
