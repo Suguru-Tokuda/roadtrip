@@ -179,6 +179,7 @@
 				BBF3F019207AB47E0051BE39 /* GasPricesDataStore.swift */,
 				BBF3F017207AB3800051BE39 /* GasStations.swift */,
 				BB6F94FA205BA8AB00465C9A /* GoogleClient.swift */,
+				5F62F78A2082900E00CB1133 /* GooglePlaceDetailsDataStore.swift */,
 				5F1844862055ABC4004A30A1 /* GooglePlacesResponse.swift */,
 				BBBC79722057695C0085044F /* Make.swift */,
 				BB60C04320360E6800ADF586 /* MapViewController.swift */,
@@ -189,7 +190,6 @@
 				BB60C04820360E6800ADF586 /* Assets.xcassets */,
 				BB60C04A20360E6800ADF586 /* LaunchScreen.storyboard */,
 				BB60C04520360E6800ADF586 /* Main.storyboard */,
-				5F62F78A2082900E00CB1133 /* GooglePlaceDetailsDataStore.swift */,
 				BB3FD5D7208288D00040A826 /* roadtrip.xcdatamodeld */,
 			);
 			path = roadtrip;
