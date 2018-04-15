@@ -14,6 +14,8 @@
 		5F96B4602065B4F200707E3E /* FilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F96B45F2065B4F200707E3E /* FilterViewController.swift */; };
 		BB017C6F205B343000FD9DC6 /* CarInfoConfirmationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB017C6E205B343000FD9DC6 /* CarInfoConfirmationViewController.swift */; };
 		BB2C7498205F378A0012B1B0 /* Direction.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB2C7497205F378A0012B1B0 /* Direction.swift */; };
+		BB3FD5D62082886D0040A826 /* CoreDataHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB3FD5D52082886D0040A826 /* CoreDataHandler.swift */; };
+		BB3FD5D9208288D00040A826 /* roadtrip.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = BB3FD5D7208288D00040A826 /* roadtrip.xcdatamodeld */; };
 		BB41127C20675C7E007098E0 /* FuelRemainingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB41127B20675C7E007098E0 /* FuelRemainingViewController.swift */; };
 		BB60C04220360E6800ADF586 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB60C04120360E6800ADF586 /* AppDelegate.swift */; };
 		BB60C04420360E6800ADF586 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB60C04320360E6800ADF586 /* MapViewController.swift */; };
@@ -62,6 +64,8 @@
 		A33153FF928D660E0DCAA99D /* Pods-roadtrip.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-roadtrip.debug.xcconfig"; path = "Pods/Target Support Files/Pods-roadtrip/Pods-roadtrip.debug.xcconfig"; sourceTree = "<group>"; };
 		BB017C6E205B343000FD9DC6 /* CarInfoConfirmationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarInfoConfirmationViewController.swift; sourceTree = "<group>"; };
 		BB2C7497205F378A0012B1B0 /* Direction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Direction.swift; sourceTree = "<group>"; };
+		BB3FD5D52082886D0040A826 /* CoreDataHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataHandler.swift; sourceTree = "<group>"; };
+		BB3FD5D8208288D00040A826 /* roadtrip.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = roadtrip.xcdatamodel; sourceTree = "<group>"; };
 		BB41127B20675C7E007098E0 /* FuelRemainingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FuelRemainingViewController.swift; sourceTree = "<group>"; };
 		BB60C03E20360E6800ADF586 /* roadtrip.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = roadtrip.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BB60C04120360E6800ADF586 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -167,6 +171,7 @@
 				BB017C6E205B343000FD9DC6 /* CarInfoConfirmationViewController.swift */,
 				BBF2A6BE20587CFC00FD2871 /* CarInfoSettingViewController.swift */,
 				BBF39D022055D2A1002F53A5 /* CarQueryDataStore.swift */,
+				BB3FD5D52082886D0040A826 /* CoreDataHandler.swift */,
 				BB2C7497205F378A0012B1B0 /* Direction.swift */,
 				BBB39537207864230040BDF7 /* Distance.swift */,
 				5F96B45F2065B4F200707E3E /* FilterViewController.swift */,
@@ -185,6 +190,7 @@
 				BB60C04A20360E6800ADF586 /* LaunchScreen.storyboard */,
 				BB60C04520360E6800ADF586 /* Main.storyboard */,
 				5F62F78A2082900E00CB1133 /* GooglePlaceDetailsDataStore.swift */,
+				BB3FD5D7208288D00040A826 /* roadtrip.xcdatamodeld */,
 			);
 			path = roadtrip;
 			sourceTree = "<group>";
@@ -414,6 +420,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BB017C6F205B343000FD9DC6 /* CarInfoConfirmationViewController.swift in Sources */,
+				BB3FD5D62082886D0040A826 /* CoreDataHandler.swift in Sources */,
 				BBBC7975205770AC0085044F /* Model.swift in Sources */,
 				BBF3F018207AB3800051BE39 /* GasStations.swift in Sources */,
 				BBBC7977205775430085044F /* Trim.swift in Sources */,
@@ -423,6 +430,7 @@
 				BB6F94FB205BA8AB00465C9A /* GoogleClient.swift in Sources */,
 				BB60C04420360E6800ADF586 /* MapViewController.swift in Sources */,
 				BBF2A6BF20587CFC00FD2871 /* CarInfoSettingViewController.swift in Sources */,
+				BB3FD5D9208288D00040A826 /* roadtrip.xcdatamodeld in Sources */,
 				BB2C7498205F378A0012B1B0 /* Direction.swift in Sources */,
 				BB60C04220360E6800ADF586 /* AppDelegate.swift in Sources */,
 				5F62F78B2082900E00CB1133 /* GooglePlaceDetailsDataStore.swift in Sources */,
@@ -734,6 +742,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		BB3FD5D7208288D00040A826 /* roadtrip.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				BB3FD5D8208288D00040A826 /* roadtrip.xcdatamodel */,
+			);
+			currentVersion = BB3FD5D8208288D00040A826 /* roadtrip.xcdatamodel */;
+			path = roadtrip.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = BB60C03620360E6800ADF586 /* Project object */;
 }

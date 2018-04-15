@@ -30,7 +30,8 @@ class FuelRemainingViewController: UIViewController {
     }
     
     @IBAction func fuelRemainingSliderChanged(_ sender: Any) {
-        myCar?.fuelRemainingInPercent = Double(fuelRemainingSlider.value)
+        print(Double(fuelRemainingSlider.value))
+        myCar!.fuelRemainingInPercent = Double(fuelRemainingSlider.value)
         let percentage = round(1000 * fuelRemainingSlider.value)/1000
         percentageLabel.text = "\(percentage.description)%"
         fuelLabel.text = "\(String(describing: myCar!.getFuelRemaining())) / \(String(describing: myCar!.fuelCapacity)) gallons"
@@ -39,6 +40,12 @@ class FuelRemainingViewController: UIViewController {
     @IBAction func ctnBtnClicked(_ sender: Any) {
         appDelegate?.myCar?.fuelRemainingInPercent = Double(fuelRemainingSlider.value)
     }
+    
+    @IBAction func confBtnClicked(_ sender: Any) {
+        CoreDataHandler.updateCar(car: myCar!)
+        performSegue(withIdentifier: "showMapView", sender: self)
+    }
+    
     
     
 

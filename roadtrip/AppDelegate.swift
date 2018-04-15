@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 import GoogleMaps
 import GooglePlaces
 
@@ -22,6 +23,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var gasPricesDataStore = GasPricesDataStore()
     
     func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey : Any]? = nil) -> Bool {
+        myCar = CoreDataHandler.fetchCar()!
+        
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        var initialViewController: UIViewController?
+        if myCar == nil {
+            initialViewController = storyboard.instantiateViewController(withIdentifier: "CarInfoSettingViewController")
+        } else {
+            initialViewController = storyboard.instantiateViewController(withIdentifier: "FuelRemainingViewController")
+        }
+        self.window?.rootViewController = initialViewController
+        self.window?.makeKeyAndVisible()
+        
         return true
     }
 
@@ -53,6 +66,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
+    
+    lazy var persistentContainer: NSPersistentContainer = {
+        let container = NSPersistentContainer(name: "roadtrip")
+        container.loadPersistentStores(completionHandler: { (storeDescription, error) in
+            if let error = error as NSError? {
+                fatalError("Unresolved error \(error), \(error.userInfo)")
+            }
+        })
+        return container
+    }()
     
 }
 
