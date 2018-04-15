@@ -8,6 +8,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
     var gasPricesDataStore: GasPricesDataStore?
     var locationManager = CLLocationManager()
     var destination: CLLocationCoordinate2D?
+    var waypoint: CLLocationCoordinate2D?
     
     @IBOutlet weak var mapView: GMSMapView!
     
@@ -34,10 +35,12 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
     var usingCompus: Bool = false
     var directionBtn: UIButton!
     var getDirectionBtn: UIButton?
+    var addWayPointBtn: UIButton?
     var startNavBtn: UIButton?
     var cancelBtn: UIButton?
     
     var gasStationsDuringNavigation = GasStations()
+    var polylines: [GMSPolyline] = [GMSPolyline]()
     var navigationDirection: Direction?
     var currentStep: Direction.Route.Leg.Step?
     var currentStepIndex: Int?
@@ -48,6 +51,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
     var speedLabel: UILabel = UILabel()
     var updateCamera: Bool = true
     var locationBtnHasBeenTapped: Bool = false
+    var firstPathDrawn: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -86,9 +90,9 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
         self.navigationController?.presentTransparentNavigationBar()
         isInNavigation = false
         
-//        let chicago = CLLocation(latitude: 41.8781, longitude: -87.6298)
-//        let bloomington = CLLocation(latitude: 40.4842, longitude: -88.9937)
-//        self.drawPath(origin: bloomington, destination: chicago)
+        //        let chicago = CLLocation(latitude: 41.8781, longitude: -87.6298)
+        //        let bloomington = CLLocation(latitude: 40.4842, longitude: -88.9937)
+        //        self.drawPath(origin: bloomington, destination: chicago)
     }
     
 }
@@ -163,7 +167,7 @@ extension MapViewController {
                 let currentLoc2D = CLLocationCoordinate2D(latitude: self.currentLocation!.coordinate.latitude, longitude: self.currentLocation!.coordinate.longitude)
                 mapView.animate(toLocation: currentLoc2D)
             }
-//            mapView.camera = GMSCameraPosition.camera(withLatitude: location.coordinate.latitude, longitude: location.coordinate.longitude, zoom: self.zoom!)
+            //            mapView.camera = GMSCameraPosition.camera(withLatitude: location.coordinate.latitude, longitude: location.coordinate.longitude, zoom: self.zoom!)
         }
         
         clearAllMarkers()
@@ -215,78 +219,78 @@ extension MapViewController {
     
     func setMarkersWhileNavigation(){
         self.gasStationsDuringNavigation.stations?.removeAll()
-            let group5 = DispatchGroup()
-            group5.enter()
-            for step in self.reacheableSteps {
-                self.gasPricesDataStore?.getGasPrices(latitude: step.startLocation!.lat!, longitutde: step.startLocation!.lng!, distanceInMiles: 2, gasType: "reg"){
-                    (response) in
-                    DispatchQueue.main.async{
-                        switch response{
-                        case let .success(gasStations):
-                            if self.gasStationsDuringNavigation.stations == nil {
-                                self.gasStationsDuringNavigation = gasStations
-                            } else {
-                                self.gasStationsDuringNavigation.stations! += gasStations.stations!
-                            }
-                            if self.reacheableSteps.last?.startLocation?.lat == step.startLocation?.lat && self.reacheableSteps.last?.startLocation?.lng == step.startLocation?.lng {
-                                group5.leave()
-                            }
-                        case let .failure(error):
-                            print(error)
+        let group5 = DispatchGroup()
+        group5.enter()
+        for step in self.reacheableSteps {
+            self.gasPricesDataStore?.getGasPrices(latitude: step.startLocation!.lat!, longitutde: step.startLocation!.lng!, distanceInMiles: 2, gasType: "reg"){
+                (response) in
+                DispatchQueue.main.async{
+                    switch response{
+                    case let .success(gasStations):
+                        if self.gasStationsDuringNavigation.stations == nil {
+                            self.gasStationsDuringNavigation = gasStations
+                        } else {
+                            self.gasStationsDuringNavigation.stations! += gasStations.stations!
                         }
+                        if self.reacheableSteps.last?.startLocation?.lat == step.startLocation?.lat && self.reacheableSteps.last?.startLocation?.lng == step.startLocation?.lng {
+                            group5.leave()
+                        }
+                    case let .failure(error):
+                        print(error)
                     }
                 }
             }
-            
-            group5.notify(queue: .main, execute: {
-                if let _ = self.gasStationsDuringNavigation.stations{
-                    
-                    for station in self.gasStationsDuringNavigation.stations!.sorted(by: {$0.lat!<$1.lat!}) {
-                        print("lat:\(station.lat!) lng:\(station.lng!)")
-                    }
-                    
-                    self.gasStationsDuringNavigation.stations = Array(Set(self.gasStationsDuringNavigation.stations!))
-                    for station in self.gasStationsDuringNavigation.stations!.sorted(by: {$0.lat!<$1.lat!}){
-                        print("lat:\(station.lat!) lng:\(station.lng!)")
-                    }
-                    
-                    for gasStationForPrice in self.gasStationsDuringNavigation.stations! {
-                        let DynamicView=UIView(frame: CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 50, height: 50)))
-                        DynamicView.backgroundColor=UIColor.clear
-                        var imageViewForPinMarker : UIImageView
-                        imageViewForPinMarker  = UIImageView(frame:CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 50, height: 50)))
-                        imageViewForPinMarker.image = UIImage(named:"prices")?.withRenderingMode(.alwaysTemplate)
-                        imageViewForPinMarker.tintColor = UIColor.green
-                        let text = UILabel(frame:CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 40, height: 30)))
-                        guard let _ = gasStationForPrice.regPrice else {
-                            continue
-                        }
-                        text.text = String(gasStationForPrice.regPrice!)
-                        text.textColor = UIColor.black
-                        text.font = UIFont(name: text.font.fontName, size: 14)
-                        text.textAlignment = NSTextAlignment.center
-                        text.center = imageViewForPinMarker.convert(imageViewForPinMarker.center, from:imageViewForPinMarker.superview)
-                        
-                        imageViewForPinMarker.addSubview(text)
-                        imageViewForPinMarker.center = DynamicView.convert(DynamicView.center, from:DynamicView.superview)
-                        DynamicView.addSubview(imageViewForPinMarker)
-                        UIGraphicsBeginImageContextWithOptions(DynamicView.frame.size, false, UIScreen.main.scale)
-                        DynamicView.layer.render(in: UIGraphicsGetCurrentContext()!)
-                        let imageConverted: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
-                        UIGraphicsEndImageContext()
-                        let marker = GMSMarker()
-                        marker.position = CLLocationCoordinate2DMake(gasStationForPrice.lat!, gasStationForPrice.lng!)
-                        
-                        marker.groundAnchor = CGPoint(x: 0.5, y: 1)
-                        marker.appearAnimation = .pop
-                        
-                        marker.icon = imageConverted
-                        marker.title = gasStationForPrice.station//////incomplete
-                        //                                marker.snippet = "The place is \(place.openingHours?.isOpen == true ? "open" : "closed")"
-                        marker.map = self.mapView
-                    }
+        }
+        
+        group5.notify(queue: .main, execute: {
+            if let _ = self.gasStationsDuringNavigation.stations{
+                
+                for station in self.gasStationsDuringNavigation.stations!.sorted(by: {$0.lat!<$1.lat!}) {
+                    print("lat:\(station.lat!) lng:\(station.lng!)")
                 }
-            })
+                
+                self.gasStationsDuringNavigation.stations = Array(Set(self.gasStationsDuringNavigation.stations!))
+                for station in self.gasStationsDuringNavigation.stations!.sorted(by: {$0.lat!<$1.lat!}){
+                    print("lat:\(station.lat!) lng:\(station.lng!)")
+                }
+                
+                for gasStationForPrice in self.gasStationsDuringNavigation.stations! {
+                    let DynamicView=UIView(frame: CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 50, height: 50)))
+                    DynamicView.backgroundColor=UIColor.clear
+                    var imageViewForPinMarker : UIImageView
+                    imageViewForPinMarker  = UIImageView(frame:CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 50, height: 50)))
+                    imageViewForPinMarker.image = UIImage(named:"prices")?.withRenderingMode(.alwaysTemplate)
+                    imageViewForPinMarker.tintColor = UIColor.green
+                    let text = UILabel(frame:CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 40, height: 30)))
+                    guard let _ = gasStationForPrice.regPrice else {
+                        continue
+                    }
+                    text.text = String(gasStationForPrice.regPrice!)
+                    text.textColor = UIColor.black
+                    text.font = UIFont(name: text.font.fontName, size: 14)
+                    text.textAlignment = NSTextAlignment.center
+                    text.center = imageViewForPinMarker.convert(imageViewForPinMarker.center, from:imageViewForPinMarker.superview)
+                    
+                    imageViewForPinMarker.addSubview(text)
+                    imageViewForPinMarker.center = DynamicView.convert(DynamicView.center, from:DynamicView.superview)
+                    DynamicView.addSubview(imageViewForPinMarker)
+                    UIGraphicsBeginImageContextWithOptions(DynamicView.frame.size, false, UIScreen.main.scale)
+                    DynamicView.layer.render(in: UIGraphicsGetCurrentContext()!)
+                    let imageConverted: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
+                    UIGraphicsEndImageContext()
+                    let marker = GMSMarker()
+                    marker.position = CLLocationCoordinate2DMake(gasStationForPrice.lat!, gasStationForPrice.lng!)
+                    
+                    marker.groundAnchor = CGPoint(x: 0.5, y: 1)
+                    marker.appearAnimation = .pop
+                    
+                    marker.icon = imageConverted
+                    marker.title = gasStationForPrice.station//////incomplete
+                    //                                marker.snippet = "The place is \(place.openingHours?.isOpen == true ? "open" : "closed")"
+                    marker.map = self.mapView
+                }
+            }
+        })
     }
     
     func fetchGoogleData(forLocation: CLLocation, locationName: String, searchRadius: Int) {
@@ -484,6 +488,7 @@ extension MapViewController {
                             let route = step.polyline!.points
                             let path: GMSPath = GMSPath(fromEncodedPath: route!)!
                             let polyline = GMSPolyline(path: path)
+                            self.polylines.append(polyline)
                             polyline.strokeWidth = 4
                             polyline.strokeColor = .blue
                             polyline.geodesic = true
@@ -503,7 +508,7 @@ extension MapViewController {
                                             if distanceVal < reachableDistanceInMiles {
                                                 self.reacheableSteps.append(step)
                                             }
-                                            if step.endLocation?.lat == direction.routes![0].legs![0].steps?.last?.endLocation?.lat && step.endLocation?.lng == direction.routes![0].legs![0].steps?.last?.endLocation?.lng{
+                                            if step.endLocation?.lat == direction.routes![0].legs![0].steps?.last?.endLocation?.lat && step.endLocation?.lng == direction.routes![0].legs![0].steps?.last?.endLocation?.lng {
                                                 group5.leave()
                                             }
                                         }
@@ -529,6 +534,9 @@ extension MapViewController {
     }
     
     func drawPath(origin: CLLocation, destination: CLLocation, waypoint: CLLocation) {
+        for polyline in polylines {
+            polyline.map = nil
+        }
         self.reacheableSteps.removeAll()
         googleClient.getDirection(origin: origin, destination: destination, waypoint: waypoint, completion: { (directionsResult) in
             switch directionsResult {
@@ -596,7 +604,7 @@ extension MapViewController: GMSAutocompleteViewControllerDelegate {
         let camera = GMSCameraPosition.camera(withLatitude: place.coordinate.latitude, longitude: place.coordinate.longitude, zoom: 15.0)
         self.mapView.animate(to: camera)
         view = self.mapView
-
+        
         
         let marker = GMSMarker()
         marker.position = CLLocationCoordinate2D(latitude: place.coordinate.latitude, longitude: place.coordinate.longitude)
@@ -604,7 +612,7 @@ extension MapViewController: GMSAutocompleteViewControllerDelegate {
         marker.snippet = place.formattedAddress
         marker.map = self.mapView
         
-
+        
         
         print("Place name: \(place.name)")
         print("Place address: \(String(describing: place.formattedAddress))")
@@ -636,37 +644,57 @@ extension MapViewController {
     
     func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
         // setting the position to destination's coordinate
-        self.destination = marker.position
-        
-        self.getDirectionBtn = UIButton(type: .system)
-        self.getDirectionBtn!.frame = CGRect(x: 150, y: 100, width: 150, height: 30)
-        self.getDirectionBtn!.setTitle("Get Direction", for: .normal)
-        self.getDirectionBtn!.backgroundColor = UIColor(red:0.00, green:0.53, blue:1.00, alpha:1.0)
-        self.getDirectionBtn!.layer.cornerRadius = 5
-        self.getDirectionBtn!.setTitleColor(.white, for: .normal)
-        self.getDirectionBtn!.addTarget(self, action: #selector(getDirectionBtnTapped), for: .touchUpInside)
-        
+        if !self.firstPathDrawn {
+            self.destination = marker.position
+            self.getDirectionBtn = UIButton(type: .system)
+            self.getDirectionBtn!.frame = CGRect(x: 150, y: 100, width: 150, height: 30)
+            self.getDirectionBtn!.setTitle("Get Direction", for: .normal)
+            self.getDirectionBtn!.backgroundColor = UIColor(red:0.00, green:0.53, blue:1.00, alpha:1.0)
+            self.getDirectionBtn!.layer.cornerRadius = 5
+            self.getDirectionBtn!.setTitleColor(.white, for: .normal)
+            self.getDirectionBtn!.addTarget(self, action: #selector(getDirectionBtnTapped), for: .touchUpInside)
+        } else {
+            self.waypoint = marker.position
+            self.addWayPointBtn = UIButton(type: .system)
+            self.addWayPointBtn!.frame = CGRect(x: 150, y: 100, width: 150, height: 30)
+            self.addWayPointBtn!.setTitle("Add Waypoint", for: .normal)
+            self.addWayPointBtn!.backgroundColor = UIColor(red: 0, green: 0.8275, blue: 0.5922, alpha: 1.0)
+            self.addWayPointBtn!.layer.cornerRadius = 5
+            self.addWayPointBtn!.setTitleColor(.white, for: .normal)
+            self.addWayPointBtn!.addTarget(self, action: #selector(addWaypointBtntapped), for: .touchUpInside)
+        }
         self.cancelBtn = UIButton(type: .system)
-        cancelBtn!.frame = CGRect(x: 150, y: 100, width: 150, height: 30)
-        cancelBtn!.setTitle("Cancel", for: .normal)
-        cancelBtn!.backgroundColor = UIColor(red:1.00, green:0.30, blue:0.00, alpha:1.0)
-        cancelBtn!.layer.cornerRadius = 5
-        cancelBtn!.setTitleColor(.white, for: .normal)
-        cancelBtn!.addTarget(self, action: #selector(cancelBtnTapped), for: .touchUpInside)
-        
-        self.getDirectionBtn!.translatesAutoresizingMaskIntoConstraints = false
-        cancelBtn!.translatesAutoresizingMaskIntoConstraints = false
-        
-        self.getDirectionBtn!.widthAnchor.constraint(equalToConstant: 140).isActive = true
-        self.getDirectionBtn!.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        cancelBtn!.widthAnchor.constraint(equalToConstant: 140).isActive = true
-        cancelBtn!.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        
+        self.cancelBtn!.frame = CGRect(x: 150, y: 100, width: 150, height: 30)
+        self.cancelBtn!.setTitle("Cancel", for: .normal)
+        self.cancelBtn!.backgroundColor = UIColor(red:1.00, green:0.30, blue:0.00, alpha:1.0)
+        self.cancelBtn!.layer.cornerRadius = 5
+        self.cancelBtn!.setTitleColor(.white, for: .normal)
+        self.cancelBtn!.addTarget(self, action: #selector(cancelBtnTapped), for: .touchUpInside)
+        if self.getDirectionBtn != nil {
+            self.getDirectionBtn!.translatesAutoresizingMaskIntoConstraints = false
+        }
+        if self.addWayPointBtn != nil {
+            self.addWayPointBtn!.translatesAutoresizingMaskIntoConstraints = false
+        }
+        self.cancelBtn!.translatesAutoresizingMaskIntoConstraints = false
+        if !firstPathDrawn {
+            self.getDirectionBtn!.widthAnchor.constraint(equalToConstant: 140).isActive = true
+            self.getDirectionBtn!.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        } else {
+            self.addWayPointBtn!.widthAnchor.constraint(equalToConstant: 140).isActive = true
+            self.addWayPointBtn!.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        }
+        self.cancelBtn!.widthAnchor.constraint(equalToConstant: 140).isActive = true
+        self.cancelBtn!.heightAnchor.constraint(equalToConstant: 50).isActive = true
         // adding buttons to the subview
         for view in self.stackView.subviews {
             view.removeFromSuperview()
         }
-        self.stackView.addArrangedSubview(self.getDirectionBtn!)
+        if !firstPathDrawn {
+            self.stackView.addArrangedSubview(self.getDirectionBtn!)
+        } else {
+            self.stackView.addArrangedSubview(self.addWayPointBtn!)
+        }
         self.stackView.addArrangedSubview(self.cancelBtn!)
         self.stackView!.axis = .vertical
         self.stackView!.spacing = 30
@@ -796,33 +824,18 @@ extension MapViewController {
         let forfilter = UIBarButtonItem(image: imgforfilter, style: .plain, target: self, action: #selector(filterClicked))
         navigationItem.setRightBarButtonItems([searchButton,forfilter], animated: true)
     }
+    
 }
 
 // MARK: Custom functions
 extension MapViewController {
+    
     @objc func settingsTapped(_ sender: UIBarButtonItem) {
         performSegue(withIdentifier: "showCarSummary", sender: self)
     }
     
-    @objc func getDirectionBtnTapped(_ sender: UIButton) {
+    private func showStartNavBtn() {
         self.stackView!.removeFromSuperview()
-        let currentLocation = self.currentLocation
-        let destination = CLLocation(latitude: self.destination!.latitude, longitude: self.destination!.longitude)
-        
-        let currentLocation2D = CLLocationCoordinate2D(latitude: currentLocation!.coordinate.latitude, longitude: currentLocation!.coordinate.longitude)
-        let destination2D = CLLocationCoordinate2D(latitude: destination.coordinate.latitude, longitude: destination.coordinate.longitude)
-        
-        let bounds = GMSCoordinateBounds(coordinate: currentLocation2D, coordinate: destination2D)
-        var insets = UIEdgeInsets()
-        insets.bottom = 50
-        insets.top = 50
-        insets.right = 50
-        insets.left = 50
-        let camera = self.mapView.camera(for: bounds, insets: insets)!
-        self.mapView.animate(to: camera)
-        
-        self.drawPath(origin: currentLocation!, destination: destination)
-        
         // remove buttons from the view
         for view in self.stackView.subviews {
             view.removeFromSuperview()
@@ -867,6 +880,45 @@ extension MapViewController {
         
         self.stackView!.centerXAnchor.constraint(equalTo: self.mapView.centerXAnchor).isActive = true
         self.stackView!.bottomAnchor.constraint(lessThanOrEqualTo: self.mapView.bottomAnchor, constant: -50).isActive = true
+    }
+    
+    @objc func getDirectionBtnTapped(_ sender: UIButton) {
+        self.firstPathDrawn = true
+        let destination = CLLocation(latitude: self.destination!.latitude, longitude: self.destination!.longitude)
+        
+        let currentLocation2D = CLLocationCoordinate2D(latitude: self.currentLocation!.coordinate.latitude, longitude: self.currentLocation!.coordinate.longitude)
+        
+        let bounds = GMSCoordinateBounds(coordinate: currentLocation2D, coordinate: self.destination!)
+        var insets = UIEdgeInsets()
+        insets.bottom = 50
+        insets.top = 50
+        insets.right = 50
+        insets.left = 50
+        let camera = self.mapView.camera(for: bounds, insets: insets)!
+        self.mapView.animate(to: camera)
+        
+        self.drawPath(origin: currentLocation!, destination: destination)
+        
+        showStartNavBtn()
+    }
+    
+    @objc func addWaypointBtntapped(_ sender: UIButton) {
+        let destination = CLLocation(latitude: self.destination!.latitude, longitude: self.destination!.longitude)
+        let waypoint = CLLocation(latitude: self.waypoint!.latitude, longitude: self.waypoint!.longitude)
+        
+        let currentLocation2D = CLLocationCoordinate2D(latitude: self.currentLocation!.coordinate.latitude, longitude: self.currentLocation!.coordinate.longitude)
+        let bounds = GMSCoordinateBounds(coordinate: currentLocation2D, coordinate: self.destination!)
+        var insets = UIEdgeInsets()
+        insets.bottom = 50
+        insets.top = 50
+        insets.right = 50
+        insets.left = 50
+        let camera = self.mapView.camera(for: bounds, insets: insets)!
+        self.mapView.animate(to: camera)
+        
+        self.drawPath(origin: currentLocation!, destination: destination, waypoint: waypoint)
+        
+        showStartNavBtn()
     }
     
     @objc func startNavBtnTapped(_ sender: UIButton) {
@@ -919,6 +971,7 @@ extension MapViewController {
     }
     
     @objc func stopNavBtnTapped(_ sender: UIButton) {
+        self.firstPathDrawn = false
         UIApplication.shared.isIdleTimerDisabled = false
         self.navigationTextView.removeFromSuperview()
         self.speedLabel.removeFromSuperview()
@@ -931,6 +984,7 @@ extension MapViewController {
     }
     
     @objc func cancelBtnTapped(_ sender: UIButton) {
+        self.firstPathDrawn = false
         locationManager.startUpdatingLocation()
         print("cancelbtn tapped")
         for view in self.stackView.subviews {
