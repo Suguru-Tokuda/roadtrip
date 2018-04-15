@@ -233,7 +233,6 @@
 				BB60C03A20360E6800ADF586 /* Sources */,
 				BB60C03B20360E6800ADF586 /* Frameworks */,
 				BB60C03C20360E6800ADF586 /* Resources */,
-				8F77FC4C0FBFDC8E22173417 /* [CP] Embed Pods Frameworks */,
 				6B21B51B2DC99CF6166896E2 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
@@ -374,24 +373,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-roadtrip/Pods-roadtrip-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		8F77FC4C0FBFDC8E22173417 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-roadtrip/Pods-roadtrip-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/PromiseKit/PromiseKit.framework",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PromiseKit.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-roadtrip/Pods-roadtrip-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		AD840B6B205D94BFF87FB1F5 /* [CP] Check Pods Manifest.lock */ = {

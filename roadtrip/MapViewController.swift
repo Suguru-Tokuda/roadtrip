@@ -46,6 +46,8 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
     var stopNavBtn: UIButton?
     var showingStopNavBtn: Bool = false
     var speedLabel: UILabel = UILabel()
+    var updateCamera: Bool = true
+    var locationBtnHasBeenTapped: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -65,7 +67,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
         directionBtn!.widthAnchor.constraint(equalToConstant: 100).isActive = true
         directionBtn!.heightAnchor.constraint(equalToConstant: 100).isActive = true
         directionBtn!.trailingAnchor.constraint(equalTo: self.mapView.trailingAnchor, constant: 10).isActive = true;
-        directionBtn!.bottomAnchor.constraint(equalTo: self.mapView.bottomAnchor, constant: -50).isActive = true;
+        directionBtn!.bottomAnchor.constraint(equalTo: self.mapView.bottomAnchor, constant: 0).isActive = true;
         
         //adding all to search
         locationManager.delegate = self
@@ -89,15 +91,15 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
 
 // MARK: location manager functions
 extension MapViewController {
+
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         guard status == .authorizedWhenInUse else {
             return
         }
         locationManager.startUpdatingLocation()
         mapView.isMyLocationEnabled = true
-        mapView.settings.myLocationButton = true
+//        mapView.settings.myLocationButton = true
         mapView.settings.compassButton = true
-        
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
@@ -150,7 +152,7 @@ extension MapViewController {
             }
         }
         
-        if !usingCompus {
+        if !usingCompus || updateCamera {
             mapView.camera = GMSCameraPosition(target: location.coordinate, zoom: zoom!, bearing: 0, viewingAngle: self.viewAngle!)
         }
         clearAllMarkers()
@@ -163,7 +165,6 @@ extension MapViewController {
     func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
         if usingCompus && !searchIsOn{
             self.mapView.camera = GMSCameraPosition.camera(withLatitude: currentLocation!.coordinate.latitude, longitude: currentLocation!.coordinate.longitude, zoom: zoom!, bearing: newHeading.magneticHeading, viewingAngle: self.viewAngle!)
-            
         }
     }
 }
@@ -675,6 +676,7 @@ extension MapViewController {
     }
     
     func mapView(_ mapView: GMSMapView, didTapAt coordinate: CLLocationCoordinate2D) {
+        print("tapped")
         if isInNavigation {
             if showingStopNavBtn == false {
                 stopNavBtn = UIButton(type: .system)
@@ -719,6 +721,13 @@ extension MapViewController {
         self.zoom = position.zoom
         self.viewAngle = position.viewingAngle
     }
+    
+    func mapView(_ mapView: GMSMapView, willMove gesture: Bool) {
+        print("moving")
+        locationBtnHasBeenTapped = false
+        updateCamera = false
+    }
+    
     func mapView(_ mapView: GMSMapView, markerInfoWindow marker: GMSMarker) -> UIView? {
         let view = UIView(frame: CGRect.init(x: 0, y: 0, width: 200, height: 100))
         view.backgroundColor = UIColor.white
@@ -763,6 +772,7 @@ extension MapViewController {
         }
         return nil
     }
+
 }
 
 // MARK: needs to be changed - Sanket
@@ -917,7 +927,14 @@ extension MapViewController {
     @objc func locationBtnTapped(_ sender: UIButton) {
         let camera = GMSCameraPosition.camera(withLatitude: self.currentLocation!.coordinate.latitude, longitude: self.currentLocation!.coordinate.longitude, zoom: 16)
         self.mapView.camera = camera
-        self.usingCompus = !self.usingCompus
+        
+        if locationBtnHasBeenTapped {
+            self.usingCompus = false
+        } else {
+            self.usingCompus = true
+        }
+        locationBtnHasBeenTapped = !locationBtnHasBeenTapped
+        updateCamera = true
     }
     
     //    part of expandable search bar
