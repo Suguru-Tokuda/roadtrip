@@ -69,7 +69,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
         directionBtn!.trailingAnchor.constraint(equalTo: self.mapView.trailingAnchor, constant: 10).isActive = true;
         directionBtn!.bottomAnchor.constraint(equalTo: self.mapView.bottomAnchor, constant: 0).isActive = true;
         
-        //adding all to search        
+        //adding all to search
         locationManager.delegate = self
         locationManager.startUpdatingHeading()
         mapView.delegate = self
@@ -728,6 +728,51 @@ extension MapViewController {
         updateCamera = false
     }
     
+    func mapView(_ mapView: GMSMapView, markerInfoWindow marker: GMSMarker) -> UIView? {
+        let view = UIView(frame: CGRect.init(x: 0, y: 0, width: 200, height: 100))
+        view.backgroundColor = UIColor.white
+        view.layer.cornerRadius = 6
+        if let place = marker as? PlaceMarker {
+            let lbl1 = UILabel(frame: CGRect.init(x: 8, y: 8, width: view.frame.size.width - 16, height: 15))
+            lbl1.text = place.place.name
+            lbl1.font = UIFont.systemFont(ofSize: 14, weight: .heavy)
+            view.addSubview(lbl1)
+            
+            let lbl2 = UILabel(frame: CGRect.init(x: lbl1.frame.origin.x , y: lbl1.frame.origin.y+lbl1.frame.size.height + 3, width: view.frame.size.width - 16, height: 15))
+            lbl2.text = place.place.address
+            lbl2.font = UIFont.systemFont(ofSize: 12, weight: .medium)
+            view.addSubview(lbl2)
+            
+            let lbl3 = UILabel(frame: CGRect.init(x: lbl2.frame.origin.x , y: lbl2.frame.origin.y+lbl2.frame.size.height + 3, width: view.frame.size.width - 16, height: 15))
+            lbl3.text = (place.place.openingHours?.isOpen! == true) ? "Open":"Closed"
+            lbl3.font = UIFont.systemFont(ofSize: 12, weight: .thin)
+            lbl3.textColor = (place.place.openingHours?.isOpen! == true) ? UIColor.red:UIColor.green
+            view.addSubview(lbl3)
+            
+            let placedetails = UIButton(type: .system)
+            placedetails.frame = CGRect(x: lbl3.frame.origin.x, y: lbl3.frame.origin.y+lbl3.frame.size.height + 5 , width: view.frame.size.width - 16, height: 30)
+            placedetails.setTitle("Details", for: .normal)
+            placedetails.backgroundColor = UIColor(red:0.00, green:0.53, blue:1.00, alpha:1.0)
+            placedetails.layer.cornerRadius = 5
+            placedetails.setTitleColor(.white, for: .normal)
+            placedetails.addTarget(self, action: #selector(placeDetailsNav), for: .touchUpInside)
+            view.addSubview(placedetails)
+            
+            //        let lbl1 = UILabel(frame: CGRect.init(x: 8, y: 8, width: view.frame.size.width - 16, height: 15))
+            //        lbl1.text = "Hi there!"
+            //        view.addSubview(lbl1)
+            //
+            //        let lbl2 = UILabel(frame: CGRect.init(x: lbl1.frame.origin.x, y: lbl1.frame.origin.y + lbl1.frame.size.height + 3, width: view.frame.size.width - 16, height: 15))
+            //        lbl2.text = "I am a custom info window."
+            //        lbl2.font = UIFont.systemFont(ofSize: 14, weight: .light)
+            //        view.addSubview(lbl2)
+            
+            return view
+
+        }
+        return nil
+    }
+
 }
 
 // MARK: needs to be changed - Sanket
@@ -871,9 +916,12 @@ extension MapViewController {
             view.removeFromSuperview()
         }
         self.mapView.clear()
-        let camera = GMSCameraPosition.camera(withLatitude: self.currentLocation!.coordinate.latitude, longitude: self.currentLocation!.coordinate.longitude, zoom: 16)
+        let camera = GMSCameraPosition.camera(withLatitude: self.currentLocation!.coordinate.latitude, longitude: self.currentLocation!.coordinate.longitude, zoom: zoom!)
         self.mapView.camera = camera
         self.stackView!.removeFromSuperview()
+        for keyword in searchKeywords{
+            self.fetchGoogleData(forLocation: currentLocation!, locationName: keyword, searchRadius: self.searchRadius )
+        }
     }
     
     @objc func locationBtnTapped(_ sender: UIButton) {
@@ -897,6 +945,7 @@ extension MapViewController {
         present(autocompleteController, animated: true, completion: nil)
     }
     
+
     // returns true if the distance between the current location to the end point of the current step in the navigation mode.
     private func arrivedEndOfStep (currentLocation: CLLocation, endPointInStep: CLLocation) -> Bool {
         let distanceInMeters = currentLocation.distance(from: endPointInStep)
@@ -924,6 +973,10 @@ extension MapViewController {
         
     }
     
+    @objc func placeDetailsNav(_ sender: UIButton) {
+        self.performSegue(withIdentifier: "GoToDetailsContoller", sender:self)
+    }
+
 }
 
 //part of expandable search bar
@@ -983,3 +1036,4 @@ extension String {
         return html2AttributedString?.string ?? ""
     }
 }
+

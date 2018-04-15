@@ -22,12 +22,15 @@ enum DistanceResult {
     case failure(Error)
 }
 
+enum PlaceDetailResult {
+    case success(PlaceDetail)
+    case failure(Error)
+}
 class GoogleClient {
     
     let session = URLSession(configuration: .default)
     let appDelegate = UIApplication.shared.delegate as? AppDelegate
     var googlePlacesKey: String?
-    
     func getGooglePlacesData(forKeyword keyword: String, location: CLLocation, withinMeters radius: Int, using completionHandler: @escaping (GooglePlacesResponse) -> ())  {
         let url = RoadtripAPI.googlePlacesDataURL(location: location, keyword: keyword, radius: radius ,token: pagetoken)
         
@@ -64,7 +67,7 @@ class GoogleClient {
             OperationQueue.main.addOperation {
                 completion(result)
             }
-        }.resume()
+            }.resume()
     }
     
     func getDirection(origin: CLLocation, destination: CLLocation, waypoint: CLLocation, completion: @escaping (DirectionsResult) -> Void) {
@@ -80,7 +83,7 @@ class GoogleClient {
             OperationQueue.main.addOperation {
                 completion(result)
             }
-        }.resume()
+            }.resume()
     }
     
     func getDistance(origin: CLLocation, destination: CLLocation, completion: @escaping (DistanceResult) -> Void) {
@@ -94,7 +97,7 @@ class GoogleClient {
             OperationQueue.main.addOperation {
                 completion(result)
             }
-        }.resume()
+            }.resume()
     }
     
     private func processDirectionsRequest(data: Data?, error: Error?) -> DirectionsResult {
@@ -109,6 +112,24 @@ class GoogleClient {
             return .failure(error!)
         }
         return RoadtripAPI.getDistanceResult(fromJSON: jsonData)
+    }
+    
+    
+    func getPlaceDetail(placeId: String, completion: @escaping (PlaceDetailResult) -> Void) {
+        URLSession.shared.dataTask(with: RoadtripAPI.googlePlaceDetailURL(placeid: placeId)) {
+            (data, response, error) -> Void in
+            let result = self.processDetailRequest(data: data, error: error)
+            OperationQueue.main.addOperation {
+                completion(result)
+            }
+            }.resume()
+    }
+    
+    private func processDetailRequest(data: Data?, error: Error?) -> PlaceDetailResult {
+        guard let jsonData = data else {
+            return .failure(error!)
+        }
+        return RoadtripAPI.getPlaceDetailResult(fromJSON: jsonData)
     }
     
 }
