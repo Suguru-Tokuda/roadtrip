@@ -126,7 +126,7 @@ extension MapViewController {
          Every 5 seconds, check the current speed and put the speed into the speeds, array of Double
          */
         if lastTimeToCheckSpeed!.timeIntervalSinceNow >= 5.0 {
-            self.myCar!.appendSpeed(speed: (self.locationManager.location!.speed * 36.0 * 0.000621371))
+            self.myCar!.appendSpeed(speed: (self.locationManager.location!.speed * 3600.0 * 0.000621371))
             lastTimeToCheckSpeed = Date() // assiging the current time
         }
         
@@ -150,7 +150,7 @@ extension MapViewController {
         }
         
         if isInNavigation {
-            speedLabel.text = "\(round(abs(self.locationManager.location!.speed * 36.0 * 0.000621371)).description)/mph"
+            speedLabel.text = "\(round(abs(self.locationManager.location!.speed * 3600.0 * 0.000621371)).description)/mph"
             let hasArrivedToEndOfStep = self.arrivedEndOfStep(currentLocation: self.currentLocation!, endPointInStep: CLLocation(latitude: self.currentStep!.endLocation!.lat!, longitude: self.currentStep!.endLocation!.lng!))
             if hasArrivedToEndOfStep {
                 let hasNextStep = self.switchStep()
@@ -887,7 +887,6 @@ extension MapViewController {
         let destination = CLLocation(latitude: self.destination!.latitude, longitude: self.destination!.longitude)
         
         let currentLocation2D = CLLocationCoordinate2D(latitude: self.currentLocation!.coordinate.latitude, longitude: self.currentLocation!.coordinate.longitude)
-        
         let bounds = GMSCoordinateBounds(coordinate: currentLocation2D, coordinate: self.destination!)
         var insets = UIEdgeInsets()
         insets.bottom = 50
@@ -896,9 +895,7 @@ extension MapViewController {
         insets.left = 50
         let camera = self.mapView.camera(for: bounds, insets: insets)!
         self.mapView.animate(to: camera)
-        
         self.drawPath(origin: currentLocation!, destination: destination)
-        
         showStartNavBtn()
     }
     
@@ -915,9 +912,7 @@ extension MapViewController {
         insets.left = 50
         let camera = self.mapView.camera(for: bounds, insets: insets)!
         self.mapView.animate(to: camera)
-        
         self.drawPath(origin: currentLocation!, destination: destination, waypoint: waypoint)
-        
         showStartNavBtn()
     }
     
@@ -927,7 +922,7 @@ extension MapViewController {
         for view in self.stackView.subviews {
             view.removeFromSuperview()
         }
-        self.speedLabel.text = "\(round(abs(self.locationManager.location!.speed * 36.0 * 0.000621371)).description)/mph"
+        self.speedLabel.text = "\(round(abs(self.locationManager.location!.speed * 3600.0 * 0.000621371)).description)/mph"
         self.speedLabel.textAlignment = .center
         self.speedLabel.backgroundColor = UIColor.black
         self.speedLabel.alpha = 0.8
@@ -947,12 +942,13 @@ extension MapViewController {
         self.navigationTextView.textColor = UIColor.white
         self.navigationTextView.alpha = 0.8
         self.navigationTextView.layer.cornerRadius = 5
+        self.navigationTextView.font = UIFont(name: self.navigationTextView.font!.fontName, size: 18)
         
         self.mapView.addSubview(self.navigationTextView)
         // constraints for navigationTextView
         self.navigationTextView.translatesAutoresizingMaskIntoConstraints = false
-        self.navigationTextView.widthAnchor.constraint(equalToConstant: 150).isActive = true
-        self.navigationTextView.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        self.navigationTextView.widthAnchor.constraint(equalToConstant: 200).isActive = true
+        self.navigationTextView.heightAnchor.constraint(equalToConstant: 100).isActive = true
         self.navigationTextView.leadingAnchor.constraint(equalTo: self.mapView.leadingAnchor).isActive = true
         self.navigationTextView.bottomAnchor.constraint(equalTo: self.mapView.bottomAnchor).isActive = true
         // constraints for speedLabel
