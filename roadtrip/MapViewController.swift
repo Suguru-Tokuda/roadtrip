@@ -52,6 +52,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
     var updateCamera: Bool = true
     var locationBtnHasBeenTapped: Bool = false
     var firstPathDrawn: Bool = false
+    var markerCoord = [[Double:Double]]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -171,9 +172,9 @@ extension MapViewController {
         }
         
         clearAllMarkers()
-        for keyword in searchKeywords {
-            self.fetchGoogleData(forLocation: location, locationName: keyword, searchRadius: self.searchRadius )
-        }
+//        for keyword in searchKeywords {
+//            self.fetchGoogleData(forLocation: location, locationName: keyword, searchRadius: self.searchRadius )
+//        }
         currentLocation = location
     }
     
@@ -219,7 +220,7 @@ extension MapViewController {
     
     func setMarkersWhileNavigation(){
         gasStationsDuringNavigation = GasStations()
-        var markerCoord = [[Double:Double]]()
+        markerCoord = [[Double:Double]]()
         for step in self.reacheableSteps {
                             DispatchQueue.main.async{
             self.gasPricesDataStore?.getGasPrices(latitude: step.startLocation!.lat!, longitutde: step.startLocation!.lng!, distanceInMiles: 2, gasType: "reg"){
@@ -229,8 +230,8 @@ extension MapViewController {
                     case let .success(gasStations):
                         if gasStations.stations != nil{
                             for gasStationForPrice in gasStations.stations! {
-                                if !markerCoord.contains([gasStationForPrice.lat!:gasStationForPrice.lng!]){
-                                markerCoord.append([gasStationForPrice.lat!:gasStationForPrice.lng!])
+                                if !self.markerCoord.contains([gasStationForPrice.lat!:gasStationForPrice.lng!]){
+                                self.markerCoord.append([gasStationForPrice.lat!:gasStationForPrice.lng!])
                                 let DynamicView=UIView(frame: CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 50, height: 50)))
                                 DynamicView.backgroundColor=UIColor.clear
                                 var imageViewForPinMarker : UIImageView
@@ -284,8 +285,8 @@ extension MapViewController {
                 case let .success(gasStations):
                     if gasStations.stations != nil{
                         for gasStationForPrice in gasStations.stations! {
-                            if !markerCoord.contains([gasStationForPrice.lat!:gasStationForPrice.lng!]){
-                                markerCoord.append([gasStationForPrice.lat!:gasStationForPrice.lng!])
+                            if !self.markerCoord.contains([gasStationForPrice.lat!:gasStationForPrice.lng!]){
+                                self.markerCoord.append([gasStationForPrice.lat!:gasStationForPrice.lng!])
                                 let DynamicView=UIView(frame: CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 50, height: 50)))
                                 DynamicView.backgroundColor=UIColor.clear
                                 var imageViewForPinMarker : UIImageView
@@ -332,6 +333,65 @@ extension MapViewController {
         }
     }
         func fetchGoogleData(forLocation: CLLocation, locationName: String, searchRadius: Int) {
+            if locationName == "gas_station" || locationName == "petrol"{
+                markerCoord.removeAll()
+                self.gasPricesDataStore?.getGasPrices(latitude: forLocation.coordinate.latitude, longitutde: forLocation.coordinate.longitude, distanceInMiles: 2, gasType: "reg"){
+                    (response) in
+                    
+                    switch response{
+                    case let .success(gasStations):
+                        if gasStations.stations != nil{
+                            for gasStationForPrice in gasStations.stations! {
+                                if !self.markerCoord.contains([gasStationForPrice.lat!:gasStationForPrice.lng!]){
+                                    self.markerCoord.append([gasStationForPrice.lat!:gasStationForPrice.lng!])
+                                    let DynamicView=UIView(frame: CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 50, height: 50)))
+                                    DynamicView.backgroundColor=UIColor.clear
+                                    var imageViewForPinMarker : UIImageView
+                                    imageViewForPinMarker  = UIImageView(frame:CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 50, height: 50)))
+                                    imageViewForPinMarker.image = UIImage(named:"prices")?.withRenderingMode(.alwaysTemplate)
+                                    imageViewForPinMarker.tintColor = UIColor.green
+                                    let text = UILabel(frame:CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 40, height: 30)))
+                                    guard let _ = gasStationForPrice.regPrice else {
+                                        continue
+                                    }
+                                    text.text = String(gasStationForPrice.regPrice!)
+                                    text.textColor = UIColor.black
+                                    text.font = UIFont(name: text.font.fontName, size: 14)
+                                    text.textAlignment = NSTextAlignment.center
+                                    text.center = imageViewForPinMarker.convert(imageViewForPinMarker.center, from:imageViewForPinMarker.superview)
+                                    
+                                    imageViewForPinMarker.addSubview(text)
+                                    imageViewForPinMarker.center = DynamicView.convert(DynamicView.center, from:DynamicView.superview)
+                                    DynamicView.addSubview(imageViewForPinMarker)
+                                    UIGraphicsBeginImageContextWithOptions(DynamicView.frame.size, false, UIScreen.main.scale)
+                                    DynamicView.layer.render(in: UIGraphicsGetCurrentContext()!)
+                                    let imageConverted: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
+                                    UIGraphicsEndImageContext()
+                                    let marker = GMSMarker()
+                                    marker.position = CLLocationCoordinate2DMake(gasStationForPrice.lat!, gasStationForPrice.lng!)
+                                    
+                                    marker.groundAnchor = CGPoint(x: 0.5, y: 1)
+                                    marker.appearAnimation = .pop
+                                    
+                                    marker.icon = imageConverted
+                                    marker.title = gasStationForPrice.station//////incomplete
+                                    marker.map = self.mapView
+                                    
+                                    let place = Place(geometry: Place.Location(location: Place.Location.LatLong(latitude: gasStationForPrice.lat!, longitude: gasStationForPrice.lng!)), name: gasStationForPrice.station!, openingHours: nil, photos: nil, placeID: "gasstation", types: [], address: "")
+                                    let placemarker = PlaceMarker(place: place)
+                                    self.addMarker(markerType: locationName, marker: placemarker)
+                                }
+                            }
+                            
+                        }
+                        
+                        
+                    case let .failure(error):
+                        print(error)
+                    }
+                }
+            }else{
+
             let group1 = DispatchGroup()
             group1.enter()
             googleClient.getGooglePlacesData(forKeyword: locationName, location: forLocation, withinMeters: searchRadius) { (response) in
@@ -400,36 +460,6 @@ extension MapViewController {
                             let marker = PlaceMarker(place: place)
                             marker.title = place.name
                             marker.snippet = "The place is \(place.openingHours?.isOpen == true ? "open" : "closed")"
-                            //                        switch true{
-                            //                        case place.types.contains("gas_station"):
-                            //
-                            if locationName == "gas_station" || locationName == "petrol"{
-                                
-                                let DynamicView=UIView(frame: CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 50, height: 50)))
-                                DynamicView.backgroundColor=UIColor.clear
-                                var imageViewForPinMarker : UIImageView
-                                imageViewForPinMarker  = UIImageView(frame:CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 50, height: 50)))
-                                imageViewForPinMarker.image = UIImage(named:"prices")?.withRenderingMode(.alwaysTemplate)
-                                imageViewForPinMarker.tintColor = UIColor.green
-                                
-                                let text = UILabel(frame:CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 40, height: 30)))
-                                text.text = "$2.5"
-                                text.textColor = UIColor.black
-                                text.font = UIFont(name: text.font.fontName, size: 14)
-                                text.textAlignment = NSTextAlignment.center
-                                text.center = imageViewForPinMarker.convert(imageViewForPinMarker.center, from:imageViewForPinMarker.superview)
-                                imageViewForPinMarker.addSubview(text)
-                                imageViewForPinMarker.center = DynamicView.convert(DynamicView.center, from:DynamicView.superview)
-                                DynamicView.addSubview(imageViewForPinMarker)
-                                UIGraphicsBeginImageContextWithOptions(DynamicView.frame.size, false, UIScreen.main.scale)
-                                DynamicView.layer.render(in: UIGraphicsGetCurrentContext()!)
-                                let imageConverted: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
-                                UIGraphicsEndImageContext()
-                                
-                                marker.icon = imageConverted
-                                marker.map = self.mapView
-                            }
-                            //                        case place.types.contains("pizza"), place.name.range(of: "pizza", options: .caseInsensitive) != nil:
                             if locationName == "pizza"{
                                 marker.icon = UIImage(named: "pizza")
                                 marker.map = self.mapView
@@ -460,35 +490,6 @@ extension MapViewController {
                             let marker = PlaceMarker(place: place)
                             marker.title = place.name
                             marker.snippet = "The place is \(place.openingHours?.isOpen == true ? "open" : "closed")"
-                            //                        switch true{
-                            //                        case place.types.contains("gas_station"):
-                            if locationName == "gas_station"{
-                                let DynamicView=UIView(frame: CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 50, height: 50)))
-                                DynamicView.backgroundColor=UIColor.clear
-                                var imageViewForPinMarker : UIImageView
-                                imageViewForPinMarker  = UIImageView(frame:CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 50, height: 50)))
-                                imageViewForPinMarker.image = UIImage(named:"prices")?.withRenderingMode(.alwaysTemplate)
-                                imageViewForPinMarker.tintColor = UIColor.green
-                                let text = UILabel(frame:CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 40, height: 30)))
-                                text.text = "$2.5"
-                                text.textColor = UIColor.black
-                                text.font = UIFont(name: text.font.fontName, size: 14)
-                                text.textAlignment = NSTextAlignment.center
-                                text.center = imageViewForPinMarker.convert(imageViewForPinMarker.center, from:imageViewForPinMarker.superview)
-                                
-                                imageViewForPinMarker.addSubview(text)
-                                imageViewForPinMarker.center = DynamicView.convert(DynamicView.center, from:DynamicView.superview)
-                                
-                                DynamicView.addSubview(imageViewForPinMarker)
-                                UIGraphicsBeginImageContextWithOptions(DynamicView.frame.size, false, UIScreen.main.scale)
-                                DynamicView.layer.render(in: UIGraphicsGetCurrentContext()!)
-                                let imageConverted: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
-                                UIGraphicsEndImageContext()
-                                
-                                marker.icon = imageConverted
-                                marker.map = self.mapView
-                            }
-                            //                        case place.types.contains("pizza"), place.name.range(of: "pizza", options: .caseInsensitive) != nil:
                             if locationName == "pizza"{
                                 marker.icon = UIImage(named: "pizza")
                                 marker.map = self.mapView
@@ -508,7 +509,7 @@ extension MapViewController {
                     
                 }
             })
-            
+            }
         }
     
     func drawPath(origin: CLLocation, destination: CLLocation) {
@@ -607,7 +608,13 @@ extension MapViewController: FilterTableViewControllerDelegate {
         searchKeywords = controller.selectedTypes.sorted()
         for (key, _) in markers{
             if !searchKeywords.contains(key){
-                clearMarkers(forType: key)
+                if key == "gas_station"{
+                    mapView.clear()
+                    clearAllMarkers()
+                }
+                else{
+                    clearMarkers(forType: key)
+                }
             }
         }
         for key in searchKeywords{
@@ -808,43 +815,46 @@ extension MapViewController {
         let view = UIView(frame: CGRect.init(x: 0, y: 0, width: 200, height: 100))
         view.backgroundColor = UIColor.white
         view.layer.cornerRadius = 6
-        if let place = marker as? PlaceMarker {
-            let lbl1 = UILabel(frame: CGRect.init(x: 8, y: 8, width: view.frame.size.width - 16, height: 15))
-            lbl1.text = place.place.name
-            lbl1.font = UIFont.systemFont(ofSize: 14, weight: .heavy)
-            view.addSubview(lbl1)
-            
-            let lbl2 = UILabel(frame: CGRect.init(x: lbl1.frame.origin.x , y: lbl1.frame.origin.y+lbl1.frame.size.height + 3, width: view.frame.size.width - 16, height: 15))
-            lbl2.text = place.place.address
-            lbl2.font = UIFont.systemFont(ofSize: 12, weight: .medium)
-            view.addSubview(lbl2)
-            
-            let lbl3 = UILabel(frame: CGRect.init(x: lbl2.frame.origin.x , y: lbl2.frame.origin.y+lbl2.frame.size.height + 3, width: view.frame.size.width - 16, height: 15))
-            lbl3.text = (place.place.openingHours?.isOpen! == true) ? "Open":"Closed"
-            lbl3.font = UIFont.systemFont(ofSize: 12, weight: .thin)
-            lbl3.textColor = (place.place.openingHours?.isOpen! == true) ? UIColor.red:UIColor.green
-            view.addSubview(lbl3)
-            
-            let placedetails = UIButton(type: .system)
-            placedetails.frame = CGRect(x: lbl3.frame.origin.x, y: lbl3.frame.origin.y+lbl3.frame.size.height + 5 , width: view.frame.size.width - 16, height: 30)
-            placedetails.setTitle("Details", for: .normal)
-            placedetails.backgroundColor = UIColor(red:0.00, green:0.53, blue:1.00, alpha:1.0)
-            placedetails.layer.cornerRadius = 5
-            placedetails.setTitleColor(.white, for: .normal)
-            placedetails.addTarget(self, action: #selector(placeDetailsNav), for: .touchUpInside)
-            view.addSubview(placedetails)
-            
-            //        let lbl1 = UILabel(frame: CGRect.init(x: 8, y: 8, width: view.frame.size.width - 16, height: 15))
-            //        lbl1.text = "Hi there!"
-            //        view.addSubview(lbl1)
-            //
-            //        let lbl2 = UILabel(frame: CGRect.init(x: lbl1.frame.origin.x, y: lbl1.frame.origin.y + lbl1.frame.size.height + 3, width: view.frame.size.width - 16, height: 15))
-            //        lbl2.text = "I am a custom info window."
-            //        lbl2.font = UIFont.systemFont(ofSize: 14, weight: .light)
-            //        view.addSubview(lbl2)
-            
-            return view
-            
+        if let place = marker as? PlaceMarker{
+            if place.place.placeID != "gasstation" {
+                let lbl1 = UILabel(frame: CGRect.init(x: 8, y: 8, width: view.frame.size.width - 16, height: 15))
+                lbl1.text = place.place.name
+                lbl1.font = UIFont.systemFont(ofSize: 14, weight: .heavy)
+                view.addSubview(lbl1)
+                
+                let lbl2 = UILabel(frame: CGRect.init(x: lbl1.frame.origin.x , y: lbl1.frame.origin.y+lbl1.frame.size.height + 3, width: view.frame.size.width - 16, height: 15))
+                lbl2.text = place.place.address
+                lbl2.font = UIFont.systemFont(ofSize: 12, weight: .medium)
+                view.addSubview(lbl2)
+                
+                let lbl3 = UILabel(frame: CGRect.init(x: lbl2.frame.origin.x , y: lbl2.frame.origin.y+lbl2.frame.size.height + 3, width: view.frame.size.width - 16, height: 15))
+                lbl3.text = (place.place.openingHours?.isOpen! == true) ? "Open":"Closed"
+                lbl3.font = UIFont.systemFont(ofSize: 12, weight: .thin)
+                lbl3.textColor = (place.place.openingHours?.isOpen! == true) ? UIColor.red:UIColor.green
+                view.addSubview(lbl3)
+                
+                let placedetails = UIButton(type: .system)
+                placedetails.frame = CGRect(x: lbl3.frame.origin.x, y: lbl3.frame.origin.y+lbl3.frame.size.height + 5 , width: view.frame.size.width - 16, height: 30)
+                placedetails.setTitle("Details", for: .normal)
+                placedetails.backgroundColor = UIColor(red:0.00, green:0.53, blue:1.00, alpha:1.0)
+                placedetails.layer.cornerRadius = 5
+                placedetails.setTitleColor(.white, for: .normal)
+                placedetails.addTarget(self, action: #selector(placeDetailsNav), for: .touchUpInside)
+                view.addSubview(placedetails)
+                let setting = mapView.settings
+                setting.consumesGesturesInView = false
+                
+                //        let lbl1 = UILabel(frame: CGRect.init(x: 8, y: 8, width: view.frame.size.width - 16, height: 15))
+                //        lbl1.text = "Hi there!"
+                //        view.addSubview(lbl1)
+                //
+                //        let lbl2 = UILabel(frame: CGRect.init(x: lbl1.frame.origin.x, y: lbl1.frame.origin.y + lbl1.frame.size.height + 3, width: view.frame.size.width - 16, height: 15))
+                //        lbl2.text = "I am a custom info window."
+                //        lbl2.font = UIFont.systemFont(ofSize: 14, weight: .light)
+                //        view.addSubview(lbl2)
+                
+                return view
+            }
         }
         return nil
     }
