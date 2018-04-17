@@ -29,9 +29,9 @@ struct RoadtripAPI {
     private static let googlePlaceDetailBaseURL = "https://maps.googleapis.com/maps/api/place/details/json?"
 
     public static let myGasFeedAPIKey = "3gi91gd4i1"
-    public static let googleMapsAPIKey = "AIzaSyDEdKM_L4ArIhHSyZdOImGpmAWArGT8W38"
+    public static let googleMapsAPIKey = "AIzaSyA3ElVIlEfP3sgehniZx3Aju7dpZDwRz6A"
     public static let googleDirectionsAPIKey = "AIzaSyB5MtWNCa49FD9dSqC0iXd5JA4Vl-_Rf-c"
-    public static let googlePlacesAPIKey = "AIzaSyD96g2BYcVjnEstQLSXrOQ9kGQ1IqWq9wI"
+    public static let googlePlacesAPIKey = "AIzaSyD14jarz6jPaHCozkfKHcNLVthhuJhtwqg"
     public static let googleDistanceMatrixAPI = "AIzaSyDinG-UL4O0n5B6sMWsrwD1v2zjRURtt24"    
 
     public static func carQueryURL(method: CarQueryMethod, parameter: String) -> URL {
