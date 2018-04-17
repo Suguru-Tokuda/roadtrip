@@ -171,7 +171,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="VK8-6N-sHq" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="6239" y="1132"/>
+            <point key="canvasLocation" x="5476" y="1130"/>
         </scene>
         <!--Car Info Setting View Controller-->
         <scene sceneID="JsG-xo-Wl9">
