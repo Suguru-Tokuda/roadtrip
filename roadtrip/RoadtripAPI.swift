@@ -30,13 +30,14 @@ struct RoadtripAPI {
     private static let googlePhotoBaseURL = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400"
 
     public static let myGasFeedAPIKey = "3gi91gd4i1"
+
 //    public static let googleMapsAPIKey = "AIzaSyDEdKM_L4ArIhHSyZdOImGpmAWArGT8W38"
     public static let googleMapsAPIKey = "AIzaSyD14jarz6jPaHCozkfKHcNLVthhuJhtwqg"
     public static let googleDirectionsAPIKey = "AIzaSyB5MtWNCa49FD9dSqC0iXd5JA4Vl-_Rf-c"
 //    public static let googlePlacesAPIKey = "AIzaSyD96g2BYcVjnEstQLSXrOQ9kGQ1IqWq9wI"
     public static let googlePlacesAPIKey = "AIzaSyA3ElVIlEfP3sgehniZx3Aju7dpZDwRz6A"
     public static let googleDistanceMatrixAPI = "AIzaSyD14jarz6jPaHCozkfKHcNLVthhuJhtwqg"
-
+  
     public static func carQueryURL(method: CarQueryMethod, parameter: String) -> URL {
         let urlString = carQueryBaseURL + method.rawValue + parameter
         let url = URL(string: urlString)
