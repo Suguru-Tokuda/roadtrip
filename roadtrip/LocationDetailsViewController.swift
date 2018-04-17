@@ -54,16 +54,6 @@ class LocationDetailsViewController: UIViewController {
         ratingsStackView.heightAnchor.constraint(equalToConstant: 50).isActive = true
         ratingsStackView.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 10).isActive = true
         
-        let scrollableView = UIScrollView()
-        let label = UITextView()
-        label.text = "FUCK YOU"
-        self.view.addSubview(label)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        scrollableView.addSubview(label)
-        self.view.addSubview(scrollableView)
-        scrollableView.translatesAutoresizingMaskIntoConstraints = false
-        scrollableView.topAnchor.constraint(equalTo: ratingsStackView.bottomAnchor, constant: 10).isActive = true
-        
         if photoReferences!.count > 0 {
             showPhotosBtn = UIButton()
             showPhotosBtn!.frame = CGRect(x: 150, y: 100, width: 150, height: 30)
