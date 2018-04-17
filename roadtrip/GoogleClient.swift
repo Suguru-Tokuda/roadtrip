@@ -26,6 +26,12 @@ enum PlaceDetailResult {
     case success(PlaceDetail)
     case failure(Error)
 }
+
+enum PhotosResult {
+    case success([UIImage])
+    case failure(Error)
+}
+
 class GoogleClient {
     
     let session = URLSession(configuration: .default)
@@ -100,6 +106,16 @@ class GoogleClient {
             }.resume()
     }
     
+    func getPlaceDetail(placeId: String, completion: @escaping (PlaceDetailResult) -> Void) {
+        URLSession.shared.dataTask(with: RoadtripAPI.googlePlaceDetailURL(placeid: placeId)) {
+            (data, response, error) -> Void in
+            let result = self.processDetailRequest(data: data, error: error)
+            OperationQueue.main.addOperation {
+                completion(result)
+            }
+            }.resume()
+    }
+    
     private func processDirectionsRequest(data: Data?, error: Error?) -> DirectionsResult {
         guard let jsonData = data else {
             return .failure(error!)
@@ -112,17 +128,6 @@ class GoogleClient {
             return .failure(error!)
         }
         return RoadtripAPI.getDistanceResult(fromJSON: jsonData)
-    }
-    
-    
-    func getPlaceDetail(placeId: String, completion: @escaping (PlaceDetailResult) -> Void) {
-        URLSession.shared.dataTask(with: RoadtripAPI.googlePlaceDetailURL(placeid: placeId)) {
-            (data, response, error) -> Void in
-            let result = self.processDetailRequest(data: data, error: error)
-            OperationQueue.main.addOperation {
-                completion(result)
-            }
-            }.resume()
     }
     
     private func processDetailRequest(data: Data?, error: Error?) -> PlaceDetailResult {

@@ -52,8 +52,9 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
     var updateCamera: Bool = true
     var locationBtnHasBeenTapped: Bool = false
     var firstPathDrawn: Bool = false
+    var isRestaurant: Bool = false
+    var placedetail: PlaceDetail?
     var markerCoord = [[Double:Double]]()
-    
     var gastype:String{
         switch myCar?.gasType {
         case "Unleased" :
@@ -65,7 +66,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
         default:
             return "reg"
         }
-        
     }
     
     
@@ -105,10 +105,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
         // setting the navigation bar to transparent
         self.navigationController?.presentTransparentNavigationBar()
         isInNavigation = false
-        
-        //        let chicago = CLLocation(latitude: 41.8781, longitude: -87.6298)
-        //        let bloomington = CLLocation(latitude: 40.4842, longitude: -88.9937)
-        //        self.drawPath(origin: bloomington, destination: chicago)
     }
     
 }
@@ -281,8 +277,7 @@ extension MapViewController {
                                     imageViewForPinMarker  = UIImageView(frame:CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 50, height: 50)))
                                     imageViewForPinMarker.image = UIImage(named:"prices")?.withRenderingMode(.alwaysTemplate)
                                     imageViewForPinMarker.tintColor = UIColor.green
-                                    let text = UILabel(frame:CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 40, height: 30)))
-                                    
+                                    let text = UILabel(frame:CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 40, height: 30)))                    
                                     if ((gasStationForPrice.regPrice == nil) && self.gastype == "reg")
                                         || ((gasStationForPrice.midPrice == nil) && self.gastype == "mid")
                                         || ((gasStationForPrice.prePrice == nil) && self.gastype == "pre")  {
@@ -291,8 +286,7 @@ extension MapViewController {
                                     let gasprice = (self.gastype == "reg") ? gasStationForPrice.regPrice! : (self.gastype == "mid") ? gasStationForPrice.midPrice! : gasStationForPrice.prePrice!
                                     if gasprice >= (avggasprice - 0.1){
                                         continue
-                                    }
-                        
+                                    }                        
                                     text.text = String("\(gasprice)")
                                     text.textColor = UIColor.black
                                     text.font = UIFont(name: text.font.fontName, size: 14)
@@ -414,62 +408,9 @@ extension MapViewController {
                     print(error)
                 }
             }
-        }
-            
-//            self.gasPricesDataStore?.getGasPrices(latitude: step.endLocation!.lat!, longitutde: step.endLocation!.lng!, distanceInMiles: 2, gasType: "reg"){
-//                (response) in
-//
-//                switch response{
-//                case let .success(gasStations):
-//                    if gasStations.stations != nil{
-//                        for gasStationForPrice in gasStations.stations! {
-//                            if !self.markerCoord.contains([gasStationForPrice.lat!:gasStationForPrice.lng!]){
-//                                self.markerCoord.append([gasStationForPrice.lat!:gasStationForPrice.lng!])
-//                                let DynamicView=UIView(frame: CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 50, height: 50)))
-//                                DynamicView.backgroundColor=UIColor.clear
-//                                var imageViewForPinMarker : UIImageView
-//                                imageViewForPinMarker  = UIImageView(frame:CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 50, height: 50)))
-//                                imageViewForPinMarker.image = UIImage(named:"prices")?.withRenderingMode(.alwaysTemplate)
-//                                imageViewForPinMarker.tintColor = UIColor.green
-//                                let text = UILabel(frame:CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 40, height: 30)))
-//                                guard let _ = gasStationForPrice.regPrice else {
-//                                    continue
-//                                }
-//                                text.text = String(gasStationForPrice.regPrice!)
-//                                text.textColor = UIColor.black
-//                                text.font = UIFont(name: text.font.fontName, size: 14)
-//                                text.textAlignment = NSTextAlignment.center
-//                                text.center = imageViewForPinMarker.convert(imageViewForPinMarker.center, from:imageViewForPinMarker.superview)
-//
-//                                imageViewForPinMarker.addSubview(text)
-//                                imageViewForPinMarker.center = DynamicView.convert(DynamicView.center, from:DynamicView.superview)
-//                                DynamicView.addSubview(imageViewForPinMarker)
-//                                UIGraphicsBeginImageContextWithOptions(DynamicView.frame.size, false, UIScreen.main.scale)
-//                                DynamicView.layer.render(in: UIGraphicsGetCurrentContext()!)
-//                                let imageConverted: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
-//                                UIGraphicsEndImageContext()
-//                                let marker = GMSMarker()
-//                                marker.position = CLLocationCoordinate2DMake(gasStationForPrice.lat!, gasStationForPrice.lng!)
-//
-//                                marker.groundAnchor = CGPoint(x: 0.5, y: 1)
-//                                marker.appearAnimation = .pop
-//
-//                                marker.icon = imageConverted
-//                                marker.title = gasStationForPrice.station//////incomplete
-//                                marker.map = self.mapView
-//                            }
-//                        }
-//
-//                    }
-//
-//
-//                case let .failure(error):
-//                    print(error)
-//                }
-//            }
-            
-        
+        }  
     }
+  
     func fetchGoogleData(forLocation: CLLocation, locationName: String, searchRadius: Int) {
         if locationName == "gas_station" || locationName == "petrol"{
             markerCoord.removeAll()
@@ -659,7 +600,17 @@ extension MapViewController {
                 if direction.routes!.count > 0 {
                     // check if start points of each leg is reacheable
                     let group5 = DispatchGroup()
-                    if let steps = direction.routes![0].legs![0].steps {
+                    var fastestLegIndex = 0
+                    if let legs = direction.routes![0].legs {
+                        var fastestLeg = legs[0]
+                        for index in 0..<legs.count{
+                            if legs[index].duration!.value! < fastestLeg.duration!.value! {
+                                fastestLeg = legs[index]
+                                fastestLegIndex = index
+                            }
+                        }
+                    }
+                    if let steps = direction.routes![0].legs![fastestLegIndex].steps {
                         group5.enter()
                         for step in steps {
                             let route = step.polyline!.points
@@ -720,7 +671,17 @@ extension MapViewController {
             case let .success(direction):
                 self.navigationDirection = direction
                 if direction.routes!.count > 0 {
-                    if let steps = direction.routes![0].legs![0].steps {
+                    var fastestLegIndex = 0
+                    if let legs = direction.routes![0].legs {
+                        var fastestLeg = legs[0]
+                        for index in 0..<legs.count{
+                            if legs[index].duration!.value! < fastestLeg.duration!.value! {
+                                fastestLeg = legs[index]
+                                fastestLegIndex = index
+                            }
+                        }
+                    }
+                    if let steps = direction.routes![0].legs![fastestLegIndex].steps {
                         for step in steps {
                             let route = step.polyline!.points
                             let path: GMSPath = GMSPath(fromEncodedPath: route!)!
@@ -768,12 +729,27 @@ extension MapViewController: FilterTableViewControllerDelegate {
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        guard let navigationController = segue.destination as? UINavigationController,
-            let controller = navigationController.topViewController as? FilterTableViewController else {
-                return
+        if (segue.identifier == "GoToLocationDetailsViewController") {
+            guard let navigationController = segue.destination as? UINavigationController,
+                let controller = navigationController.topViewController as? LocationDetailsViewController else {
+                    return
+            }
+            controller.placeDetail = self.placedetail
+            var photoRefs = [String]()
+            if let photos = placedetail?.result?.photos {
+                for photoRef in photos {
+                    photoRefs.append(photoRef.photoreference!)
+                }
+            }
+            controller.photoReferences = photoRefs
+        } else if (segue.identifier == "GoToFilterController") {
+            guard let navigationController = segue.destination as? UINavigationController,
+                let controller = navigationController.topViewController as? FilterTableViewController else {
+                    return
+            }
+            controller.selectedTypes = searchKeywords
+            controller.delegate = self
         }
-        controller.selectedTypes = searchKeywords
-        controller.delegate = self
     }
     
 }
@@ -890,6 +866,10 @@ extension MapViewController {
     }
     
     func mapView(_ mapView: GMSMapView, didTapInfoWindowOf marker: GMSMarker) {
+        // performs segue only if the icon is a placemarker
+        if self.isRestaurant {
+            self.performSegue(withIdentifier: "GoToLocationDetailsViewController", sender:self)
+        }
         print("infowindow tapped")
     }
     
@@ -950,49 +930,49 @@ extension MapViewController {
     }
     
     func mapView(_ mapView: GMSMapView, markerInfoWindow marker: GMSMarker) -> UIView? {
+        self.isRestaurant = false
         let view = UIView(frame: CGRect.init(x: 0, y: 0, width: 200, height: 100))
         view.backgroundColor = UIColor.white
         view.layer.cornerRadius = 6
-        if let place = marker as? PlaceMarker{
-            if place.place.placeID != "gasstation" {
-                let lbl1 = UILabel(frame: CGRect.init(x: 8, y: 8, width: view.frame.size.width - 16, height: 15))
-                lbl1.text = place.place.name
-                lbl1.font = UIFont.systemFont(ofSize: 14, weight: .heavy)
-                view.addSubview(lbl1)
-                
-                let lbl2 = UILabel(frame: CGRect.init(x: lbl1.frame.origin.x , y: lbl1.frame.origin.y+lbl1.frame.size.height + 3, width: view.frame.size.width - 16, height: 15))
-                lbl2.text = place.place.address
-                lbl2.font = UIFont.systemFont(ofSize: 12, weight: .medium)
-                view.addSubview(lbl2)
-                
-                let lbl3 = UILabel(frame: CGRect.init(x: lbl2.frame.origin.x , y: lbl2.frame.origin.y+lbl2.frame.size.height + 3, width: view.frame.size.width - 16, height: 15))
-                lbl3.text = (place.place.openingHours?.isOpen! == true) ? "Open":"Closed"
-                lbl3.font = UIFont.systemFont(ofSize: 12, weight: .thin)
-                lbl3.textColor = (place.place.openingHours?.isOpen! == true) ? UIColor.red:UIColor.green
-                view.addSubview(lbl3)
-                
-                let placedetails = UIButton(type: .system)
-                placedetails.frame = CGRect(x: lbl3.frame.origin.x, y: lbl3.frame.origin.y+lbl3.frame.size.height + 5 , width: view.frame.size.width - 16, height: 30)
-                placedetails.setTitle("Details", for: .normal)
-                placedetails.backgroundColor = UIColor(red:0.00, green:0.53, blue:1.00, alpha:1.0)
-                placedetails.layer.cornerRadius = 5
-                placedetails.setTitleColor(.white, for: .normal)
-                placedetails.addTarget(self, action: #selector(placeDetailsNav), for: .touchUpInside)
-                view.addSubview(placedetails)
-                let setting = mapView.settings
-                setting.consumesGesturesInView = false
-                
-                //        let lbl1 = UILabel(frame: CGRect.init(x: 8, y: 8, width: view.frame.size.width - 16, height: 15))
-                //        lbl1.text = "Hi there!"
-                //        view.addSubview(lbl1)
-                //
-                //        let lbl2 = UILabel(frame: CGRect.init(x: lbl1.frame.origin.x, y: lbl1.frame.origin.y + lbl1.frame.size.height + 3, width: view.frame.size.width - 16, height: 15))
-                //        lbl2.text = "I am a custom info window."
-                //        lbl2.font = UIFont.systemFont(ofSize: 14, weight: .light)
-                //        view.addSubview(lbl2)
-                
-                return view
+
+        if let place = marker as? PlaceMarker {
+            self.isRestaurant = true
+            googleClient.getPlaceDetail(placeId: place.place.placeID){
+                (response) in
+                switch response{
+                case let .success(detail):
+                    self.placedetail = detail
+                case let .failure(error):
+                    print(error)
+                }
             }
+            let lbl1 = UILabel(frame: CGRect.init(x: 8, y: 8, width: view.frame.size.width - 16, height: 15))
+            lbl1.text = place.place.name
+            lbl1.font = UIFont.systemFont(ofSize: 14, weight: .heavy)
+            view.addSubview(lbl1)
+            
+            let lbl2 = UILabel(frame: CGRect.init(x: lbl1.frame.origin.x , y: lbl1.frame.origin.y+lbl1.frame.size.height + 3, width: view.frame.size.width - 16, height: 15))
+            lbl2.text = place.place.address
+            lbl2.font = UIFont.systemFont(ofSize: 12, weight: .medium)
+            view.addSubview(lbl2)
+            
+            let lbl3 = UILabel(frame: CGRect.init(x: lbl2.frame.origin.x , y: lbl2.frame.origin.y+lbl2.frame.size.height + 3, width: view.frame.size.width - 16, height: 15))
+            lbl3.text = (place.place.openingHours?.isOpen! == true) ? "Open":"Closed"
+            lbl3.font = UIFont.systemFont(ofSize: 12, weight: .thin)
+            lbl3.textColor = (place.place.openingHours?.isOpen! == true) ? UIColor.red:UIColor.green
+            view.addSubview(lbl3)
+            
+            let placedetails = UIButton(type: .system)
+            placedetails.frame = CGRect(x: lbl3.frame.origin.x, y: lbl3.frame.origin.y+lbl3.frame.size.height + 5 , width: view.frame.size.width - 16, height: 30)
+            placedetails.setTitle("Details", for: .normal)
+            placedetails.backgroundColor = UIColor(red:0.00, green:0.53, blue:1.00, alpha:1.0)
+            placedetails.layer.cornerRadius = 5
+            placedetails.setTitleColor(.white, for: .normal)
+            placedetails.addTarget(self, action: #selector(placeDetailsNav), for: .touchUpInside)
+            view.addSubview(placedetails)
+            
+            return view
+
         }
         return nil
     }
@@ -1146,7 +1126,7 @@ extension MapViewController {
         currentStepIndex = 0
         locationManager.startUpdatingLocation()
         locationManager.startUpdatingHeading()
-        
+        updateCamera = true
         let camera = GMSCameraPosition.camera(withLatitude: currentLocation!.coordinate.latitude, longitude: currentLocation!.coordinate.longitude, zoom: self.zoom!, bearing: 0, viewingAngle: self.viewingAngle!)
         self.mapView.animate(to: camera)
     }
@@ -1184,7 +1164,6 @@ extension MapViewController {
         self.zoom = 16
         if isInNavigation {
             self.viewingAngle = 45
-            view.removeFromSuperview()
         }
         let camera = GMSCameraPosition.camera(withLatitude: self.currentLocation!.coordinate.latitude, longitude: self.currentLocation!.coordinate.longitude, zoom: self.zoom!, bearing: 0, viewingAngle: self.viewingAngle!)
         mapView.animate(to: camera)
@@ -1236,7 +1215,12 @@ extension MapViewController {
     }
     
     @objc func placeDetailsNav(_ sender: UIButton) {
-        self.performSegue(withIdentifier: "GoToDetailsContoller", sender:self)
+        print("placeDetailsNav")
+        self.performSegue(withIdentifier: "GoToLocationDetailsViewController", sender:self)
+    }
+    
+    override func didReceiveMemoryWarning() {
+        print("out of memory")
     }
     
 }
