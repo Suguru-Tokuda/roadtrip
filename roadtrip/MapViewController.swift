@@ -234,6 +234,7 @@ extension MapViewController {
         markerCoord = [[Double:Double]]()
         for step in self.reacheableSteps {
             DispatchQueue.main.async{
+                
                 self.gasPricesDataStore?.getGasPrices(latitude: step.startLocation!.lat!, longitutde: step.startLocation!.lng!, distanceInMiles: 2, gasType: self.gastype){
                     (response) in
                     
@@ -483,32 +484,6 @@ extension MapViewController {
                         marker.snippet = "The place is \(place.openingHours?.isOpen == true ? "open" : "closed")"
                         //                    switch true{
                         //                    case place.types.contains("gas_station"),place.types.contains("petrol"):
-                        if locationName == "gas_station" || locationName == "petrol"{
-                            let DynamicView=UIView(frame: CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 50, height: 50)))
-                            DynamicView.backgroundColor=UIColor.clear
-                            var imageViewForPinMarker : UIImageView
-                            imageViewForPinMarker  = UIImageView(frame:CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 50, height: 50)))
-                            imageViewForPinMarker.image = UIImage(named:"prices")?.withRenderingMode(.alwaysTemplate)
-                            imageViewForPinMarker.tintColor = UIColor.green
-                            let text = UILabel(frame:CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 40, height: 30)))
-                            text.text = "$2.5"
-                            text.textColor = UIColor.black
-                            text.font = UIFont(name: text.font.fontName, size: 14)
-                            text.textAlignment = NSTextAlignment.center
-                            text.center = imageViewForPinMarker.convert(imageViewForPinMarker.center, from:imageViewForPinMarker.superview)
-                            
-                            imageViewForPinMarker.addSubview(text)
-                            imageViewForPinMarker.center = DynamicView.convert(DynamicView.center, from:DynamicView.superview)
-                            DynamicView.addSubview(imageViewForPinMarker)
-                            UIGraphicsBeginImageContextWithOptions(DynamicView.frame.size, false, UIScreen.main.scale)
-                            DynamicView.layer.render(in: UIGraphicsGetCurrentContext()!)
-                            let imageConverted: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
-                            UIGraphicsEndImageContext()
-                            
-                            marker.icon = imageConverted
-                            marker.map = self.mapView
-                        }
-                        //                    case place.types.contains("pizza"), place.name.range(of: "pizza", options: .caseInsensitive) != nil:
                         if locationName == "pizza"{
                             marker.icon = UIImage(named: "pizza")
                             marker.map = self.mapView
@@ -719,6 +694,17 @@ extension MapViewController: FilterTableViewControllerDelegate {
         for key in searchKeywords{
             if !markers.keys.contains(key){
                 self.fetchGoogleData(forLocation: currentLocation!, locationName: key, searchRadius: self.searchRadius )
+            }
+        }
+        if self.reacheableSteps.count != 0{
+            for step in self.reacheableSteps {
+                for keyword in self.searchKeywords{
+                    self.fetchGoogleData(forLocation: CLLocation(latitude: step.startLocation!.lat!, longitude: step.startLocation!.lng!), locationName: keyword, searchRadius: 2000)
+                }
+                
+                for keyword in self.searchKeywords{
+                    self.fetchGoogleData(forLocation: CLLocation(latitude: step.endLocation!.lat!, longitude: step.endLocation!.lng!), locationName: keyword, searchRadius: 2000)
+                }
             }
         }
         dismiss(animated: true)
@@ -1155,6 +1141,7 @@ extension MapViewController {
         let camera = GMSCameraPosition.camera(withLatitude: self.currentLocation!.coordinate.latitude, longitude: self.currentLocation!.coordinate.longitude, zoom: zoom!)
         self.mapView.animate(to: camera)
         self.stackView!.removeFromSuperview()
+        reacheableSteps.removeAll()
         for keyword in searchKeywords{
             self.fetchGoogleData(forLocation: currentLocation!, locationName: keyword, searchRadius: self.searchRadius )
         }
