@@ -7,8 +7,9 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
     let appDelegate: AppDelegate? = UIApplication.shared.delegate as? AppDelegate
     var gasPricesDataStore: GasPricesDataStore?
     var locationManager = CLLocationManager()
-    var destination: CLLocationCoordinate2D?
-    var waypoint: CLLocationCoordinate2D?
+    var destination: CLLocation?
+    var waypoint: CLLocation?
+    var waypoints: [CLLocation] = [CLLocation]()
     
     @IBOutlet weak var mapView: GMSMapView!
     
@@ -592,6 +593,9 @@ extension MapViewController {
     }
     
     func drawPath(origin: CLLocation, destination: CLLocation) {
+        for polyline in polylines {
+            polyline.map = nil
+        }
         self.reacheableSteps.removeAll()
         googleClient.getDirection(origin: origin, destination: destination) { (directionsResult) in
             switch directionsResult {
@@ -661,12 +665,12 @@ extension MapViewController {
         }
     }
     
-    func drawPath(origin: CLLocation, destination: CLLocation, waypoint: CLLocation) {
+    func drawPath(origin: CLLocation, destination: CLLocation, waypoints: [CLLocation]) {
         for polyline in polylines {
             polyline.map = nil
         }
         self.reacheableSteps.removeAll()
-        googleClient.getDirection(origin: origin, destination: destination, waypoint: waypoint, completion: { (directionsResult) in
+        googleClient.getDirection(origin: origin, destination: destination, waypoints: waypoints, completion: { (directionsResult) in
             switch directionsResult {
             case let .success(direction):
                 self.navigationDirection = direction
@@ -686,6 +690,7 @@ extension MapViewController {
                             let route = step.polyline!.points
                             let path: GMSPath = GMSPath(fromEncodedPath: route!)!
                             let polyline = GMSPolyline(path: path)
+                            self.polylines.append(polyline)
                             polyline.strokeWidth = 4
                             polyline.strokeColor = .blue
                             polyline.geodesic = true
@@ -803,7 +808,7 @@ extension MapViewController {
     func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
         // setting the position to destination's coordinate
         if !self.firstPathDrawn {
-            self.destination = marker.position
+            self.destination = CLLocation(latitude: marker.position.latitude, longitude: marker.position.longitude)
             self.getDirectionBtn = UIButton(type: .system)
             self.getDirectionBtn!.frame = CGRect(x: 150, y: 100, width: 150, height: 30)
             self.getDirectionBtn!.setTitle("Get Direction", for: .normal)
@@ -812,7 +817,7 @@ extension MapViewController {
             self.getDirectionBtn!.setTitleColor(.white, for: .normal)
             self.getDirectionBtn!.addTarget(self, action: #selector(getDirectionBtnTapped), for: .touchUpInside)
         } else {
-            self.waypoint = marker.position
+            self.waypoint = CLLocation(latitude: marker.position.latitude, longitude: marker.position.longitude)
             self.addWayPointBtn = UIButton(type: .system)
             self.addWayPointBtn!.frame = CGRect(x: 150, y: 100, width: 150, height: 30)
             self.addWayPointBtn!.setTitle("Add Waypoint", for: .normal)
@@ -905,13 +910,21 @@ extension MapViewController {
     func mapView(_ mapView: GMSMapView, didLongPressAt coordinate: CLLocationCoordinate2D) {
         let geocoder = GMSGeocoder()
         geocoder.reverseGeocodeCoordinate(coordinate) { (response, error) in
-            let marker = GMSMarker(position: coordinate)
-            var strVal = ""
-            for line in response!.firstResult()!.lines! {
-                strVal += line
+            if let response = response {
+                let marker = GMSMarker(position: coordinate)
+                var strVal = ""
+                if let lines = response.firstResult()?.lines {
+                    for line in lines {
+                        strVal += line
+                    }
+                }
+                marker.title = strVal
+                marker.map = self.mapView
+            } else if let error = error {
+                let marker = GMSMarker(position: coordinate)
+                marker.map = self.mapView
+                print(error)
             }
-            marker.title = strVal
-            marker.map = self.mapView
         }
     }
     
@@ -1049,10 +1062,9 @@ extension MapViewController {
     
     @objc func getDirectionBtnTapped(_ sender: UIButton) {
         self.firstPathDrawn = true
-        let destination = CLLocation(latitude: self.destination!.latitude, longitude: self.destination!.longitude)
-        
+        let destination2D = CLLocationCoordinate2D(latitude: self.destination!.coordinate.latitude, longitude: self.destination!.coordinate.longitude)
         let currentLocation2D = CLLocationCoordinate2D(latitude: self.currentLocation!.coordinate.latitude, longitude: self.currentLocation!.coordinate.longitude)
-        let bounds = GMSCoordinateBounds(coordinate: currentLocation2D, coordinate: self.destination!)
+        let bounds = GMSCoordinateBounds(coordinate: currentLocation2D, coordinate: destination2D)
         var insets = UIEdgeInsets()
         insets.bottom = 50
         insets.top = 50
@@ -1060,16 +1072,16 @@ extension MapViewController {
         insets.left = 50
         let camera = self.mapView.camera(for: bounds, insets: insets)!
         self.mapView.animate(to: camera)
-        self.drawPath(origin: currentLocation!, destination: destination)
+        self.drawPath(origin: currentLocation!, destination: self.destination!)
         showStartNavBtn()
     }
     
     @objc func addWaypointBtntapped(_ sender: UIButton) {
-        let destination = CLLocation(latitude: self.destination!.latitude, longitude: self.destination!.longitude)
-        let waypoint = CLLocation(latitude: self.waypoint!.latitude, longitude: self.waypoint!.longitude)
-        
+        let destination = self.destination
+        self.waypoints.append(waypoint!)
+        let destination2D = CLLocationCoordinate2D(latitude: self.destination!.coordinate.latitude, longitude: self.destination!.coordinate.longitude)
         let currentLocation2D = CLLocationCoordinate2D(latitude: self.currentLocation!.coordinate.latitude, longitude: self.currentLocation!.coordinate.longitude)
-        let bounds = GMSCoordinateBounds(coordinate: currentLocation2D, coordinate: self.destination!)
+        let bounds = GMSCoordinateBounds(coordinate: currentLocation2D, coordinate: destination2D)
         var insets = UIEdgeInsets()
         insets.bottom = 50
         insets.top = 50
@@ -1077,7 +1089,7 @@ extension MapViewController {
         insets.left = 50
         let camera = self.mapView.camera(for: bounds, insets: insets)!
         self.mapView.animate(to: camera)
-        self.drawPath(origin: currentLocation!, destination: destination, waypoint: waypoint)
+        self.drawPath(origin: currentLocation!, destination: destination!, waypoints: waypoints)
         showStartNavBtn()
     }
     
@@ -1133,6 +1145,7 @@ extension MapViewController {
     
     @objc func stopNavBtnTapped(_ sender: UIButton) {
         self.firstPathDrawn = false
+        self.waypoints.removeAll()
         UIApplication.shared.isIdleTimerDisabled = false
         self.navigationTextView.removeFromSuperview()
         self.speedLabel.removeFromSuperview()
@@ -1145,6 +1158,7 @@ extension MapViewController {
     }
     
     @objc func cancelBtnTapped(_ sender: UIButton) {
+        self.waypoints.removeAll()
         self.firstPathDrawn = false
         locationManager.startUpdatingLocation()
         print("cancelbtn tapped")

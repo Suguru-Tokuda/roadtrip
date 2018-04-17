@@ -58,7 +58,6 @@ struct RoadtripAPI {
         return url!
     }
     
-    // http://api.mygasfeed.com/stations/radius/40.4842/-88.9937/10/reg/price/3gi91gd4i1.json
     public static func myGasFeedURL(latitude: Double, longitude: Double, distance: Double, gasType: String) -> URL {
         let urlString = "\(myGasFeedBaseURL)\(latitude)/\(longitude)/\(distance)/\(gasType)/price/\(myGasFeedAPIKey).json"
         let url = URL(string: urlString)
@@ -77,8 +76,22 @@ struct RoadtripAPI {
 //        return URL(string: googleAPIBaseURL + locationString + "&" + rankby + "&" + keywrd + "&" + key + "&" + pagetoken)!
     }
     
-    public static func googleDirectionURL(originLat: Double, originLong: Double, destLat: Double, destLong: Double) -> URL {
-        let urlString = "\(googleDirectionsAPIBaseURL)origin=\(originLat),\(originLong)&destination=\(destLat),\(destLong)&key=\(googleDirectionsAPIKey)"
+    public static func googleDirectionURL(origin: CLLocation, destination: CLLocation) -> URL {
+        let urlString = "\(googleDirectionsAPIBaseURL)origin=\(origin.coordinate.latitude),\(origin.coordinate.longitude)&destination=\(destination.coordinate.latitude),\(destination.coordinate.longitude)&key=\(googleDirectionsAPIKey)"
+        let url = URL(string: urlString)
+        return url!
+    }
+    
+    public static func googleDirectionURL(origin: CLLocation, destination: CLLocation, waypoints: [CLLocation]) -> URL {
+        var urlString = "\(googleDirectionsAPIBaseURL)origin=\(origin.coordinate.latitude),\(origin.coordinate.longitude)&destination=\(destination.coordinate.latitude),\(destination.coordinate.longitude)&waypoints="
+        for i in 0..<waypoints.count {
+            if i == 0 {
+                urlString += "via:\(waypoints[i].coordinate.latitude)%2C\(waypoints[i].coordinate.longitude)"
+            } else {
+                urlString += "%7Cvia:\(waypoints[i].coordinate.latitude)%2C\(waypoints[i].coordinate.longitude)"
+            }
+        }
+        urlString += "&key=\(googleDirectionsAPIKey)"
         let url = URL(string: urlString)
         return url!
     }
@@ -86,12 +99,6 @@ struct RoadtripAPI {
     public static func googlePlaceDetailURL(placeid: String) -> URL {
         let urlString = "\(googlePlaceDetailBaseURL)placeid=\(placeid)&key=\(googlePlacesAPIKey)"
         print(urlString)
-        let url = URL(string: urlString)
-        return url!
-    }
-    
-    public static func googleDirectionURL(originLat: Double, originLong: Double, destLat: Double, destLong: Double, waypointLat: Double, waypointLong: Double) -> URL {
-        let urlString = "\(googleDirectionsAPIBaseURL)origin=\(originLat),\(originLong)&destination=\(destLat),\(destLong)&waypoints=via:\(waypointLat)%2C\(waypointLong)&key=\(googleDirectionsAPIKey)"
         let url = URL(string: urlString)
         return url!
     }
