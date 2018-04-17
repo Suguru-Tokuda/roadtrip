@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 import CoreData
 
 public class Car {
@@ -150,6 +151,18 @@ public class Car {
             totalSpeeds += speed
         }
         return totalSpeeds / Double(count)
+    }
+    
+    public func getColorForFuelRemaining() -> UIColor {
+        if _fuelRemainingInPercent! >= 75.0 {
+            return UIColor(red: 0, green: 0.4824, blue: 1, alpha: 1.0)
+        } else if _fuelRemainingInPercent! < 75.0 && _fuelRemainingInPercent! >= 50.0 {
+            return UIColor(red: 0.1804, green: 1, blue: 0, alpha: 1.0)
+        } else if _fuelRemainingInPercent! < 50.0 && _fuelRemainingInPercent! >= 25.0 {
+            return UIColor(red: 1, green: 0.6, blue: 0, alpha: 1.0)
+        } else {
+            return UIColor(red: 1, green: 0, blue: 0, alpha: 1.0)
+        }
     }
     
 }

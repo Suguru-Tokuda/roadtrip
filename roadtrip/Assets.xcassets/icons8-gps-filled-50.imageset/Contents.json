@@ -2,11 +2,12 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "City-Gas-Station-icon.png",
+      "filename" : "icons8-gps-filled-50.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
+      "filename" : "icons8-gps-filled-51.png",
       "scale" : "2x"
     },
     {

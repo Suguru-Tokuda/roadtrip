@@ -26,7 +26,8 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
     let searchBar = UISearchBar()
     var isInNavigation: Bool = false
     var markers=[String:[PlaceMarker]]()
-    var stackView: UIStackView! = UIStackView()
+    var buttonsStackView: UIStackView! = UIStackView()
+    var travelInfoStackView: UIStackView! = UIStackView()
     var currentTime: Date?
     var lastTime: Date?
     var lastTimeToCheckSpeed: Date?
@@ -34,7 +35,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
     var zoom: Float?
     var viewingAngle: Double?
     var usingCompus: Bool = false
-    var directionBtn: UIButton!
+    var locationBtn: UIButton!
     var getDirectionBtn: UIButton?
     var addWayPointBtn: UIButton?
     var startNavBtn: UIButton?
@@ -46,6 +47,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
     var currentStep: Direction.Route.Leg.Step?
     var currentStepIndex: Int?
     var navigationTextView: UITextView = UITextView()
+    var fuelRemainingTextView: UITextView = UITextView()
     var searchIsOn: Bool = false
     var stopNavBtn: UIButton?
     var showingStopNavBtn: Bool = false
@@ -77,18 +79,18 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
         zoom = 6
         viewingAngle = 0
         
-        directionBtn = UIButton(type: .system) as UIButton
-        directionBtn.addTarget(self, action: #selector(locationBtnTapped), for: .touchUpInside)
-        directionBtn.setImage(UIImage(named: "locationIcon"), for: .normal)
-        directionBtn.frame = CGRect(x: 0, y: 0, width: 100, height: 100)
-        directionBtn.translatesAutoresizingMaskIntoConstraints = false
+        locationBtn = UIButton(type: .system) as UIButton
+        locationBtn.addTarget(self, action: #selector(locationBtnTapped), for: .touchUpInside)
+        locationBtn.setImage(UIImage(named: "locationIcon"), for: .normal)
+        locationBtn.frame = CGRect(x: 0, y: 0, width: 100, height: 100)
+        locationBtn.translatesAutoresizingMaskIntoConstraints = false
         
-        self.mapView.addSubview(directionBtn!)
+        self.mapView.addSubview(locationBtn!)
         
-        directionBtn!.widthAnchor.constraint(equalToConstant: 100).isActive = true
-        directionBtn!.heightAnchor.constraint(equalToConstant: 100).isActive = true
-        directionBtn!.trailingAnchor.constraint(equalTo: self.mapView.trailingAnchor, constant: 10).isActive = true;
-        directionBtn!.bottomAnchor.constraint(equalTo: self.mapView.bottomAnchor, constant: 0).isActive = true;
+        locationBtn!.widthAnchor.constraint(equalToConstant: 100).isActive = true
+        locationBtn!.heightAnchor.constraint(equalToConstant: 100).isActive = true
+        locationBtn!.trailingAnchor.constraint(equalTo: self.mapView.trailingAnchor, constant: 10).isActive = true;
+        locationBtn!.bottomAnchor.constraint(equalTo: self.mapView.bottomAnchor, constant: 0).isActive = true;
         
         //adding all to search
         locationManager.delegate = self
@@ -117,8 +119,8 @@ extension MapViewController {
         guard status == .authorizedWhenInUse else {
             return
         }
-        locationManager.startUpdatingLocation()
         locationManager.stopUpdatingHeading()
+        locationManager.startUpdatingLocation()
         mapView.isMyLocationEnabled = true
         mapView.settings.compassButton = true
         mapView.settings.zoomGestures = true
@@ -589,6 +591,7 @@ extension MapViewController {
                             }
                         }
                     }
+                    self.showTravelInfo(leg: direction.routes![0].legs![fastestLegIndex])
                     if let steps = direction.routes![0].legs![fastestLegIndex].steps {
                         group5.enter()
                         for step in steps {
@@ -602,9 +605,7 @@ extension MapViewController {
                             polyline.map = self.mapView
                             let destLat = step.endLocation!.lat
                             let destLng = step.endLocation!.lng
-                            
                             let destination = CLLocation(latitude: destLat!, longitude: destLng!)
-                            
                             self.googleClient.getDistance(origin: self.currentLocation!, destination: destination, completion: { (distanceResult) in
                                 DispatchQueue.main.async{
                                     switch distanceResult {
@@ -660,6 +661,7 @@ extension MapViewController {
                             }
                         }
                     }
+                    self.showTravelInfo(leg: direction.routes![0].legs![fastestLegIndex])
                     if let steps = direction.routes![0].legs![fastestLegIndex].steps {
                         for step in steps {
                             let route = step.polyline!.points
@@ -833,23 +835,21 @@ extension MapViewController {
         self.cancelBtn!.widthAnchor.constraint(equalToConstant: 140).isActive = true
         self.cancelBtn!.heightAnchor.constraint(equalToConstant: 50).isActive = true
         // adding buttons to the subview
-        for view in self.stackView.subviews {
-            view.removeFromSuperview()
-        }
+        self.removeSubviewsFromStackView(stackView: self.buttonsStackView)
         if !firstPathDrawn {
-            self.stackView.addArrangedSubview(self.getDirectionBtn!)
+            self.buttonsStackView.addArrangedSubview(self.getDirectionBtn!)
         } else {
-            self.stackView.addArrangedSubview(self.addWayPointBtn!)
+            self.buttonsStackView.addArrangedSubview(self.addWayPointBtn!)
         }
-        self.stackView.addArrangedSubview(self.cancelBtn!)
-        self.stackView!.axis = .vertical
-        self.stackView!.spacing = 30
+        self.buttonsStackView.addArrangedSubview(self.cancelBtn!)
+        self.buttonsStackView!.axis = .vertical
+        self.buttonsStackView!.spacing = 30
         // enables auto layout for buttons
-        self.stackView!.translatesAutoresizingMaskIntoConstraints = false
-        self.mapView.addSubview(stackView!)
+        self.buttonsStackView!.translatesAutoresizingMaskIntoConstraints = false
+        self.mapView.addSubview(buttonsStackView!)
         
-        self.stackView!.centerXAnchor.constraint(equalTo: self.mapView.centerXAnchor).isActive = true
-        self.stackView!.bottomAnchor.constraint(lessThanOrEqualTo: self.mapView.bottomAnchor, constant: -50).isActive = true
+        self.buttonsStackView!.centerXAnchor.constraint(equalTo: self.mapView.centerXAnchor).isActive = true
+        self.buttonsStackView!.bottomAnchor.constraint(lessThanOrEqualTo: self.mapView.bottomAnchor, constant: -50).isActive = true
         return false
     }
     
@@ -920,6 +920,7 @@ extension MapViewController {
         if gesture {
             updateCamera = false
             locationBtnHasBeenTapped = false
+            locationBtn.setImage(UIImage(named: "locationIcon"), for: .normal)
             locationManager.stopUpdatingLocation()
             locationManager.stopUpdatingHeading()
         }
@@ -996,12 +997,10 @@ extension MapViewController {
     }
     
     private func showStartNavBtn() {
-        self.stackView!.removeFromSuperview()
+        self.buttonsStackView!.removeFromSuperview()
         // remove buttons from the view
-        for view in self.stackView.subviews {
-            view.removeFromSuperview()
-        }
-        self.stackView!.removeFromSuperview()
+        self.removeSubviewsFromStackView(stackView: self.buttonsStackView)
+        self.buttonsStackView!.removeFromSuperview()
         self.cancelBtn = nil
         self.getDirectionBtn = nil
         self.startNavBtn = nil
@@ -1031,16 +1030,16 @@ extension MapViewController {
         cancelBtn!.heightAnchor.constraint(equalToConstant: 50).isActive = true
         
         // adding buttons to the subview
-        self.stackView.addArrangedSubview(self.startNavBtn!)
-        self.stackView.addArrangedSubview(self.cancelBtn!)
-        self.stackView!.axis = .vertical
-        self.stackView!.spacing = 30
+        self.buttonsStackView.addArrangedSubview(self.startNavBtn!)
+        self.buttonsStackView.addArrangedSubview(self.cancelBtn!)
+        self.buttonsStackView!.axis = .vertical
+        self.buttonsStackView!.spacing = 30
         // enables auto layout for buttons
-        self.stackView!.translatesAutoresizingMaskIntoConstraints = false
-        self.mapView.addSubview(stackView!)
+        self.buttonsStackView!.translatesAutoresizingMaskIntoConstraints = false
+        self.mapView.addSubview(buttonsStackView!)
         
-        self.stackView!.centerXAnchor.constraint(equalTo: self.mapView.centerXAnchor).isActive = true
-        self.stackView!.bottomAnchor.constraint(lessThanOrEqualTo: self.mapView.bottomAnchor, constant: -50).isActive = true
+        self.buttonsStackView!.centerXAnchor.constraint(equalTo: self.mapView.centerXAnchor).isActive = true
+        self.buttonsStackView!.bottomAnchor.constraint(lessThanOrEqualTo: self.mapView.bottomAnchor, constant: -50).isActive = true
     }
     
     @objc func getDirectionBtnTapped(_ sender: UIButton) {
@@ -1078,18 +1077,17 @@ extension MapViewController {
     
     @objc func startNavBtnTapped(_ sender: UIButton) {
         UIApplication.shared.isIdleTimerDisabled = true
+        locationBtnHasBeenTapped = false
+        locationBtn.setImage(UIImage(named: "compus"), for: .normal)
         print("startNavBtnTapped")
-        for view in self.stackView.subviews {
-            view.removeFromSuperview()
-        }
+        self.removeSubviewsFromStackView(stackView: self.buttonsStackView)
+        self.removeSubviewsFromStackView(stackView: self.travelInfoStackView)
         self.speedLabel.text = "\(round(abs(self.locationManager.location!.speed * 3600.0 * 0.000621371)).description)/mph"
         self.speedLabel.textAlignment = .center
         self.speedLabel.backgroundColor = UIColor.black
         self.speedLabel.alpha = 0.8
-        self.speedLabel.layer.cornerRadius = 5
+        self.speedLabel.layer.masksToBounds = true
         self.speedLabel.textColor = UIColor.white
-        
-        self.mapView.addSubview(self.speedLabel)
         
         self.zoom = 18
         self.viewingAngle = 45
@@ -1097,20 +1095,36 @@ extension MapViewController {
         self.usingCompus = true
         self.currentStep = self.navigationDirection!.routes![0].legs![0].steps![0]
         
+        self.fuelRemainingTextView.text = "\(self.myCar!.getFuelRemaining())/\(self.myCar!.fuelCapacity) gals"
+        self.fuelRemainingTextView.font = UIFont(name: self.fuelRemainingTextView.font!.fontName, size: 15)
+        self.fuelRemainingTextView.backgroundColor = self.myCar!.getColorForFuelRemaining()
+        self.fuelRemainingTextView.textColor = UIColor.white
+        self.fuelRemainingTextView.alpha = 0.8
+        self.fuelRemainingTextView.layer.masksToBounds = true
+        
         self.navigationTextView.text = self.currentStep?.htmlInstructions!.html2String
         self.navigationTextView.backgroundColor = UIColor(red:0.00, green:0.53, blue:1.00, alpha:1.0)
         self.navigationTextView.textColor = UIColor.white
         self.navigationTextView.alpha = 0.8
-        self.navigationTextView.layer.cornerRadius = 5
+        self.navigationTextView.layer.masksToBounds = true
         self.navigationTextView.font = UIFont(name: self.navigationTextView.font!.fontName, size: 18)
         
+        self.mapView.addSubview(self.speedLabel)
+        self.mapView.addSubview(self.fuelRemainingTextView)
         self.mapView.addSubview(self.navigationTextView)
+        
         // constraints for navigationTextView
         self.navigationTextView.translatesAutoresizingMaskIntoConstraints = false
         self.navigationTextView.widthAnchor.constraint(equalToConstant: 200).isActive = true
         self.navigationTextView.heightAnchor.constraint(equalToConstant: 100).isActive = true
         self.navigationTextView.leadingAnchor.constraint(equalTo: self.mapView.leadingAnchor).isActive = true
-        self.navigationTextView.bottomAnchor.constraint(equalTo: self.mapView.bottomAnchor).isActive = true
+        self.navigationTextView.bottomAnchor.constraint(equalTo: self.mapView.bottomAnchor, constant: -10).isActive = true
+        // constraints for fuelRemainingTextView
+        self.fuelRemainingTextView.translatesAutoresizingMaskIntoConstraints = false
+        self.fuelRemainingTextView.widthAnchor.constraint(equalToConstant: 130).isActive = true
+        self.fuelRemainingTextView.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        self.fuelRemainingTextView.leadingAnchor.constraint(equalTo: self.mapView.leadingAnchor).isActive = true
+        self.fuelRemainingTextView.bottomAnchor.constraint(equalTo: self.speedLabel.topAnchor, constant: -10).isActive = true
         // constraints for speedLabel
         self.speedLabel.translatesAutoresizingMaskIntoConstraints = false
         self.speedLabel.widthAnchor.constraint(equalToConstant: 100).isActive = true
@@ -1130,8 +1144,7 @@ extension MapViewController {
         self.firstPathDrawn = false
         self.waypoints.removeAll()
         UIApplication.shared.isIdleTimerDisabled = false
-        self.navigationTextView.removeFromSuperview()
-        self.speedLabel.removeFromSuperview()
+        self.removeLabelsForNav()
         self.stopNavBtn!.removeFromSuperview()
         self.isInNavigation = false
         self.mapView.clear()
@@ -1145,13 +1158,11 @@ extension MapViewController {
         self.firstPathDrawn = false
         locationManager.startUpdatingLocation()
         print("cancelbtn tapped")
-        for view in self.stackView.subviews {
-            view.removeFromSuperview()
-        }
+        self.removeSubviewsFromStackView(stackView: self.buttonsStackView)
         self.mapView.clear()
         let camera = GMSCameraPosition.camera(withLatitude: self.currentLocation!.coordinate.latitude, longitude: self.currentLocation!.coordinate.longitude, zoom: zoom!)
         self.mapView.animate(to: camera)
-        self.stackView!.removeFromSuperview()
+        self.buttonsStackView!.removeFromSuperview()
         reacheableSteps.removeAll()
         for keyword in searchKeywords{
             self.fetchGoogleData(forLocation: currentLocation!, locationName: keyword, searchRadius: self.searchRadius )
@@ -1168,8 +1179,10 @@ extension MapViewController {
         self.locationManager.startUpdatingLocation()
         if locationBtnHasBeenTapped {
             self.locationManager.startUpdatingHeading()
+            locationBtn.setImage(UIImage(named: "compus"), for: .normal)
         } else {
             self.locationManager.stopUpdatingHeading()
+            locationBtn.setImage(UIImage(named: "locationIcon"), for: .normal)
         }
         locationBtnHasBeenTapped = !locationBtnHasBeenTapped
         updateCamera = true
@@ -1184,11 +1197,11 @@ extension MapViewController {
         present(autocompleteController, animated: true, completion: nil)
     }
     
-    
     // returns true if the distance between the current location to the end point of the current step in the navigation mode.
     private func arrivedEndOfStep (currentLocation: CLLocation, endPointInStep: CLLocation) -> Bool {
         let distanceInMeters = currentLocation.distance(from: endPointInStep)
-        if distanceInMeters < 20 {
+        let distanceToFinalDestInMeters = currentLocation.distance(from: destination!)
+        if distanceInMeters < 20 || distanceToFinalDestInMeters < 20 {
             return true
         } else {
             return false
@@ -1209,7 +1222,6 @@ extension MapViewController {
     
     private func showEndOfNavigationLabel() {
         self.navigationTextView.text! = "You have arrived"
-        
     }
     
     @objc func placeDetailsNav(_ sender: UIButton) {
@@ -1217,8 +1229,47 @@ extension MapViewController {
         self.performSegue(withIdentifier: "GoToLocationDetailsViewController", sender:self)
     }
     
-    override func didReceiveMemoryWarning() {
-        print("out of memory")
+    // Removes subviews in a particular stack view
+    private func removeSubviewsFromStackView(stackView: UIStackView) {
+        for view in stackView.subviews {
+            view.removeFromSuperview()
+        }
+    }
+    
+    private func removeLabelsForNav() {
+        self.navigationTextView.removeFromSuperview()
+        self.speedLabel.removeFromSuperview()
+        self.fuelRemainingTextView.removeFromSuperview()
+    }
+    
+    private func showTravelInfo(leg: Direction.Route.Leg) {
+        let distanceLabel = UILabel()
+        distanceLabel.text = leg.distance!.text!.description
+        distanceLabel.alpha = 0.8
+        distanceLabel.backgroundColor = UIColor(red:0.00, green:0.53, blue:1.00, alpha:1.0)
+        distanceLabel.textColor = UIColor.white
+        distanceLabel.layer.masksToBounds = true
+        
+        let durationLabel = UILabel()
+        durationLabel.text = leg.duration!.text!.description
+        durationLabel.alpha = 0.8
+        durationLabel.backgroundColor = UIColor(red:0.00, green:0.53, blue:1.00, alpha:1.0)
+        durationLabel.textColor = UIColor.white
+        durationLabel.layer.masksToBounds = true
+        
+        self.travelInfoStackView.addArrangedSubview(distanceLabel)
+        self.travelInfoStackView.addArrangedSubview(durationLabel)
+        self.travelInfoStackView.axis = .vertical
+        self.travelInfoStackView.translatesAutoresizingMaskIntoConstraints = false
+        self.travelInfoStackView.backgroundColor = UIColor(red: 0, green: 0.698, blue: 1, alpha: 1.0)
+        self.travelInfoStackView.spacing = 0
+        self.travelInfoStackView.layer.cornerRadius = 5
+        
+        self.mapView.addSubview(self.travelInfoStackView)
+        self.travelInfoStackView.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        self.travelInfoStackView.widthAnchor.constraint(equalToConstant: 150).isActive = true
+        self.travelInfoStackView.leadingAnchor.constraint(equalTo: self.mapView.leadingAnchor, constant: 0).isActive = true
+        self.travelInfoStackView.bottomAnchor.constraint(equalTo: self.mapView.bottomAnchor, constant: 0).isActive = true
     }
     
 }
