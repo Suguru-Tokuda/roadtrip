@@ -252,23 +252,23 @@ extension MapViewController {
                                     
                                     switch self.gastype{
                                     case "reg":
-//                                        print("reg price \(gasStationForPrice.regPrice!)")
+                                        //                                        print("reg price \(gasStationForPrice.regPrice!)")
                                         avggasprice += gasStationForPrice.regPrice!
                                     case "mid":
-//                                        print("mid price \(gasStationForPrice.midPrice!)")
+                                        //                                        print("mid price \(gasStationForPrice.midPrice!)")
                                         avggasprice += gasStationForPrice.midPrice!
                                     case "pre":
-//                                        print("pre price \(gasStationForPrice.prePrice!)")
+                                        //                                        print("pre price \(gasStationForPrice.prePrice!)")
                                         avggasprice += gasStationForPrice.prePrice!
                                     default:
-//                                        print(gasStationForPrice.regPrice!)
+                                        //                                        print(gasStationForPrice.regPrice!)
                                         avggasprice += gasStationForPrice.regPrice!
-
+                                        
                                     }
                                 }
                             }
                             avggasprice /= stationcount
-//                            print(avggasprice)
+                            //                            print(avggasprice)
                             for gasStationForPrice in gasStations.stations! {
                                 
                                 if !self.markerCoord.contains([gasStationForPrice.lat!:gasStationForPrice.lng!]){
@@ -355,7 +355,7 @@ extension MapViewController {
                             }
                         }
                         avggasprice /= stationcount
-//                                                    print(avggasprice)
+                        //                                                    print(avggasprice)
                         for gasStationForPrice in gasStations.stations! {
                             
                             if !self.markerCoord.contains([gasStationForPrice.lat!:gasStationForPrice.lng!]){
@@ -412,7 +412,7 @@ extension MapViewController {
             }
         }  
     }
-  
+    
     func fetchGoogleData(forLocation: CLLocation, locationName: String, searchRadius: Int) {
         if locationName == "gas_station" || locationName == "petrol"{
             markerCoord.removeAll()
@@ -731,9 +731,12 @@ extension MapViewController: FilterTableViewControllerDelegate {
             }
             viewController.photoReferences = photoRefs
         } else if (segue.identifier == "GoToFilterController") {
-            let viewController = segue.destination as! FilterTableViewController
-            viewController.selectedTypes = searchKeywords
-            viewController.delegate = self
+            guard let navigationController = segue.destination as? UINavigationController,
+                let controller = navigationController.topViewController as? FilterTableViewController else {
+                    return
+            }
+            controller.selectedTypes = searchKeywords
+            controller.delegate = self
         }
     }
     
@@ -927,7 +930,7 @@ extension MapViewController {
         let view = UIView(frame: CGRect.init(x: 0, y: 0, width: 200, height: 100))
         view.backgroundColor = UIColor.white
         view.layer.cornerRadius = 6
-
+        
         if let place = marker as? PlaceMarker {
             self.isRestaurant = true
             googleClient.getPlaceDetail(placeId: place.place.placeID){
@@ -965,7 +968,7 @@ extension MapViewController {
             view.addSubview(placedetails)
             
             return view
-
+            
         }
         return nil
     }
