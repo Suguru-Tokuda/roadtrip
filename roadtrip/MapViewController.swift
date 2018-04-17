@@ -735,18 +735,15 @@ extension MapViewController: FilterTableViewControllerDelegate {
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if (segue.identifier == "GoToLocationDetailsViewController") {
-            guard let navigationController = segue.destination as? UINavigationController,
-                let controller = navigationController.topViewController as? LocationDetailsViewController else {
-                    return
-            }
-            controller.placeDetail = self.placedetail
+            let vc = segue.destination as! LocationDetailsViewController
+            vc.placeDetail = self.placedetail
             var photoRefs = [String]()
             if let photos = placedetail?.result?.photos {
                 for photoRef in photos {
                     photoRefs.append(photoRef.photoreference!)
                 }
             }
-            controller.photoReferences = photoRefs
+            vc.photoReferences = photoRefs
         } else if (segue.identifier == "GoToFilterController") {
             guard let navigationController = segue.destination as? UINavigationController,
                 let controller = navigationController.topViewController as? FilterTableViewController else {
