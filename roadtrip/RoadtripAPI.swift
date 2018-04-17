@@ -27,12 +27,15 @@ struct RoadtripAPI {
     private static let googleDirectionsAPIBaseURL = "https://maps.googleapis.com/maps/api/directions/json?"
     private static let googleDistanceMatrixAPIBaseURL = "https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&"
     private static let googlePlaceDetailBaseURL = "https://maps.googleapis.com/maps/api/place/details/json?"
+    private static let googlePhotoBaseURL = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400"
 
     public static let myGasFeedAPIKey = "3gi91gd4i1"
-    public static let googleMapsAPIKey = "AIzaSyDEdKM_L4ArIhHSyZdOImGpmAWArGT8W38"
+//    public static let googleMapsAPIKey = "AIzaSyDEdKM_L4ArIhHSyZdOImGpmAWArGT8W38"
+    public static let googleMapsAPIKey = "AIzaSyD14jarz6jPaHCozkfKHcNLVthhuJhtwqg"
     public static let googleDirectionsAPIKey = "AIzaSyB5MtWNCa49FD9dSqC0iXd5JA4Vl-_Rf-c"
-    public static let googlePlacesAPIKey = "AIzaSyD96g2BYcVjnEstQLSXrOQ9kGQ1IqWq9wI"
-    public static let googleDistanceMatrixAPI = "AIzaSyDinG-UL4O0n5B6sMWsrwD1v2zjRURtt24"    
+//    public static let googlePlacesAPIKey = "AIzaSyD96g2BYcVjnEstQLSXrOQ9kGQ1IqWq9wI"
+    public static let googlePlacesAPIKey = "AIzaSyA3ElVIlEfP3sgehniZx3Aju7dpZDwRz6A"
+    public static let googleDistanceMatrixAPI = "AIzaSyD14jarz6jPaHCozkfKHcNLVthhuJhtwqg"
 
     public static func carQueryURL(method: CarQueryMethod, parameter: String) -> URL {
         let urlString = carQueryBaseURL + method.rawValue + parameter
@@ -100,6 +103,12 @@ struct RoadtripAPI {
     
     public static func googleDistanceMatrixURL(originLat: Double, originLong: Double, destinationLat: Double, destinationLong: Double) -> URL {
         let urlString = "\(googleDistanceMatrixAPIBaseURL)origins=\(originLat),\(originLong)&destinations=\(destinationLat),\(destinationLong)&key=\(googleDistanceMatrixAPI)"
+        let url = URL(string: urlString)
+        return url!
+    }
+    
+    public static func googlePhotoURL(photoReference: String) -> URL {
+        let urlString = "\(googlePhotoBaseURL)&photoreference=\(photoReference)&key=\(googlePlacesAPIKey)"
         let url = URL(string: urlString)
         return url!
     }
@@ -254,12 +263,11 @@ struct RoadtripAPI {
     public static func getPlaceDetailResult(fromJSON data: Data) -> PlaceDetailResult {
         do {
             let decoder = JSONDecoder()
-//            decoder.keyDecodingStrategy = .convertFromSnakeCase
             let response = try decoder.decode(PlaceDetail.self, from: data)
             return .success(response)
         } catch let jsonDecoderError {
             return .failure(jsonDecoderError)
         }
     }
-    
+        
 }
