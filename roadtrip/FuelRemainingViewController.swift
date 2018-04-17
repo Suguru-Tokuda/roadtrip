@@ -16,9 +16,13 @@ class FuelRemainingViewController: UIViewController {
     @IBOutlet weak var fuelRemainingSlider: UISlider!
     @IBOutlet weak var fuelLabel: UILabel!
     @IBOutlet weak var percentageLabel: UILabel!
+    @IBOutlet weak var ctnBtn: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        ctnBtn.backgroundColor = UIColor(red:0.00, green:0.53, blue:1.00, alpha:1.0)
+        ctnBtn.layer.cornerRadius = 5
+        ctnBtn.setTitleColor(UIColor.white, for: .normal)
         myCar = appDelegate?.myCar
         fuelRemainingSlider.value = Float(myCar!.fuelRemainingInPercent)
         percentageLabel.text = "\(fuelRemainingSlider.value.description)%"
@@ -45,8 +49,5 @@ class FuelRemainingViewController: UIViewController {
         CoreDataHandler.updateCar(car: myCar!)
         performSegue(withIdentifier: "showMapView", sender: self)
     }
-    
-    
-    
 
 }

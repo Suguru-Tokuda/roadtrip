@@ -21,6 +21,8 @@ class CarInfoSettingViewController: UIViewController, UIPickerViewDataSource, UI
     @IBOutlet weak var modelTextField: UITextField!
     @IBOutlet weak var trimTextField: UITextField!
     @IBOutlet weak var gasTypeTextField: UITextField!
+    @IBOutlet weak var setCarInfoBtn: UIButton!
+    
     
     let appDelegate = UIApplication.shared.delegate as? AppDelegate
     let carQueryDataStore = CarQueryDataStore()
@@ -41,6 +43,9 @@ class CarInfoSettingViewController: UIViewController, UIPickerViewDataSource, UI
         super.viewDidLoad()
         self.navigationItem.setHidesBackButton(true, animated: true)
         self.navigationItem.title = "Your Car Info"
+        setCarInfoBtn.backgroundColor = UIColor(red: 0.7686, green: 0.3569, blue: 0, alpha: 1.0)
+        setCarInfoBtn.layer.cornerRadius = 5
+        setCarInfoBtn.setTitleColor(UIColor.white, for: .normal)
         
         setUpDoneBtn()
         yearPicker.dataSource = self

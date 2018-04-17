@@ -19,11 +19,21 @@ class CarInfoConfirmationViewController: UIViewController {
     @IBOutlet weak var fuelCapacityTextField: UITextField!
     @IBOutlet weak var gasTypeTextField: UITextField!
     
+    @IBOutlet weak var setAgainBtn: UIButton!
+    @IBOutlet weak var confBtn: UIButton!
+    
     let appDelegate: AppDelegate? = UIApplication.shared.delegate as? AppDelegate
     var tempCar: Car?
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setAgainBtn.backgroundColor = UIColor(red:0.00, green:0.53, blue:1.00, alpha:1.0)
+        setAgainBtn.layer.cornerRadius = 5
+        setAgainBtn.setTitleColor(UIColor.white, for: .normal)
+        confBtn.backgroundColor = UIColor(red:0.00, green:0.53, blue:1.00, alpha:1.0)
+        confBtn.layer.cornerRadius = 5
+        confBtn.setTitleColor(UIColor.white, for: .normal)
+        
         tempCar = appDelegate?.myCar
         yearTextField.isEnabled = false
         makeTextField.isEnabled = false
