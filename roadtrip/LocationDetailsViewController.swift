@@ -86,7 +86,7 @@ class LocationDetailsViewController: UIViewController {
             reviewsTextView.topAnchor.constraint(lessThanOrEqualTo: ratingsStackView.bottomAnchor, constant: 10).isActive = true
             reviewsTextView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -20).isActive = true
             reviewsTextView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 20).isActive = true
-            reviewsTextView.bottomAnchor.constraint(greaterThanOrEqualTo: showPhotosBtn!.topAnchor, constant: 10).isActive = true
+            reviewsTextView.bottomAnchor.constraint(equalTo: showPhotosBtn!.topAnchor, constant: -20).isActive = true
             if let button = showPhotosBtn {
                 reviewsTextView.bottomAnchor.constraint(equalTo: button.topAnchor, constant: 10).isActive = true
             } else {

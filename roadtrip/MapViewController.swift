@@ -189,8 +189,6 @@ extension MapViewController {
                 mapView.animate(toLocation: currentLoc2D)
             }
         }
-        
-        clearAllMarkers()
         currentLocation = location
     }
     
