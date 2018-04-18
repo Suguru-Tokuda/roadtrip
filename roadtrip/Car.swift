@@ -122,22 +122,39 @@ public class Car {
     }
     
     public func getFuelRemaining() -> Double {
+        print(round(1000 * self._fuelCapacity! * _fuelRemainingInPercent! / 100) / 1000)
         return round(1000 * self._fuelCapacity! * _fuelRemainingInPercent! / 100) / 1000
     }
     
     public func consumeFuel(speed: Double, distance: Double) {
-        if speed >= 60 {
-            self._fuelRemaining! -= (distance / self._mpgHwy!)
-        } else if speed < 60 {
-            self._fuelRemaining! -= (distance / self._mpgCity!)
+        var efficiency = 1.0
+        if speed > 55 && speed <= 60 {
+            efficiency = 0.97
+        } else if speed > 60 && speed <= 65 {
+            efficiency = 0.92
+        } else if speed > 65 && speed <= 70 {
+                efficiency = 0.83
+        } else if speed > 70 && speed <= 75 {
+            efficiency = 0.77
+        } else if speed > 80 {
+            efficiency = 0.72
         }
-        self._fuelRemainingInPercent = self._fuelRemaining! / self._fuelCapacity!
+        if speed >= 60 {
+            self._fuelRemaining! -= (distance / self._mpgHwy! / efficiency)
+        } else if speed < 60 {
+            self._fuelRemaining! -= (distance / self._mpgCity! / efficiency)
+        }
+        self._fuelRemainingInPercent = self._fuelRemaining! / self._fuelCapacity! * 100
     }
     
     public func appendSpeed(speed: Double) {
-        if speed < 0 {
+        if speed > 0 && !speed.isNaN {
             self._speeds!.append(speed)
         }
+    }
+    
+    public func getSpeeds() -> Int {
+        return self._speeds!.count
     }
     
     public func resetSpeeds() {
