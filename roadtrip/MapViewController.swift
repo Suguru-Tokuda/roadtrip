@@ -6,7 +6,10 @@ import CoreLocation
 
 var searchLocations:[FilterKeywordWithImage] = [FilterKeywordWithImage(key: "pizza", name: "Pizza", icon: #imageLiteral(resourceName: "pizza")),
                                                 FilterKeywordWithImage(key: "burger", name: "Burger", icon: #imageLiteral(resourceName: "burger")),
-                                                FilterKeywordWithImage(key: "gas_station", name: "Gas Station", icon: UIImage.imageForGasStation(price: 1.0))]
+                                                FilterKeywordWithImage(key: "food", name: "Food", icon: #imageLiteral(resourceName: "Food")),
+                                                FilterKeywordWithImage(key: "noodles", name: "Chinese", icon: #imageLiteral(resourceName: "Chinese")),
+                                                FilterKeywordWithImage(key: "mexican", name: "Mexican", icon: #imageLiteral(resourceName: "Mexican")),
+                                                FilterKeywordWithImage(key: "gas_station", name: "Gas Station", icon: UIImage.imageForGasStation(price: 1.0, color : .blue))]
 
 class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDelegate {
     let appDelegate: AppDelegate? = UIApplication.shared.delegate as? AppDelegate
@@ -23,7 +26,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
     var currentLocation: CLLocation?
     var lastLocation: CLLocation?
     var searchKeywords:[String] = []
-
     var searchRadius : Int = 1000
     let searchBar = UISearchBar()
     var isInNavigation: Bool = false
@@ -61,6 +63,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
     var isRestaurant: Bool = false
     var placedetail: PlaceDetail?
     var markerCoord = [[Double:Double]]()
+    var gasStationWithin = 3.0
     var gastype:String{
         switch myCar?.gasType {
         case "Unleased" :
@@ -236,7 +239,7 @@ extension MapViewController {
         markerCoord = [[Double:Double]]()
         for step in self.reacheableSteps {
             DispatchQueue.main.async{
-                self.gasPricesDataStore?.getGasPrices(latitude: step.startLocation!.lat!, longitutde: step.startLocation!.lng!, distanceInMiles: 2, gasType: self.gastype){
+                self.gasPricesDataStore?.getGasPrices(latitude: step.startLocation!.lat!, longitutde: step.startLocation!.lng!, distanceInMiles: self.gasStationWithin, gasType: self.gastype){
                     (response) in
                     switch response{
                     case let .success(gasStations):
@@ -267,12 +270,12 @@ extension MapViewController {
                                         continue
                                     }
                                     let marker = GMSMarker()
+                                    marker.title = gasStationForPrice.station!
                                     marker.position = CLLocationCoordinate2DMake(gasStationForPrice.lat!, gasStationForPrice.lng!)
                                     marker.groundAnchor = CGPoint(x: 0.5, y: 1)
                                     marker.appearAnimation = .pop
-                                    marker.icon = UIImage.imageForGasStation(price: gasprice)
+                                    marker.icon = UIImage.imageForGasStation(price: gasprice, color: (gasprice > (avggasprice * 0.9)) ? .red : .green)
                                     marker.map = self.mapView
-                                    
                                 }
                             }
                         }
@@ -282,7 +285,7 @@ extension MapViewController {
                 }
             }
             
-            self.gasPricesDataStore?.getGasPrices(latitude: step.endLocation!.lat!, longitutde: step.endLocation!.lng!, distanceInMiles: 2, gasType: self.gastype){
+            self.gasPricesDataStore?.getGasPrices(latitude: step.endLocation!.lat!, longitutde: step.endLocation!.lng!, distanceInMiles: self.gasStationWithin, gasType: self.gastype){
                 (response) in
                 
                 switch response{
@@ -312,10 +315,11 @@ extension MapViewController {
                                     continue
                                 }
                                 let marker = GMSMarker()
+                                marker.title = gasStationForPrice.station!
                                 marker.position = CLLocationCoordinate2DMake(gasStationForPrice.lat!, gasStationForPrice.lng!)
                                 marker.groundAnchor = CGPoint(x: 0.5, y: 1)
                                 marker.appearAnimation = .pop
-                                marker.icon = UIImage.imageForGasStation(price: gasprice)
+                                marker.icon = UIImage.imageForGasStation(price: gasprice, color: (gasprice > (avggasprice * 0.9)) ? .red : .green)
                                 marker.map = self.mapView
                             }
                         }
@@ -330,11 +334,21 @@ extension MapViewController {
     func fetchGoogleData(forLocation: CLLocation, locationName: String, searchRadius: Int) {
         if locationName == "gas_station"{
             markerCoord.removeAll()
-            self.gasPricesDataStore?.getGasPrices(latitude: forLocation.coordinate.latitude, longitutde: forLocation.coordinate.longitude, distanceInMiles: 2, gasType: "reg"){
+            self.gasPricesDataStore?.getGasPrices(latitude: forLocation.coordinate.latitude, longitutde: forLocation.coordinate.longitude, distanceInMiles: self.gasStationWithin, gasType: "reg"){
                 (response) in
                 switch response{
                 case let .success(gasStations):
                     if gasStations.stations != nil{
+                        var avggasprice = 0.0
+                        var stationcount = 0.0
+                        for gasStationForPrice in gasStations.stations! {
+                            if ((gasStationForPrice.regPrice != nil) && self.gastype == "reg")
+                                || ((gasStationForPrice.midPrice != nil) && self.gastype == "mid")
+                                || ((gasStationForPrice.prePrice != nil) && self.gastype == "pre")  {
+                                stationcount += 1
+                                avggasprice += (self.gastype == "pre") ? gasStationForPrice.prePrice! : (self.gastype == "mid") ? gasStationForPrice.midPrice! : gasStationForPrice.regPrice!
+                            }
+                        }
                         for gasStationForPrice in gasStations.stations! {
                             if !self.markerCoord.contains([gasStationForPrice.lat!:gasStationForPrice.lng!]){
                                 self.markerCoord.append([gasStationForPrice.lat!:gasStationForPrice.lng!])
@@ -350,7 +364,7 @@ extension MapViewController {
                                 marker.groundAnchor = CGPoint(x: 0.5, y: 1)
                                 marker.appearAnimation = .pop
                                 marker.title = gasStationForPrice.station
-                                marker.icon = UIImage.imageForGasStation(price: gasprice)
+                                marker.icon = UIImage.imageForGasStation(price: gasprice, color: (gasprice > (avggasprice * 0.9)) ? .red : .green)
                                 marker.map = self.mapView
                                 let place = Place(geometry: Place.Location(location: Place.Location.LatLong(latitude: gasStationForPrice.lat!, longitude: gasStationForPrice.lng!)), name: gasStationForPrice.station!, openingHours: nil, photos: nil, placeID: "gasstation", types: [], address: "")
                                 let placemarker = PlaceMarker(place: place)
@@ -1215,13 +1229,13 @@ extension String {
     }
 }
 extension UIImage {
-    class func imageForGasStation(price: Double) -> UIImage {
+    class func imageForGasStation(price: Double, color: UIColor) -> UIImage {
         let DynamicView=UIView(frame: CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 50, height: 50)))
         DynamicView.backgroundColor=UIColor.clear
         var imageViewForPinMarker : UIImageView
         imageViewForPinMarker  = UIImageView(frame:CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 50, height: 50)))
         imageViewForPinMarker.image = UIImage(named:"prices")?.withRenderingMode(.alwaysTemplate)
-        imageViewForPinMarker.tintColor = UIColor.green
+        imageViewForPinMarker.tintColor = color
         let text = UILabel(frame:CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 40, height: 30)))
         text.text = String("\(price)")
         text.textColor = UIColor.black
