@@ -122,7 +122,6 @@ public class Car {
     }
     
     public func getFuelRemaining() -> Double {
-        print(round(1000 * self._fuelCapacity! * _fuelRemainingInPercent! / 100) / 1000)
         return round(1000 * self._fuelCapacity! * _fuelRemainingInPercent! / 100) / 1000
     }
     

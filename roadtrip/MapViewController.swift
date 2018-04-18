@@ -23,8 +23,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
     var currentLocation: CLLocation?
     var lastLocation: CLLocation?
     var searchKeywords:[String] = []
-    
-    
 
     var searchRadius : Int = 1000
     let searchBar = UISearchBar()
@@ -56,6 +54,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
     var stopNavBtn: UIButton?
     var showingStopNavBtn: Bool = false
     var speedLabel: UILabel = UILabel()
+    var distanceLabel: UILabel = UILabel()
     var updateCamera: Bool = true
     var locationBtnHasBeenTapped: Bool = false
     var firstPathDrawn: Bool = false
@@ -651,6 +650,25 @@ extension MapViewController: GMSAutocompleteViewControllerDelegate {
 extension MapViewController {
     
     func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
+        if self.destination != CLLocation(latitude: marker.position.latitude, longitude: marker.position.longitude) {
+            self.googleClient.getDistance(origin: self.currentLocation!, destination: CLLocation(latitude: marker.position.latitude, longitude: marker.position.longitude), completion: { (distanceResult) in
+                switch distanceResult {
+                case let .success(distance):
+                    self.distanceLabel.removeFromSuperview()
+                    self.distanceLabel.text = "\(round(distance.rows![0].elements![0].distance!.value! / 1000 * 0.621371)) miles"
+                    self.distanceLabel.backgroundColor = UIColor(red:0.00, green:0.53, blue:1.00, alpha:1.0)
+                    self.distanceLabel.textColor = UIColor.white
+                    self.distanceLabel.alpha = 0.8
+                    self.distanceLabel.translatesAutoresizingMaskIntoConstraints = false
+                    self.mapView.addSubview(self.distanceLabel)
+                    self.distanceLabel.leadingAnchor.constraint(equalTo: self.mapView.leadingAnchor, constant: 10).isActive = true
+                    self.distanceLabel.centerYAnchor.constraint(equalTo: self.mapView.centerYAnchor).isActive = true
+                case let .failure(error):
+                    print(error)
+                }
+            })
+        }
+
         // setting the position to destination's coordinate
         if !self.firstPathDrawn {
             self.destination = CLLocation(latitude: marker.position.latitude, longitude: marker.position.longitude)
@@ -720,9 +738,14 @@ extension MapViewController {
                 self.performSegue(withIdentifier: "GoToLocationDetailsViewController", sender:self)
             }
         }
+        self.distanceLabel.removeFromSuperview()
     }
     
     func mapView(_ mapView: GMSMapView, didTapAt coordinate: CLLocationCoordinate2D) {
+        self.distanceLabel.removeFromSuperview()
+        if firstPathDrawn {
+            self.showStartNavBtn()
+        }
         if isInNavigation {
             if showingStopNavBtn == false {
                 stopNavBtn = UIButton(type: .system)
@@ -799,38 +822,37 @@ extension MapViewController {
                 switch response{
                 case let .success(detail):
                     self.placedetail = detail
-                    let lbl1 = UILabel(frame: CGRect.init(x: 8, y: 8, width: view.frame.size.width - 16, height: 15))
-                    lbl1.text = place.place.name
-                    lbl1.font = UIFont.systemFont(ofSize: 14, weight: .heavy)
-                    view.addSubview(lbl1)
-                    
-                    let lbl2 = UILabel(frame: CGRect.init(x: lbl1.frame.origin.x , y: lbl1.frame.origin.y+lbl1.frame.size.height + 3, width: view.frame.size.width - 16, height: 15))
-                    lbl2.text = place.place.address
-                    lbl2.font = UIFont.systemFont(ofSize: 12, weight: .medium)
-                    view.addSubview(lbl2)
-                    
-                    let lbl3 = UILabel(frame: CGRect.init(x: lbl2.frame.origin.x , y: lbl2.frame.origin.y+lbl2.frame.size.height + 3, width: view.frame.size.width - 16, height: 15))
-                    lbl3.text = (place.place.openingHours?.isOpen! == true) ? "Open":"Closed"
-                    lbl3.font = UIFont.systemFont(ofSize: 12, weight: .thin)
-                    lbl3.textColor = (place.place.openingHours?.isOpen! == true) ? UIColor.red:UIColor.green
-                    view.addSubview(lbl3)
-                    
-                    let placedetails = UIButton(type: .system)
-                    placedetails.frame = CGRect(x: lbl3.frame.origin.x, y: lbl3.frame.origin.y+lbl3.frame.size.height + 5 , width: view.frame.size.width - 16, height: 30)
-                    placedetails.setTitle("Details", for: .normal)
-                    placedetails.backgroundColor = UIColor(red:0.00, green:0.53, blue:1.00, alpha:1.0)
-                    placedetails.layer.cornerRadius = 5
-                    placedetails.setTitleColor(.white, for: .normal)
-                    placedetails.addTarget(self, action: #selector(self.placeDetailsNav), for: .touchUpInside)
-                    view.addSubview(placedetails)
                 case let .failure(error):
                     print(error)
                 }
             }
-
+            
+            let lbl1 = UILabel(frame: CGRect.init(x: 8, y: 8, width: view.frame.size.width - 16, height: 15))
+            lbl1.text = place.place.name
+            lbl1.font = UIFont.systemFont(ofSize: 14, weight: .heavy)
+            view.addSubview(lbl1)
+            
+            let lbl2 = UILabel(frame: CGRect.init(x: lbl1.frame.origin.x , y: lbl1.frame.origin.y+lbl1.frame.size.height + 3, width: view.frame.size.width - 16, height: 15))
+            lbl2.text = place.place.address
+            lbl2.font = UIFont.systemFont(ofSize: 12, weight: .medium)
+            view.addSubview(lbl2)
+            
+            let lbl3 = UILabel(frame: CGRect.init(x: lbl2.frame.origin.x , y: lbl2.frame.origin.y+lbl2.frame.size.height + 3, width: view.frame.size.width - 16, height: 15))
+            lbl3.text = (place.place.openingHours?.isOpen! == true) ? "Open":"Closed"
+            lbl3.font = UIFont.systemFont(ofSize: 12, weight: .thin)
+            lbl3.textColor = (place.place.openingHours?.isOpen! == true) ? UIColor.red:UIColor.green
+            view.addSubview(lbl3)
+            
+            let placedetails = UIButton(type: .system)
+            placedetails.frame = CGRect(x: lbl3.frame.origin.x, y: lbl3.frame.origin.y+lbl3.frame.size.height + 5 , width: view.frame.size.width - 16, height: 30)
+            placedetails.setTitle("Details", for: .normal)
+            placedetails.backgroundColor = UIColor(red:0.00, green:0.53, blue:1.00, alpha:1.0)
+            placedetails.layer.cornerRadius = 5
+            placedetails.setTitleColor(.white, for: .normal)
+            placedetails.addTarget(self, action: #selector(self.placeDetailsNav), for: .touchUpInside)
+            view.addSubview(placedetails)
             
             return view
-            
         }
         return nil
     }
@@ -905,6 +927,7 @@ extension MapViewController {
     
     @objc func getDirectionBtnTapped(_ sender: UIButton) {
         self.firstPathDrawn = true
+        self.distanceLabel.removeFromSuperview()
         let destination2D = CLLocationCoordinate2D(latitude: self.destination!.coordinate.latitude, longitude: self.destination!.coordinate.longitude)
         let currentLocation2D = CLLocationCoordinate2D(latitude: self.currentLocation!.coordinate.latitude, longitude: self.currentLocation!.coordinate.longitude)
         let bounds = GMSCoordinateBounds(coordinate: currentLocation2D, coordinate: destination2D)
@@ -1015,6 +1038,7 @@ extension MapViewController {
     
     @objc func cancelBtnTapped(_ sender: UIButton) {
         self.waypoints.removeAll()
+        self.distanceLabel.removeFromSuperview()
         self.firstPathDrawn = false
         locationManager.startUpdatingLocation()
         self.removeSubviewsFromStackView(stackView: self.buttonsStackView)
@@ -1101,6 +1125,7 @@ extension MapViewController {
     }
     
     private func showTravelInfo(leg: Direction.Route.Leg) {
+        self.removeSubviewsFromStackView(stackView: self.travelInfoStackView)
         let distanceLabel = UILabel()
         distanceLabel.text = leg.distance!.text!.description
         distanceLabel.alpha = 0.8
