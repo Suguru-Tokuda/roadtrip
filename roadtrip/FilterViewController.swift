@@ -13,7 +13,7 @@ protocol FilterTableViewControllerDelegate: class {
 }
 class FilterTableViewController: UITableViewController {
     private var sortedKeys: [FilterKeywordWithImage] {
-        return searchLocations.sorted(by: {$0.key < $1.key})
+        return searchLocations.sorted(by: {$0.name < $1.name})
     }
     
     var selectedTypes = [String]()

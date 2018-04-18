@@ -9,7 +9,7 @@ var searchLocations:[FilterKeywordWithImage] = [FilterKeywordWithImage(key: "piz
                                                 FilterKeywordWithImage(key: "food", name: "Food", icon: #imageLiteral(resourceName: "Food")),
                                                 FilterKeywordWithImage(key: "noodles", name: "Chinese", icon: #imageLiteral(resourceName: "Chinese")),
                                                 FilterKeywordWithImage(key: "mexican", name: "Mexican", icon: #imageLiteral(resourceName: "Mexican")),
-                                                FilterKeywordWithImage(key: "gas_station", name: "Gas Station", icon: UIImage.imageForGasStation(price: 1.0, color : .blue))]
+                                                FilterKeywordWithImage(key: "gas_station", name: "Gas Station", icon: UIImage.imageForGasStation(price: 2.5, color : UIColor(red: 0.0863, green: 0.6, blue: 0, alpha: 1.0)))]
 
 class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDelegate {
     let appDelegate: AppDelegate? = UIApplication.shared.delegate as? AppDelegate
@@ -272,7 +272,7 @@ extension MapViewController {
                                     marker.position = CLLocationCoordinate2DMake(gasStationForPrice.lat!, gasStationForPrice.lng!)
                                     marker.groundAnchor = CGPoint(x: 0.5, y: 1)
                                     marker.appearAnimation = .pop
-                                    marker.icon = UIImage.imageForGasStation(price: gasprice, color: (gasprice > (avggasprice * 0.9)) ? .red : .green)
+                                    marker.icon = UIImage.imageForGasStation(price: gasprice, color: (gasprice > (avggasprice * 0.95)) ? .red : UIColor(red: 0.0863, green: 0.6, blue: 0, alpha: 1.0))
                                     marker.map = self.mapView
                                 }
                             }
@@ -317,7 +317,7 @@ extension MapViewController {
                                 marker.position = CLLocationCoordinate2DMake(gasStationForPrice.lat!, gasStationForPrice.lng!)
                                 marker.groundAnchor = CGPoint(x: 0.5, y: 1)
                                 marker.appearAnimation = .pop
-                                marker.icon = UIImage.imageForGasStation(price: gasprice, color: (gasprice > (avggasprice * 0.9)) ? .red : .green)
+                                marker.icon = UIImage.imageForGasStation(price: gasprice, color: (gasprice > (avggasprice * 0.95)) ? .red : UIColor(red: 0.0863, green: 0.6, blue: 0, alpha: 1.0))
                                 marker.map = self.mapView
                             }
                         }
@@ -362,7 +362,7 @@ extension MapViewController {
                                 marker.groundAnchor = CGPoint(x: 0.5, y: 1)
                                 marker.appearAnimation = .pop
                                 marker.title = gasStationForPrice.station
-                                marker.icon = UIImage.imageForGasStation(price: gasprice, color: (gasprice > (avggasprice * 0.9)) ? .red : .green)
+                                marker.icon = UIImage.imageForGasStation(price: gasprice, color: (gasprice > (avggasprice * 0.95)) ? .red : UIColor(red: 0.0863, green: 0.6, blue: 0, alpha: 1.0))
                                 marker.map = self.mapView
                                 let place = Place(geometry: Place.Location(location: Place.Location.LatLong(latitude: gasStationForPrice.lat!, longitude: gasStationForPrice.lng!)), name: gasStationForPrice.station!, openingHours: nil, photos: nil, placeID: "gasstation", types: [], address: "")
                                 let placemarker = PlaceMarker(place: place)
@@ -393,6 +393,9 @@ extension MapViewController {
                         }
                         self.addMarker(markerType: locationName, marker: marker)
                     }
+                    if pagetoken == ""{
+                        return
+                    }
                     group1.leave()
                 }
                 
@@ -416,6 +419,9 @@ extension MapViewController {
                                 return
                             }
                             self.addMarker(markerType: locationName, marker: marker)
+                        }
+                        if pagetoken == ""{
+                            return
                         }
                         group2.leave()
                     }
@@ -1236,7 +1242,7 @@ extension UIImage {
         imageViewForPinMarker.tintColor = color
         let text = UILabel(frame:CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 40, height: 30)))
         text.text = String("\(price)")
-        text.textColor = UIColor.black
+        text.textColor = UIColor.white
         text.font = UIFont(name: text.font.fontName, size: 14)
         text.textAlignment = NSTextAlignment.center
         text.center = imageViewForPinMarker.convert(imageViewForPinMarker.center, from:imageViewForPinMarker.superview)
