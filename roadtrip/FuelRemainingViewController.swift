@@ -34,7 +34,6 @@ class FuelRemainingViewController: UIViewController {
     }
     
     @IBAction func fuelRemainingSliderChanged(_ sender: Any) {
-        print(Double(fuelRemainingSlider.value))
         myCar!.fuelRemainingInPercent = Double(fuelRemainingSlider.value)
         let percentage = round(1000 * fuelRemainingSlider.value)/1000
         percentageLabel.text = "\(percentage.description)%"

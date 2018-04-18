@@ -21,6 +21,7 @@ public class CoreDataHandler: NSObject {
         let entity = NSEntityDescription.entity(forEntityName: "CarData", in: context)
         let managedObject = NSManagedObject(entity: entity!, insertInto: context)
         
+        managedObject.setValue(car.id, forKey: "id")
         managedObject.setValue(car.make, forKey: "make")
         managedObject.setValue(car.model, forKey: "model")
         managedObject.setValue(car.trim, forKey: "trim")
@@ -81,7 +82,7 @@ public class CoreDataHandler: NSObject {
         let context = getContext()
         var resultSet: [CarData]?
         let fetchRequest: NSFetchRequest<CarData> = CarData.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "model == %@", car.model)
+        fetchRequest.predicate = NSPredicate(format: "id == %d", car.id)
         do {
             resultSet = try context.fetch(fetchRequest)
             let tempCar: CarData = resultSet![0]
