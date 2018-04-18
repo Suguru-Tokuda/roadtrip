@@ -13,6 +13,7 @@ protocol FilterTableViewControllerDelegate: class {
 }
 class FilterTableViewController: UITableViewController {
     private var sortedKeys: [FilterKeywordWithImage] {
+        
         return searchLocations.sorted(by: {$0.name < $1.name})
     }
     
@@ -36,7 +37,7 @@ class FilterTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "typeCell", for: indexPath)
         let key = sortedKeys[indexPath.row]
-        let type = key.name
+        let type = (key.name == "AGas Station") ? "Gas Station" : key.name
         cell.textLabel?.text = type
         cell.imageView?.image = key.icon
         cell.accessoryType = selectedTypes.contains(key.key) ? .checkmark : .none
