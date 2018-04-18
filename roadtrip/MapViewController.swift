@@ -1060,6 +1060,7 @@ extension MapViewController {
         self.firstPathDrawn = false
         locationManager.startUpdatingLocation()
         self.removeSubviewsFromStackView(stackView: self.buttonsStackView)
+        self.removeSubviewsFromStackView(stackView: self.travelInfoStackView)
         self.mapView.clear()
         let camera = GMSCameraPosition.camera(withLatitude: self.currentLocation!.coordinate.latitude, longitude: self.currentLocation!.coordinate.longitude, zoom: zoom!)
         self.mapView.animate(to: camera)
