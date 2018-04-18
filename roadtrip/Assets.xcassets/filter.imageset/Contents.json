@@ -2,12 +2,12 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "filter-variant.png",
+      "filename" : "icons8-mail-filter-filled-50.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
-      "filename" : "filter-variant (1).png",
+      "filename" : "icons8-mail-filter-filled-100.png",
       "scale" : "2x"
     },
     {

@@ -71,9 +71,10 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
         }
     }
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
+        lastTime = Date()
+        lastTimeToCheckSpeed = Date()
         myCar = appDelegate!.myCar
         gasPricesDataStore = appDelegate!.gasPricesDataStore
         zoom = 6
@@ -91,20 +92,17 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
         locationBtn!.heightAnchor.constraint(equalToConstant: 100).isActive = true
         locationBtn!.trailingAnchor.constraint(equalTo: self.mapView.trailingAnchor, constant: 10).isActive = true;
         locationBtn!.bottomAnchor.constraint(equalTo: self.mapView.bottomAnchor, constant: 0).isActive = true;
-        
         //adding all to search
         locationManager.delegate = self
         locationManager.startUpdatingHeading()
         mapView.delegate = self
         //self.navigationController?.isNavigationBarHidden = true
         locationManager.requestWhenInUseAuthorization()
-        
         // expandableview to end of code
         addingSearchAndFilterButtonToRightNavigation()
         // setting spanner for getting to settings
         let settingsBtn: UIBarButtonItem = UIBarButtonItem(image: UIImage(named: "spanner")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(settingsTapped(_:)))
         self.navigationItem.leftBarButtonItem = settingsBtn
-        
         // setting the navigation bar to transparent
         self.navigationController?.presentTransparentNavigationBar()
         isInNavigation = false
@@ -128,11 +126,10 @@ extension MapViewController {
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        if let location = locations.first {
-            lastLocation = location
-            lastTime = Date()
-            lastTimeToCheckSpeed = Date()
+        if lastLocation == nil {
+            lastLocation = locations.first
         }
+        
         guard let location = locations.first else {
             return
         }
@@ -140,7 +137,7 @@ extension MapViewController {
         /*
          Every 5 seconds, check the current speed and put the speed into the speeds, array of Double
          */
-        if lastTimeToCheckSpeed!.timeIntervalSinceNow >= 5.0 {
+        if abs(lastTimeToCheckSpeed!.timeIntervalSinceNow) >= 5.0 {
             self.myCar!.appendSpeed(speed: (self.locationManager.location!.speed * 3600.0 * 0.000621371))
             lastTimeToCheckSpeed = Date() // assiging the current time
         }
@@ -149,15 +146,18 @@ extension MapViewController {
          If 5 minutes have passed, it gets the distance between the current and last locations.
          Then it will reduce the fuel remaining.
          */
-        if lastTime!.timeIntervalSinceNow >= 5.0 * 60 {
+        if abs(lastTime!.timeIntervalSinceNow) >= 2.0 * 30 {
             googleClient.getDistance(origin: lastLocation!, destination: location) { (distanceResult) in
                 switch distanceResult {
                 case let .success(distance):
-                    let distanceParam = distance.rows![0].elements![0].distance!.value
+                    let distanceParam = distance.rows![0].elements![0].distance!.value! / 1000 * 0.621371
                     self.lastLocation = self.currentLocation
                     self.currentLocation = location
-                    self.myCar!.consumeFuel(speed: self.myCar!.getAverageSpeed(), distance: distanceParam!)
+                    self.myCar!.consumeFuel(speed: self.myCar!.getAverageSpeed(), distance: distanceParam)
+                    self.fuelRemainingTextView.text = "\(self.myCar!.getFuelRemaining())/\(self.myCar!.fuelCapacity) gals"
                     self.myCar!.resetSpeeds()
+                    self.lastLocation = self.currentLocation
+                    self.lastTime = Date()
                 case let .failure(error):
                     print(error)
                 }
@@ -182,13 +182,9 @@ extension MapViewController {
                 let currentLoc2D = CLLocationCoordinate2D(latitude: self.currentLocation!.coordinate.latitude, longitude: self.currentLocation!.coordinate.longitude)
                 mapView.animate(toLocation: currentLoc2D)
             }
-            //            mapView.camera = GMSCameraPosition.camera(withLatitude: location.coordinate.latitude, longitude: location.coordinate.longitude, zoom: self.zoom!)
         }
         
         clearAllMarkers()
-        //        for keyword in searchKeywords {
-        //            self.fetchGoogleData(forLocation: location, locationName: keyword, searchRadius: self.searchRadius )
-        //        }
         currentLocation = location
     }
     
@@ -237,10 +233,8 @@ extension MapViewController {
         markerCoord = [[Double:Double]]()
         for step in self.reacheableSteps {
             DispatchQueue.main.async{
-                
                 self.gasPricesDataStore?.getGasPrices(latitude: step.startLocation!.lat!, longitutde: step.startLocation!.lng!, distanceInMiles: 2, gasType: self.gastype){
                     (response) in
-                    
                     switch response{
                     case let .success(gasStations):
                         if gasStations.stations != nil{
@@ -254,23 +248,18 @@ extension MapViewController {
                                     
                                     switch self.gastype{
                                     case "reg":
-                                        //                                        print("reg price \(gasStationForPrice.regPrice!)")
                                         avggasprice += gasStationForPrice.regPrice!
                                     case "mid":
-                                        //                                        print("mid price \(gasStationForPrice.midPrice!)")
                                         avggasprice += gasStationForPrice.midPrice!
                                     case "pre":
-                                        //                                        print("pre price \(gasStationForPrice.prePrice!)")
                                         avggasprice += gasStationForPrice.prePrice!
                                     default:
-                                        //                                        print(gasStationForPrice.regPrice!)
                                         avggasprice += gasStationForPrice.regPrice!
-                                        
                                     }
                                 }
                             }
+                            
                             avggasprice /= stationcount
-                            //                            print(avggasprice)
                             for gasStationForPrice in gasStations.stations! {
                                 
                                 if !self.markerCoord.contains([gasStationForPrice.lat!:gasStationForPrice.lng!]){
@@ -315,10 +304,7 @@ extension MapViewController {
                                     
                                 }
                             }
-                            
                         }
-                        
-                        
                     case let .failure(error):
                         print(error)
                     }
@@ -341,23 +327,18 @@ extension MapViewController {
                                 
                                 switch self.gastype{
                                 case "reg":
-                                    //                                        print("reg price \(gasStationForPrice.regPrice!)")
                                     avggasprice += gasStationForPrice.regPrice!
                                 case "mid":
-                                    //                                        print("mid price \(gasStationForPrice.midPrice!)")
                                     avggasprice += gasStationForPrice.midPrice!
                                 case "pre":
-                                    //                                        print("pre price \(gasStationForPrice.prePrice!)")
                                     avggasprice += gasStationForPrice.prePrice!
                                 default:
-                                    //                                        print(gasStationForPrice.regPrice!)
                                     avggasprice += gasStationForPrice.regPrice!
                                     
                                 }
                             }
                         }
                         avggasprice /= stationcount
-                        //                                                    print(avggasprice)
                         for gasStationForPrice in gasStations.stations! {
                             
                             if !self.markerCoord.contains([gasStationForPrice.lat!:gasStationForPrice.lng!]){
@@ -401,13 +382,9 @@ extension MapViewController {
                                 
                                 marker.icon = imageConverted
                                 marker.map = self.mapView
-                                
                             }
                         }
-                        
                     }
-                    
-                    
                 case let .failure(error):
                     print(error)
                 }
@@ -420,7 +397,6 @@ extension MapViewController {
             markerCoord.removeAll()
             self.gasPricesDataStore?.getGasPrices(latitude: forLocation.coordinate.latitude, longitutde: forLocation.coordinate.longitude, distanceInMiles: 2, gasType: "reg"){
                 (response) in
-                
                 switch response{
                 case let .success(gasStations):
                     if gasStations.stations != nil{
@@ -457,36 +433,28 @@ extension MapViewController {
                                 marker.appearAnimation = .pop
                                 
                                 marker.icon = imageConverted
-                                marker.title = gasStationForPrice.station//////incomplete
+                                marker.title = gasStationForPrice.station
                                 marker.map = self.mapView
-                                
                                 let place = Place(geometry: Place.Location(location: Place.Location.LatLong(latitude: gasStationForPrice.lat!, longitude: gasStationForPrice.lng!)), name: gasStationForPrice.station!, openingHours: nil, photos: nil, placeID: "gasstation", types: [], address: "")
                                 let placemarker = PlaceMarker(place: place)
                                 self.addMarker(markerType: locationName, marker: placemarker)
                             }
                         }
-                        
                     }
-                    
-                    
                 case let .failure(error):
                     print(error)
                 }
             }
-        }else{
-            
+        } else {
             let group1 = DispatchGroup()
             group1.enter()
             googleClient.getGooglePlacesData(forKeyword: locationName, location: forLocation, withinMeters: searchRadius) { (response) in
                 DispatchQueue.main.sync{
                     let places = response.results
                     for place in places {
-                        
                         let marker = PlaceMarker(place: place)
                         marker.title = place.name
                         marker.snippet = "The place is \(place.openingHours?.isOpen == true ? "open" : "closed")"
-                        //                    switch true{
-                        //                    case place.types.contains("gas_station"),place.types.contains("petrol"):
                         if locationName == "pizza"{
                             marker.icon = UIImage(named: "pizza")
                             marker.map = self.mapView
@@ -495,11 +463,6 @@ extension MapViewController {
                             marker.icon = UIImage(named: "burger")
                             marker.map = self.mapView
                         }
-                        //                    case place.types.contains("food"),place.types.contains("restaurant"),place.types.contains("bar"):
-                        //                    if locationName == "food"{
-                        //                        marker.icon = UIImage(named: "Food")
-                        //                        marker.map = self.mapView
-                        //                    }
                         self.addMarker(markerType: locationName, marker: marker)
                     }
                     group1.leave()
@@ -525,16 +488,10 @@ extension MapViewController {
                                 marker.icon = UIImage(named: "burger")
                                 marker.map = self.mapView
                             }
-                            //                        case place.types.contains("food"),place.types.contains("restaurant"),place.types.contains("bar"):
-                            //                        if locationName == "food"{
-                            //                            marker.icon = UIImage(named: "Food")
-                            //                            marker.map = self.mapView
-                            //                        }
                             self.addMarker(markerType: locationName, marker: marker)
                         }
                         group2.leave()
                     }
-                    
                 }
             })
             
@@ -555,15 +512,9 @@ extension MapViewController {
                                 marker.icon = UIImage(named: "burger")
                                 marker.map = self.mapView
                             }
-                            //                        case place.types.contains("food"),place.types.contains("restaurant"),place.types.contains("bar"):
-                            //                        if locationName == "food"{
-                            //                            marker.icon = UIImage(named: "Food")
-                            //                            marker.map = self.mapView
-                            //                        }
                             self.addMarker(markerType: locationName, marker: marker)
                         }
                     }
-                    
                 }
             })
         }
@@ -759,12 +710,6 @@ extension MapViewController: GMSAutocompleteViewControllerDelegate {
         marker.title = place.name
         marker.snippet = place.formattedAddress
         marker.map = self.mapView
-        
-        
-        
-        print("Place name: \(place.name)")
-        print("Place address: \(String(describing: place.formattedAddress))")
-        print("Place attributions: \(String(describing: place.attributions))")
         dismiss(animated: true, completion: nil)
     }
     
@@ -855,14 +800,14 @@ extension MapViewController {
     
     func mapView(_ mapView: GMSMapView, didTapInfoWindowOf marker: GMSMarker) {
         // performs segue only if the icon is a placemarker
-        if self.isRestaurant {
-            self.performSegue(withIdentifier: "GoToLocationDetailsViewController", sender:self)
+        if placedetail != nil {
+            if self.isRestaurant {
+                self.performSegue(withIdentifier: "GoToLocationDetailsViewController", sender:self)
+            }
         }
-        print("infowindow tapped")
     }
     
     func mapView(_ mapView: GMSMapView, didTapAt coordinate: CLLocationCoordinate2D) {
-        print("tapped")
         if isInNavigation {
             if showingStopNavBtn == false {
                 stopNavBtn = UIButton(type: .system)
@@ -939,34 +884,35 @@ extension MapViewController {
                 switch response{
                 case let .success(detail):
                     self.placedetail = detail
+                    let lbl1 = UILabel(frame: CGRect.init(x: 8, y: 8, width: view.frame.size.width - 16, height: 15))
+                    lbl1.text = place.place.name
+                    lbl1.font = UIFont.systemFont(ofSize: 14, weight: .heavy)
+                    view.addSubview(lbl1)
+                    
+                    let lbl2 = UILabel(frame: CGRect.init(x: lbl1.frame.origin.x , y: lbl1.frame.origin.y+lbl1.frame.size.height + 3, width: view.frame.size.width - 16, height: 15))
+                    lbl2.text = place.place.address
+                    lbl2.font = UIFont.systemFont(ofSize: 12, weight: .medium)
+                    view.addSubview(lbl2)
+                    
+                    let lbl3 = UILabel(frame: CGRect.init(x: lbl2.frame.origin.x , y: lbl2.frame.origin.y+lbl2.frame.size.height + 3, width: view.frame.size.width - 16, height: 15))
+                    lbl3.text = (place.place.openingHours?.isOpen! == true) ? "Open":"Closed"
+                    lbl3.font = UIFont.systemFont(ofSize: 12, weight: .thin)
+                    lbl3.textColor = (place.place.openingHours?.isOpen! == true) ? UIColor.red:UIColor.green
+                    view.addSubview(lbl3)
+                    
+                    let placedetails = UIButton(type: .system)
+                    placedetails.frame = CGRect(x: lbl3.frame.origin.x, y: lbl3.frame.origin.y+lbl3.frame.size.height + 5 , width: view.frame.size.width - 16, height: 30)
+                    placedetails.setTitle("Details", for: .normal)
+                    placedetails.backgroundColor = UIColor(red:0.00, green:0.53, blue:1.00, alpha:1.0)
+                    placedetails.layer.cornerRadius = 5
+                    placedetails.setTitleColor(.white, for: .normal)
+                    placedetails.addTarget(self, action: #selector(self.placeDetailsNav), for: .touchUpInside)
+                    view.addSubview(placedetails)
                 case let .failure(error):
                     print(error)
                 }
             }
-            let lbl1 = UILabel(frame: CGRect.init(x: 8, y: 8, width: view.frame.size.width - 16, height: 15))
-            lbl1.text = place.place.name
-            lbl1.font = UIFont.systemFont(ofSize: 14, weight: .heavy)
-            view.addSubview(lbl1)
-            
-            let lbl2 = UILabel(frame: CGRect.init(x: lbl1.frame.origin.x , y: lbl1.frame.origin.y+lbl1.frame.size.height + 3, width: view.frame.size.width - 16, height: 15))
-            lbl2.text = place.place.address
-            lbl2.font = UIFont.systemFont(ofSize: 12, weight: .medium)
-            view.addSubview(lbl2)
-            
-            let lbl3 = UILabel(frame: CGRect.init(x: lbl2.frame.origin.x , y: lbl2.frame.origin.y+lbl2.frame.size.height + 3, width: view.frame.size.width - 16, height: 15))
-            lbl3.text = (place.place.openingHours?.isOpen! == true) ? "Open":"Closed"
-            lbl3.font = UIFont.systemFont(ofSize: 12, weight: .thin)
-            lbl3.textColor = (place.place.openingHours?.isOpen! == true) ? UIColor.red:UIColor.green
-            view.addSubview(lbl3)
-            
-            let placedetails = UIButton(type: .system)
-            placedetails.frame = CGRect(x: lbl3.frame.origin.x, y: lbl3.frame.origin.y+lbl3.frame.size.height + 5 , width: view.frame.size.width - 16, height: 30)
-            placedetails.setTitle("Details", for: .normal)
-            placedetails.backgroundColor = UIColor(red:0.00, green:0.53, blue:1.00, alpha:1.0)
-            placedetails.layer.cornerRadius = 5
-            placedetails.setTitleColor(.white, for: .normal)
-            placedetails.addTarget(self, action: #selector(placeDetailsNav), for: .touchUpInside)
-            view.addSubview(placedetails)
+
             
             return view
             
@@ -1079,7 +1025,6 @@ extension MapViewController {
         UIApplication.shared.isIdleTimerDisabled = true
         locationBtnHasBeenTapped = false
         locationBtn.setImage(UIImage(named: "compus"), for: .normal)
-        print("startNavBtnTapped")
         self.removeSubviewsFromStackView(stackView: self.buttonsStackView)
         self.removeSubviewsFromStackView(stackView: self.travelInfoStackView)
         self.speedLabel.text = "\(round(abs(self.locationManager.location!.speed * 3600.0 * 0.000621371)).description)/mph"
@@ -1157,7 +1102,6 @@ extension MapViewController {
         self.waypoints.removeAll()
         self.firstPathDrawn = false
         locationManager.startUpdatingLocation()
-        print("cancelbtn tapped")
         self.removeSubviewsFromStackView(stackView: self.buttonsStackView)
         self.mapView.clear()
         let camera = GMSCameraPosition.camera(withLatitude: self.currentLocation!.coordinate.latitude, longitude: self.currentLocation!.coordinate.longitude, zoom: zoom!)
@@ -1225,7 +1169,6 @@ extension MapViewController {
     }
     
     @objc func placeDetailsNav(_ sender: UIButton) {
-        print("placeDetailsNav")
         self.performSegue(withIdentifier: "GoToLocationDetailsViewController", sender:self)
     }
     
