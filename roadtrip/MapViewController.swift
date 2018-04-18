@@ -9,7 +9,7 @@ var searchLocations:[FilterKeywordWithImage] = [FilterKeywordWithImage(key: "piz
                                                 FilterKeywordWithImage(key: "food", name: "Food", icon: #imageLiteral(resourceName: "Food")),
                                                 FilterKeywordWithImage(key: "noodles", name: "Chinese", icon: #imageLiteral(resourceName: "Chinese")),
                                                 FilterKeywordWithImage(key: "mexican", name: "Mexican", icon: #imageLiteral(resourceName: "Mexican")),
-                                                FilterKeywordWithImage(key: "gas_station", name: "Gas Station", icon: UIImage.imageForGasStation(price: 2.5, color : UIColor(red: 0.0863, green: 0.6, blue: 0, alpha: 1.0)))]
+                                                FilterKeywordWithImage(key: "gas_station", name: "AGas Station", icon: UIImage.imageForGasStation(price: 2.5, color : UIColor(red: 0.0863, green: 0.6, blue: 0, alpha: 1.0)))]
 
 class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDelegate {
     let appDelegate: AppDelegate? = UIApplication.shared.delegate as? AppDelegate
