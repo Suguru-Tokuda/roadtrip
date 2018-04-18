@@ -12,10 +12,10 @@ protocol FilterTableViewControllerDelegate: class {
     func typesController(_ controller: FilterTableViewController, didSelectTypes types: [String])
 }
 class FilterTableViewController: UITableViewController {
-    private var sortedKeys: [String] {
-        return filterTypes.keys.sorted()
+    private var sortedKeys: [FilterKeywordWithImage] {
+        return searchLocations.sorted(by: {$0.key < $1.key})
     }
-    private let filterTypes = ["food": "Food", "gas_station": "Gas Station", "petrol": "Petrol", "pizza": "pizza", "burger":"burger"]
+    
     var selectedTypes = [String]()
     var delegate: FilterTableViewControllerDelegate?
     override func viewDidLoad() {
@@ -29,26 +29,27 @@ class FilterTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return filterTypes.count
+        return searchLocations.count
+//        return filterTypes.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "typeCell", for: indexPath)
         let key = sortedKeys[indexPath.row]
-        let type = filterTypes[key]
+        let type = key.name
         cell.textLabel?.text = type
-        cell.imageView?.image = UIImage(named: key)
-        cell.accessoryType = selectedTypes.contains(key) ? .checkmark : .none
+        cell.imageView?.image = key.icon
+        cell.accessoryType = selectedTypes.contains(key.key) ? .checkmark : .none
         return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let key = sortedKeys[indexPath.row]
-        if selectedTypes.contains(key) {
-            selectedTypes = selectedTypes.filter({$0 != key})
+        if selectedTypes.contains(key.key) {
+            selectedTypes = selectedTypes.filter({$0 != key.key})
         } else {
-            selectedTypes.append(key)
+            selectedTypes.append(key.key)
         }
         
         tableView.reloadData()

@@ -3,6 +3,11 @@ import GoogleMaps
 import GooglePlaces
 import CoreLocation
 
+
+var searchLocations:[FilterKeywordWithImage] = [FilterKeywordWithImage(key: "pizza", name: "Pizza", icon: #imageLiteral(resourceName: "pizza")),
+                                                FilterKeywordWithImage(key: "burger", name: "Burger", icon: #imageLiteral(resourceName: "burger")),
+                                                FilterKeywordWithImage(key: "gas_station", name: "Gas Station", icon: UIImage.imageForGasStation(price: 1.0))]
+
 class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDelegate {
     let appDelegate: AppDelegate? = UIApplication.shared.delegate as? AppDelegate
     var gasPricesDataStore: GasPricesDataStore?
@@ -18,10 +23,9 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
     var currentLocation: CLLocation?
     var lastLocation: CLLocation?
     var searchKeywords:[String] = []
-    var locationPetrol : String = "petrol"
-    var locationGasStation : String = "gas_station"
-    var locationPizza : String = "pizza"
-    var locationBurger : String = "burger"
+    
+    
+
     var searchRadius : Int = 1000
     let searchBar = UISearchBar()
     var isInNavigation: Bool = false
@@ -249,22 +253,18 @@ extension MapViewController {
                                     || ((gasStationForPrice.midPrice != nil) && self.gastype == "mid")
                                     || ((gasStationForPrice.prePrice != nil) && self.gastype == "pre")  {
                                     stationcount += 1
-                                    
-                                    switch self.gastype{
-                                    case "reg":
-                                        //                                        print("reg price \(gasStationForPrice.regPrice!)")
-                                        avggasprice += gasStationForPrice.regPrice!
-                                    case "mid":
-                                        //                                        print("mid price \(gasStationForPrice.midPrice!)")
-                                        avggasprice += gasStationForPrice.midPrice!
-                                    case "pre":
-                                        //                                        print("pre price \(gasStationForPrice.prePrice!)")
-                                        avggasprice += gasStationForPrice.prePrice!
-                                    default:
-                                        //                                        print(gasStationForPrice.regPrice!)
-                                        avggasprice += gasStationForPrice.regPrice!
-                                        
-                                    }
+                                    avggasprice += (self.gastype == "pre") ? gasStationForPrice.prePrice! : (self.gastype == "mid") ? gasStationForPrice.midPrice! : gasStationForPrice.regPrice!
+//                                    switch self.gastype{
+//                                    case "reg":
+//                                        avggasprice += gasStationForPrice.regPrice!
+//                                    case "mid":
+//                                        avggasprice += gasStationForPrice.midPrice!
+//                                    case "pre":
+//                                        avggasprice += gasStationForPrice.prePrice!
+//                                    default:
+//                                        avggasprice += gasStationForPrice.regPrice!
+//
+//                                    }
                                 }
                             }
                             avggasprice /= stationcount
@@ -273,13 +273,6 @@ extension MapViewController {
                                 
                                 if !self.markerCoord.contains([gasStationForPrice.lat!:gasStationForPrice.lng!]){
                                     self.markerCoord.append([gasStationForPrice.lat!:gasStationForPrice.lng!])
-                                    let DynamicView=UIView(frame: CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 50, height: 50)))
-                                    DynamicView.backgroundColor=UIColor.clear
-                                    var imageViewForPinMarker : UIImageView
-                                    imageViewForPinMarker  = UIImageView(frame:CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 50, height: 50)))
-                                    imageViewForPinMarker.image = UIImage(named:"prices")?.withRenderingMode(.alwaysTemplate)
-                                    imageViewForPinMarker.tintColor = UIColor.green
-                                    let text = UILabel(frame:CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 40, height: 30)))                    
                                     if ((gasStationForPrice.regPrice == nil) && self.gastype == "reg")
                                         || ((gasStationForPrice.midPrice == nil) && self.gastype == "mid")
                                         || ((gasStationForPrice.prePrice == nil) && self.gastype == "pre")  {
@@ -288,27 +281,12 @@ extension MapViewController {
                                     let gasprice = (self.gastype == "reg") ? gasStationForPrice.regPrice! : (self.gastype == "mid") ? gasStationForPrice.midPrice! : gasStationForPrice.prePrice!
                                     if gasprice >= (avggasprice - 0.1){
                                         continue
-                                    }                        
-                                    text.text = String("\(gasprice)")
-                                    text.textColor = UIColor.black
-                                    text.font = UIFont(name: text.font.fontName, size: 14)
-                                    text.textAlignment = NSTextAlignment.center
-                                    text.center = imageViewForPinMarker.convert(imageViewForPinMarker.center, from:imageViewForPinMarker.superview)
-                                    
-                                    imageViewForPinMarker.addSubview(text)
-                                    imageViewForPinMarker.center = DynamicView.convert(DynamicView.center, from:DynamicView.superview)
-                                    DynamicView.addSubview(imageViewForPinMarker)
-                                    UIGraphicsBeginImageContextWithOptions(DynamicView.frame.size, false, UIScreen.main.scale)
-                                    DynamicView.layer.render(in: UIGraphicsGetCurrentContext()!)
-                                    let imageConverted: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
-                                    UIGraphicsEndImageContext()
+                                    }
                                     let marker = GMSMarker()
                                     marker.position = CLLocationCoordinate2DMake(gasStationForPrice.lat!, gasStationForPrice.lng!)
-                                    
                                     marker.groundAnchor = CGPoint(x: 0.5, y: 1)
                                     marker.appearAnimation = .pop
-                                    
-                                    marker.icon = imageConverted
+                                    marker.icon = UIImage.imageForGasStation(price: gasprice)
                                     marker.map = self.mapView
                                     
                                 }
@@ -336,38 +314,24 @@ extension MapViewController {
                                 || ((gasStationForPrice.midPrice != nil) && self.gastype == "mid")
                                 || ((gasStationForPrice.prePrice != nil) && self.gastype == "pre")  {
                                 stationcount += 1
-                                
-                                switch self.gastype{
-                                case "reg":
-                                    //                                        print("reg price \(gasStationForPrice.regPrice!)")
-                                    avggasprice += gasStationForPrice.regPrice!
-                                case "mid":
-                                    //                                        print("mid price \(gasStationForPrice.midPrice!)")
-                                    avggasprice += gasStationForPrice.midPrice!
-                                case "pre":
-                                    //                                        print("pre price \(gasStationForPrice.prePrice!)")
-                                    avggasprice += gasStationForPrice.prePrice!
-                                default:
-                                    //                                        print(gasStationForPrice.regPrice!)
-                                    avggasprice += gasStationForPrice.regPrice!
-                                    
-                                }
+                                 avggasprice += (self.gastype == "pre") ? gasStationForPrice.prePrice! : (self.gastype == "mid") ? gasStationForPrice.midPrice! : gasStationForPrice.regPrice!
+//                                switch self.gastype{
+//                                case "reg":
+//                                    avggasprice += gasStationForPrice.regPrice!
+//                                case "mid":
+//                                    avggasprice += gasStationForPrice.midPrice!
+//                                case "pre":
+//                                    avggasprice += gasStationForPrice.prePrice!
+//                                default:
+//                                    avggasprice += gasStationForPrice.regPrice!
+//
+//                                }
                             }
                         }
                         avggasprice /= stationcount
-                        //                                                    print(avggasprice)
                         for gasStationForPrice in gasStations.stations! {
-                            
                             if !self.markerCoord.contains([gasStationForPrice.lat!:gasStationForPrice.lng!]){
                                 self.markerCoord.append([gasStationForPrice.lat!:gasStationForPrice.lng!])
-                                let DynamicView=UIView(frame: CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 50, height: 50)))
-                                DynamicView.backgroundColor=UIColor.clear
-                                var imageViewForPinMarker : UIImageView
-                                imageViewForPinMarker  = UIImageView(frame:CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 50, height: 50)))
-                                imageViewForPinMarker.image = UIImage(named:"prices")?.withRenderingMode(.alwaysTemplate)
-                                imageViewForPinMarker.tintColor = UIColor.green
-                                let text = UILabel(frame:CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 40, height: 30)))
-                                
                                 if ((gasStationForPrice.regPrice == nil) && self.gastype == "reg")
                                     || ((gasStationForPrice.midPrice == nil) && self.gastype == "mid")
                                     || ((gasStationForPrice.prePrice == nil) && self.gastype == "pre")  {
@@ -377,35 +341,16 @@ extension MapViewController {
                                 if gasprice >= (avggasprice - 0.1){
                                     continue
                                 }
-                                
-                                text.text = String("\(gasprice)")
-                                text.textColor = UIColor.black
-                                text.font = UIFont(name: text.font.fontName, size: 14)
-                                text.textAlignment = NSTextAlignment.center
-                                text.center = imageViewForPinMarker.convert(imageViewForPinMarker.center, from:imageViewForPinMarker.superview)
-                                
-                                imageViewForPinMarker.addSubview(text)
-                                imageViewForPinMarker.center = DynamicView.convert(DynamicView.center, from:DynamicView.superview)
-                                DynamicView.addSubview(imageViewForPinMarker)
-                                UIGraphicsBeginImageContextWithOptions(DynamicView.frame.size, false, UIScreen.main.scale)
-                                DynamicView.layer.render(in: UIGraphicsGetCurrentContext()!)
-                                let imageConverted: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
-                                UIGraphicsEndImageContext()
                                 let marker = GMSMarker()
                                 marker.position = CLLocationCoordinate2DMake(gasStationForPrice.lat!, gasStationForPrice.lng!)
-                                
                                 marker.groundAnchor = CGPoint(x: 0.5, y: 1)
                                 marker.appearAnimation = .pop
-                                
-                                marker.icon = imageConverted
+                                marker.icon = UIImage.imageForGasStation(price: gasprice)
                                 marker.map = self.mapView
-                                
                             }
                         }
                         
                     }
-                    
-                    
                 case let .failure(error):
                     print(error)
                 }
@@ -414,7 +359,7 @@ extension MapViewController {
     }
     
     func fetchGoogleData(forLocation: CLLocation, locationName: String, searchRadius: Int) {
-        if locationName == "gas_station" || locationName == "petrol"{
+        if locationName == "gas_station"{
             markerCoord.removeAll()
             self.gasPricesDataStore?.getGasPrices(latitude: forLocation.coordinate.latitude, longitutde: forLocation.coordinate.longitude, distanceInMiles: 2, gasType: "reg"){
                 (response) in
@@ -425,36 +370,18 @@ extension MapViewController {
                         for gasStationForPrice in gasStations.stations! {
                             if !self.markerCoord.contains([gasStationForPrice.lat!:gasStationForPrice.lng!]){
                                 self.markerCoord.append([gasStationForPrice.lat!:gasStationForPrice.lng!])
-                                let DynamicView=UIView(frame: CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 50, height: 50)))
-                                DynamicView.backgroundColor=UIColor.clear
-                                var imageViewForPinMarker : UIImageView
-                                imageViewForPinMarker  = UIImageView(frame:CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 50, height: 50)))
-                                imageViewForPinMarker.image = UIImage(named:"prices")?.withRenderingMode(.alwaysTemplate)
-                                imageViewForPinMarker.tintColor = UIColor.green
-                                let text = UILabel(frame:CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 40, height: 30)))
-                                guard let _ = gasStationForPrice.regPrice else {
+                                if ((gasStationForPrice.regPrice == nil) && self.gastype == "reg")
+                                    || ((gasStationForPrice.midPrice == nil) && self.gastype == "mid")
+                                    || ((gasStationForPrice.prePrice == nil) && self.gastype == "pre")  {
                                     continue
                                 }
-                                text.text = String(gasStationForPrice.regPrice!)
-                                text.textColor = UIColor.black
-                                text.font = UIFont(name: text.font.fontName, size: 14)
-                                text.textAlignment = NSTextAlignment.center
-                                text.center = imageViewForPinMarker.convert(imageViewForPinMarker.center, from:imageViewForPinMarker.superview)
+                                let gasprice = (self.gastype == "reg") ? gasStationForPrice.regPrice! : (self.gastype == "mid") ? gasStationForPrice.midPrice! : gasStationForPrice.prePrice!
                                 
-                                imageViewForPinMarker.addSubview(text)
-                                imageViewForPinMarker.center = DynamicView.convert(DynamicView.center, from:DynamicView.superview)
-                                DynamicView.addSubview(imageViewForPinMarker)
-                                UIGraphicsBeginImageContextWithOptions(DynamicView.frame.size, false, UIScreen.main.scale)
-                                DynamicView.layer.render(in: UIGraphicsGetCurrentContext()!)
-                                let imageConverted: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
-                                UIGraphicsEndImageContext()
                                 let marker = GMSMarker()
                                 marker.position = CLLocationCoordinate2DMake(gasStationForPrice.lat!, gasStationForPrice.lng!)
-                                
                                 marker.groundAnchor = CGPoint(x: 0.5, y: 1)
                                 marker.appearAnimation = .pop
-                                
-                                marker.icon = imageConverted
+                                marker.icon = UIImage.imageForGasStation(price: gasprice)
                                 marker.title = gasStationForPrice.station//////incomplete
                                 marker.map = self.mapView
                                 
@@ -483,21 +410,13 @@ extension MapViewController {
                         let marker = PlaceMarker(place: place)
                         marker.title = place.name
                         marker.snippet = "The place is \(place.openingHours?.isOpen == true ? "open" : "closed")"
-                        //                    switch true{
-                        //                    case place.types.contains("gas_station"),place.types.contains("petrol"):
-                        if locationName == "pizza"{
-                            marker.icon = UIImage(named: "pizza")
+                        if let key = searchLocations.first(where: {$0.key == locationName}) {
+                            marker.icon = key.icon
                             marker.map = self.mapView
                         }
-                        if locationName == "burger"{
-                            marker.icon = UIImage(named: "burger")
-                            marker.map = self.mapView
+                        else{
+                            return
                         }
-                        //                    case place.types.contains("food"),place.types.contains("restaurant"),place.types.contains("bar"):
-                        //                    if locationName == "food"{
-                        //                        marker.icon = UIImage(named: "Food")
-                        //                        marker.map = self.mapView
-                        //                    }
                         self.addMarker(markerType: locationName, marker: marker)
                     }
                     group1.leave()
@@ -515,19 +434,13 @@ extension MapViewController {
                             let marker = PlaceMarker(place: place)
                             marker.title = place.name
                             marker.snippet = "The place is \(place.openingHours?.isOpen == true ? "open" : "closed")"
-                            if locationName == "pizza"{
-                                marker.icon = UIImage(named: "pizza")
+                            if let key = searchLocations.first(where: {$0.key == locationName}) {
+                                marker.icon = key.icon
                                 marker.map = self.mapView
                             }
-                            if locationName == "burger"{
-                                marker.icon = UIImage(named: "burger")
-                                marker.map = self.mapView
+                            else{
+                                return
                             }
-                            //                        case place.types.contains("food"),place.types.contains("restaurant"),place.types.contains("bar"):
-                            //                        if locationName == "food"{
-                            //                            marker.icon = UIImage(named: "Food")
-                            //                            marker.map = self.mapView
-                            //                        }
                             self.addMarker(markerType: locationName, marker: marker)
                         }
                         group2.leave()
@@ -545,19 +458,13 @@ extension MapViewController {
                             let marker = PlaceMarker(place: place)
                             marker.title = place.name
                             marker.snippet = "The place is \(place.openingHours?.isOpen == true ? "open" : "closed")"
-                            if locationName == "pizza"{
-                                marker.icon = UIImage(named: "pizza")
+                            if let key = searchLocations.first(where: {$0.key == locationName}) {
+                                marker.icon = key.icon
                                 marker.map = self.mapView
                             }
-                            if locationName == "burger"{
-                                marker.icon = UIImage(named: "burger")
-                                marker.map = self.mapView
+                            else{
+                                return
                             }
-                            //                        case place.types.contains("food"),place.types.contains("restaurant"),place.types.contains("bar"):
-                            //                        if locationName == "food"{
-                            //                            marker.icon = UIImage(named: "Food")
-                            //                            marker.map = self.mapView
-                            //                        }
                             self.addMarker(markerType: locationName, marker: marker)
                         }
                     }
@@ -1279,5 +1186,35 @@ extension String {
     var html2String: String {
         return html2AttributedString?.string ?? ""
     }
+}
+extension UIImage {
+    class func imageForGasStation(price: Double) -> UIImage {
+        let DynamicView=UIView(frame: CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 50, height: 50)))
+        DynamicView.backgroundColor=UIColor.clear
+        var imageViewForPinMarker : UIImageView
+        imageViewForPinMarker  = UIImageView(frame:CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 50, height: 50)))
+        imageViewForPinMarker.image = UIImage(named:"prices")?.withRenderingMode(.alwaysTemplate)
+        imageViewForPinMarker.tintColor = UIColor.green
+        let text = UILabel(frame:CGRect(origin: CGPoint(x: 0,y :0), size: CGSize(width: 40, height: 30)))
+        text.text = String("\(price)")
+        text.textColor = UIColor.black
+        text.font = UIFont(name: text.font.fontName, size: 14)
+        text.textAlignment = NSTextAlignment.center
+        text.center = imageViewForPinMarker.convert(imageViewForPinMarker.center, from:imageViewForPinMarker.superview)
+        imageViewForPinMarker.addSubview(text)
+        imageViewForPinMarker.center = DynamicView.convert(DynamicView.center, from:DynamicView.superview)
+        DynamicView.addSubview(imageViewForPinMarker)
+        UIGraphicsBeginImageContextWithOptions(DynamicView.frame.size, false, UIScreen.main.scale)
+        DynamicView.layer.render(in: UIGraphicsGetCurrentContext()!)
+        let imageConverted: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
+        UIGraphicsEndImageContext()
+        return imageConverted
+    }
+}
+
+struct FilterKeywordWithImage{
+    let key: String
+    let name: String
+    let icon: UIImage?
 }
 
