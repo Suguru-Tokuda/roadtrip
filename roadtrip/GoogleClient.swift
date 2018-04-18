@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import CoreLocation
 
-var pagetoken = ""
+var pagetoken:String = ""
 
 enum DirectionsResult {
     case success(Direction)
@@ -52,7 +52,7 @@ class GoogleClient {
                 let decoder = JSONDecoder()
                 let response = try decoder.decode(GooglePlacesResponse.self, from: data)
                 pagetoken = response.nextpagetoken ?? ""
-                print("page token - \(pagetoken)")
+//                print("page token - \(pagetoken)")
                 //                completionHandler(GooglePlacesResponse(results:[]))
                 completionHandler(response)
             } catch let err {
