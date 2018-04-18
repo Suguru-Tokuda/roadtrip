@@ -43,7 +43,7 @@ class CarInfoSettingViewController: UIViewController, UIPickerViewDataSource, UI
         super.viewDidLoad()
         self.navigationItem.setHidesBackButton(true, animated: true)
         self.navigationItem.title = "Your Car Info"
-        setCarInfoBtn.backgroundColor = UIColor(red: 0.7686, green: 0.3569, blue: 0, alpha: 1.0)
+        setCarInfoBtn.backgroundColor = UIColor(red:0.00, green:0.53, blue:1.00, alpha:1.0)
         setCarInfoBtn.layer.cornerRadius = 5
         setCarInfoBtn.setTitleColor(UIColor.white, for: .normal)
         
