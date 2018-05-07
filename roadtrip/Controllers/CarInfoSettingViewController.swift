@@ -30,7 +30,7 @@ class CarInfoSettingViewController: UIViewController, UIPickerViewDataSource, UI
     var makes: [Make]?
     var models: [Model]?
     var trims: [Trim]?
-    var gasTypes: [String] = ["Unleased", "Plus", "Premium"]
+    var gasTypes: [String] = ["Unleaded", "Plus", "Premium"]
     var selectedYear: Int?
     var selectedMake: Make?
     var selectedModel: Model?

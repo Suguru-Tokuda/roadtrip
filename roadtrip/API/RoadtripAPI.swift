@@ -31,10 +31,10 @@ struct RoadtripAPI {
 
     public static let myGasFeedAPIKey = "3gi91gd4i1"
     
-    public static let googleMapsAPIKey = "AIzaSyD14jarz6jPaHCozkfKHcNLVthhuJhtwqg"
-    public static let googleDirectionsAPIKey = "AIzaSyB5MtWNCa49FD9dSqC0iXd5JA4Vl-_Rf-c"
-    public static let googlePlacesAPIKey = "AIzaSyA3ElVIlEfP3sgehniZx3Aju7dpZDwRz6A"
-    public static let googleDistanceMatrixAPIKey = "AIzaSyD14jarz6jPaHCozkfKHcNLVthhuJhtwqg"
+    public static let googleMapsAPIKey = "AIzaSyA-rDH8PdLEpb-QPLWfK_s6M-UBK5qroLI"
+    public static let googleDirectionsAPIKey = "AIzaSyC6Ma61QySTimTnkwnGAqv9tqLQoO7Rmzk"
+    public static let googlePlacesAPIKey = "AIzaSyDLZ6iHS_d-0k-BmAr3dbDPfm1KPP5PrwE"
+    public static let googleDistanceMatrixAPIKey = "AIzaSyB43Fv84Zl6inY99JP_u-Dgqhoac-zftD4"
   
     public static func carQueryURL(method: CarQueryMethod, parameter: String) -> URL {
         let urlString = carQueryBaseURL + method.rawValue + parameter
@@ -174,7 +174,7 @@ struct RoadtripAPI {
     
     public static func getModelsResult(fromJSON data: Data) -> ModelsResult {
         var modelsArray: [Model] = [Model]()
-        do {
+        do { 
             let jsonObject = try JSONSerialization.jsonObject(with: data, options: [])
             if let jsonArray = jsonObject as? [AnyHashable: Any] {
                 if let models = jsonArray["Models"] as? [[String: Any]] {

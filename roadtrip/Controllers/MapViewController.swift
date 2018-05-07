@@ -66,7 +66,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, GMSMapView
     var gasStationWithin = 3.0
     var gastype:String{
         switch myCar?.gasType {
-        case "Unleased" :
+        case "Unleaded" :
             return "reg"
         case "Plus":
             return "mid"
